@@ -1,1 +1,1 @@
-# ConfMan
+# Conference Management System
