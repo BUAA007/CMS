@@ -3,4 +3,4 @@
   git clone https://github.com/django/django.git
   pip install djangorestframework
   pip install markdown       
-  pip install django-filter  
+  pip install django-filter
