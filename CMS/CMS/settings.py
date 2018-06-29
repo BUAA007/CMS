@@ -31,6 +31,7 @@ ALLOWED_HOSTS = []
 # Application definition
 
 INSTALLED_APPS = [
+    'Meeting.apps.MeetingConfig',
     'Test.apps.TestConfig',
     'django.contrib.admin',
     'django.contrib.auth',
@@ -76,8 +77,14 @@ WSGI_APPLICATION = 'CMS.wsgi.application'
 
 DATABASES = {
     'default': {
-        'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': os.path.join(BASE_DIR, 'db.sqlite3'),
+        'ENGINE': 'django.db.backends.mysql',
+        'NAME': 'MoreResources',
+        'USER': "root",
+
+        'PASSWORD': 'a123456789',
+
+        'HOST': '192.144.149.197',
+        'PORT': '3306',
     }
 }
 
