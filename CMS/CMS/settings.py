@@ -33,6 +33,9 @@ ALLOWED_HOSTS = []
 INSTALLED_APPS = [
     'Meeting.apps.MeetingConfig',
     'Test.apps.TestConfig',
+    'User.apps.UserConfig',
+    'Paper.apps.PaperConfig',
+    'Admin.apps.AdminConfig',
     'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',
