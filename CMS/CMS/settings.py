@@ -82,12 +82,12 @@ WSGI_APPLICATION = 'CMS.wsgi.application'
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.mysql',
-        'NAME': 'MoreResources',
+        'NAME': 'CMS',
         'USER': "root",
 
-        'PASSWORD': 'a123456789',
+        'PASSWORD': '',
 
-        'HOST': '192.144.149.197',
+        'HOST': '127.0.0.1',
         'PORT': '3306',
     }
 }
