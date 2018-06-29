@@ -4,7 +4,6 @@ from Paper.models import paper
 # Create your models here.
 class Institution(models.Model):
 	id=models.AutoField(
-		max_length = 256,
 		primary_key = True,
 		)
 	name=models.CharField(
@@ -35,12 +34,33 @@ class Institution(models.Model):
 		null=True,
 		)
 	meeting=models.ForeignKey(
-		'Meeting.meeting'
+		'Meeting.meeting',
 		on_delete=models.CASCADE,
 		default = "",
 		)
 	paper=models.ForeignKey(
-		'Paper.paper'
+		'Paper.paper',
 		on_delete=models.CASCADE,
 		default = "",
+		)
+
+class Employee(models.Model):
+	id=models.AutoField(
+		primary_key=True,
+		)
+	username=models.CharField(
+		null=True,
+		max_length=256,
+		)
+	password=models.CharField(
+		null=True,
+		max_length=256,
+		)
+	email=models.CharField(
+		null=True,
+		max_length=256,
+		)
+	institution=models.ForeignKey(
+		'Institution',
+		null=True,
 		)
