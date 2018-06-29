@@ -4,10 +4,9 @@ from django.http import HttpResponse
 from django.template import loader
 
 
-
 def index(request):
     latest_question_list = 'Hello World,django'
-    template = loader.get_template('static/login.html')
+    template = loader.get_template('login.html')
     context = {
         'latest_question_list': latest_question_list,
     }
