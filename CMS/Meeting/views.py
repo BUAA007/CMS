@@ -14,14 +14,4 @@ class MeetingViewSet(viewsets.ModelViewSet):
     queryset = Meeting.objects.all()
     serializer_class = MeetingSerializer
     
-    @action(methods = ["POST"], detail = False)
-    def Search(self, request):
-        normal_user_queryset = NormalUserViewSet().GetQueryset(request)
-        normal_user_serializer = NormalUserSerializer(0)
-        for user in normal_user_queryset:
-            normal_user_serializer = NormalUserSerializer(user)
-            resource_serializer = ResourceSerializer(user.buyresources.all())
-            institution_serializer = InstitutionSerializer(user.expert.institution_set.all())
-            result = resource_serializer.data+normal_user_serializer.data
-        
-            return Response(result)
+   

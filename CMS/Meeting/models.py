@@ -29,7 +29,7 @@ class Meeting(models.Model):
 	schedule = models.CharField(
 		max_length = 128
 		)
-	institution = models.CharField( #组织机构
+	organization = models.CharField( #组织机构
 		max_length = 128
 		)
 	template = models.CharField( 	#论文模板url

@@ -6,6 +6,7 @@ from rest_framework import status
 from django.core import serializers
 from django.core.exceptions import ObjectDoesNotExist
 from Institution.models import Institution
+from Institution.serializer import InstitutionSerializer
 # Create your views here.
 class InstitutionViewSet(viewsets.ModelViewSet):
     queryset = Institution.objects.all()

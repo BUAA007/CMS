@@ -1,6 +1,6 @@
 from django.db import models
-from Meeting.models import meeting 
-from Paper.models import paper
+from Meeting.models import Meeting 
+from Paper.models import Paper
 # Create your models here.
 class Institution(models.Model):
 	id=models.AutoField(
@@ -15,6 +15,7 @@ class Institution(models.Model):
 		null=True,
 		)
 	establish_date=models.CharField(
+		max_length=128,
 		null=True,
 		)
 	place=models.CharField(
@@ -33,13 +34,13 @@ class Institution(models.Model):
 		max_length=16,
 		null=True,
 		)
-	meeting=models.ForeignKey(
-		'Meeting.meeting',
+	meetings=models.ForeignKey(
+		'Meeting.Meeting',
 		on_delete=models.CASCADE,
 		default = "",
 		)
 	paper=models.ForeignKey(
-		'Paper.paper',
+		'Paper.Paper',
 		on_delete=models.CASCADE,
 		default = "",
 		)
@@ -62,5 +63,6 @@ class Employee(models.Model):
 		)
 	institution=models.ForeignKey(
 		'Institution',
-		null=True,
+		on_delete=models.CASCADE,
+		default = "",
 		)
