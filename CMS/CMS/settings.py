@@ -87,9 +87,9 @@ DATABASES = {
         'NAME': 'CMS',
         'USER': "root",
 
-        'PASSWORD': 'a123456789',
+        'PASSWORD': '13888634889',
 
-        'HOST': '192.144.149.197',
+        'HOST': '127.0.0.1',
         'PORT': '3306',
     }
 }
