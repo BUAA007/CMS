@@ -8,7 +8,7 @@ from User.models import *
 from User.serializers import *
 from django.template import loader
 from django.http import HttpResponse
-import re
+import re,json
 # Create your views here.
 def checklen(pwd):
 	return len(pwd)>=8
@@ -68,6 +68,12 @@ def checkUsername(username):
 	username_pat = re.compile("[a-zA-z]\\w{0,9}")
 	return re.search(username_pat, username)
 
+def info(msg):
+	return json.dumps({'info': msg})
+
+def errorInfo(msg):
+	return json.dumps({'errorInfo': msg})
+
 class UserViewSet(viewsets.ModelViewSet):
 	queryset = User.objects.all()
 	serializer_class = UserSerializer
@@ -94,7 +100,7 @@ class UserViewSet(viewsets.ModelViewSet):
 	            request.session['username'] = username
 	            request.session.set_expiry(0)
 	            return render(request,'base.html',status = status.HTTP_201_CREATED)                ## 登录成功就将url重定向到后台的url
-	    return HttpResponse('Username/Passwd is wrong', status = status.HTTP_406_NOT_ACCEPTABLE)
+	    return HttpResponse(errorInfo('Username/Passwd is wrong'), content_type="application/json")
 
 	@action(methods = ['GET'],detail = False)
 	def logout(self, request):
@@ -105,18 +111,24 @@ class UserViewSet(viewsets.ModelViewSet):
 	        pass
 	    return render(request,'base.html')             #重定向回主页面
 
+
 	@action(methods = ['POST'],detail = False)
 	def register(self, request):
 	    username = request.data.get("username")
 	    password = request.data.get("password")
+	    password2 = request.data.get("password2")
 	    email = request.data.get("email")
 	    tel = request.data.get("tel")
+	    if not User.objects.get(username = username):
+	       return  HttpResponse(errorInfo("用户名已存在"), content_type="application/json")
 	    if not checkUsername(username):    #必须以字母开头，长度在10位以内
-	       return  HttpResponse("用户名不合法", status = status.HTTP_400_BAD_REQUEST)
+	       return  HttpResponse(errorInfo("用户名不合法"), content_type="application/json")
 	    if not checkPassword(password):    #包含大写、小写、符号；长度大于等于8
-	       return  HttpResponse("密码不合法", status = status.HTTP_400_BAD_REQUEST)
+	       return  HttpResponse(errorInfo("密码不合法"), content_type="application/json")
+	    if not password == password2:
+	       return  HttpResponse(errorInfo("确认密码不合法"), content_type="application/json")
 	    if not checkPhonenumber(tel):      #手机号位数为11位；开头为1，第二位为3或4或5或8;
-	       return  HttpResponse("电话号码不合法", status = status.HTTP_400_BAD_REQUEST)   
+	       return  HttpResponse(errorInfo("电话号码不合法"), content_type="application/json")   
 	    user_serializer = UserSerializer(data = request.data)
 	    if user_serializer.is_valid():
 	        thisUser = User(
@@ -126,4 +138,4 @@ class UserViewSet(viewsets.ModelViewSet):
 	            tel = tel,
 	            ).save()
 	        return render(request,'login.html',status = status.HTTP_201_CREATED)
-	    return Response(user_serializer.errors, status = status.HTTP_400_BAD_REQUEST)
+	    return HttpResponse(errorInfo("未知原因失败，请稍后再试"), content_type="application/json") 
