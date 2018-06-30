@@ -10,18 +10,22 @@ class Paper(models.Model):
 		)
 	author_2 = models.CharField(
 		max_length = 20,
+		null = True,
 		)
 	author_3 = models.CharField(
-		max_length = 20
+		max_length = 20,
+		null = True,
 		)
 	title = models.CharField(
 		max_length = 64,
 		)
 	abstract = models.CharField(
 		max_length = 1024,
+		null = True,
 		)
 	keyword = models.CharField(
 		max_length = 128,
+		null = True,
 		)
 	content = models.CharField(
 		max_length = 64,
