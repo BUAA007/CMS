@@ -29,5 +29,13 @@ class Paper(models.Model):
 	status = models.IntegerField(
 		null = False,
 		)
-	owner = models.ForeignKey(User)
-	meeting = models.ForeignKey(Meeting)
+	owner = models.ForeignKey(
+		User,
+		on_delete=models.CASCADE,
+		default = "",
+		)
+	meeting = models.ForeignKey(
+		Meeting,
+		on_delete=models.CASCADE,
+		default = "",
+		)
