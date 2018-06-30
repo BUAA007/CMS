@@ -16,5 +16,5 @@ class User(models.Model):
 	tel = models.CharField(
 		max_length = 20,
 		)
-	favorite = models.ManyToManyField(Meeting)
-	participate = models.ManyToManyField(Meeting)
+	favorite = models.ManyToManyField(Meeting, related_name = "User_set")
+	participate = models.ManyToManyField(Meeting, related_name = "Attendee_set")
