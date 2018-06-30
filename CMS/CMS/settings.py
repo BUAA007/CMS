@@ -33,7 +33,6 @@ ALLOWED_HOSTS = []
 INSTALLED_APPS = [
     'Institution.apps.InstitutionConfig',
     'Meeting.apps.MeetingConfig',
-    'Test.apps.TestConfig',
     'User.apps.UserConfig',
     'Paper.apps.PaperConfig',
     'Admin.apps.AdminConfig',
@@ -82,6 +81,7 @@ WSGI_APPLICATION = 'CMS.wsgi.application'
 # https://docs.djangoproject.com/en/2.0/ref/settings/#databases
 
 DATABASES = {
+ 
     'default': {
         'ENGINE': 'django.db.backends.mysql',
         'NAME': 'CMS',
