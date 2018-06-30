@@ -6,7 +6,7 @@ from django.template import loader
 
 def index(request):
     latest_question_list = 'Hello World,django'
-    template = loader.get_template('test.html')
+    template = loader.get_template('user_register.html')
     context = {
         'latest_question_list': latest_question_list,
     }
