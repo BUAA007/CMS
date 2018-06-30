@@ -1,3 +1,4 @@
+{% load staticfiles %}
 <html>
 
     <style>
@@ -13,7 +14,6 @@
             display:flex;
             padding-top: 40px;
             padding-bottom: 40px;
-            background: url("/login.jpg") no-repeat center;
             background-size: cover;
         }
         .flatbox {
@@ -58,7 +58,7 @@
         <script src="https://cdnjs.cloudflare.com/ajax/libs/vue/1.0.26/vue.min.js"></script>
     </head>
 
-    <body>
+    <body background="{% static 'images/gxm.jpg' %}">
         <form class="flatbox"  method="post" action="/login">
             <div class="gslogen mb-4"><em>CMS</em></div>
             <h1 class="h3 mb-3 font-weight-normal">登录</h1>
@@ -90,7 +90,7 @@
             </div>
             <button class="btn btn-lg btn-primary btn-block mt-4 mb-2" type="submit">登录</button>
             <a href="#">忘记密码</a>
-            <div class="lbot mb-2 mt-2">新用户？<a href="/registerGet">注册</a></div>
+            <div class="lbot mb-2 mt-2"><a href="/registerGet">单位用户注册</a>&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp<a href="/registerGet">用户注册</a></div>
         </form>
 
     <script>
