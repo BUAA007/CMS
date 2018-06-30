@@ -9,7 +9,7 @@ from .models import Meeting
 from .serializers import MeetingSerializer
 from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.models import User
-from
+
 class MeetingViewSet(viewsets.ModelViewSet):
     queryset = Meeting.objects.all()
     serializer_class = MeetingSerializer
@@ -34,18 +34,21 @@ class MeetingViewSet(viewsets.ModelViewSet):
     def showdetail(self, request):
         pk = request.query_params.get('pk',None)
         thisMeeting=Meeting.objects.get(meeting_id=pk)
-        papers=thisMeeting.paper_set
+        papers=thisMeeting.paper_set.all()
         i=0
-        paper_list={ }
-        paper_info={"title","author"}
+        paper_list=list()
+        serializer = MeetingSerializer(thisMeeting)
+        paper_list.append(serializer.data)
+        paper_info={"title":"","author":""}
         for paper in papers:
             paper_info["title"]=paper.title
             paper_info["author"]=paper.author_1
-            paper_list.add(paper_info)
-        result={}
-        serializer = MeetingSerializer(thisMeeting)
-        result=dict(serializer.data,**paper_list)
-        return Response(result,status=status.HTTP_200_OK)
+            paper_list.append(paper_info)
+            i=i+1
+            if i>=10:
+                break
+
+        return Response(paper_list,status=status.HTTP_200_OK)
 
 
 
