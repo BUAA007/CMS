@@ -13,5 +13,3 @@ from django.contrib.auth.models import User
 class MeetingViewSet(viewsets.ModelViewSet):
     queryset = Meeting.objects.all()
     serializer_class = MeetingSerializer
-    
-   
