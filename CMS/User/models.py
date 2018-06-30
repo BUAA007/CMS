@@ -12,9 +12,11 @@ class User(models.Model):
 		)
 	email = models.CharField(
 		max_length = 32,
+		null = True,
 		)
 	tel = models.CharField(
 		max_length = 20,
+		null = True,
 		)
-	favorite = models.ManyToManyField(Meeting, related_name = "User_set")
-	participate = models.ManyToManyField(Meeting, related_name = "Attendee_set")
+	favorite = models.ManyToManyField(Meeting, related_name = "User_set",blank = True,)
+	participate = models.ManyToManyField(Meeting, related_name = "Attendee_set",blank = True,)
