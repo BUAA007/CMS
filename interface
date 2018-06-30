@@ -1,0 +1,17 @@
+http://127.0.0.1:8000/meet/Meeting/2/   #根据id查会议详细信息
+{
+    "meeting_id": 2,
+    "title": "meeting2",
+    "intro": "",
+    "essay_request": "",
+    "ddl_date": "2018-06-21T00:00:00Z",
+    "result_notice_date": "2018-06-20T00:00:00Z",
+    "regist_attend_date": "2018-06-21T00:00:00Z",
+    "meeting_date": "2018-06-27T00:00:00Z",
+    "schedule": "",
+    "organization": "",
+    "template": "",
+    "receipt": "",
+    "support": "",
+    "about_us": ""
+}
