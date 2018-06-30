@@ -7,12 +7,15 @@ class Meeting(models.Model):
 		)
 	title = models.CharField(
 		max_length = 128,
+		null = True,
 		)
 	intro = models.CharField(
-		max_length = 256
+		max_length = 256,
+		null = True,
 		)
 	essay_request = models.CharField(
-		max_length = 64
+		max_length = 64,
+		null=True,
 		)
 	ddl_date = models.DateTimeField(	#截稿日期
 
@@ -27,20 +30,26 @@ class Meeting(models.Model):
 
 		)
 	schedule = models.CharField(
-		max_length = 128
+		max_length = 128,
+		null=True,
 		)
 	organization = models.CharField( #组织机构
-		max_length = 128
+		max_length = 128,
+		null = True,
 		)
 	template = models.CharField( 	#论文模板url
-		max_length = 64
+		max_length = 64,
+		null = True,
 		)
 	receipt	= models.CharField(		#pdf或jpg(url)
-		max_length = 64
+		max_length = 64,
+		null = True,
 		)
 	support = models.CharField(		#住宿交通
-		max_length = 128
+		max_length = 128,
+		null = True,
 		)
 	about_us = models.CharField(
-		max_length = 128
+		max_length = 128,
+		null = True,
 		)
