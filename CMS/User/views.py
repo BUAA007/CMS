@@ -222,3 +222,13 @@ class UserViewSet(viewsets.ModelViewSet):
 		thismeeting = Meeting.objects.get(meeting_id=meeting_id)
 		thisuser.favorite.add(thismeeting)
 		return Response("info: favorite succsss", status=status.HTTP_200_OK)
+
+	@action(methods=['GET'])
+	def allpaper(self,request):
+		pk = request.query_params.get('pk', None)
+		thisuser = User.objects.get(id=pk)
+		papers = thisuser .paper_set.all()
+		template = loader.get_template('judgement.html')
+		context = {
+			'papers': papers,
+		}
