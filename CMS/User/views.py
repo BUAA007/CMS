@@ -12,6 +12,7 @@ from django.http import HttpResponse
 import re,json
 import collections
 import hashlib
+
 # Create your views here.
 
 def checklen(pwd):
@@ -178,7 +179,7 @@ class UserViewSet(viewsets.ModelViewSet):
 			for paper in papers:
 				result.append(PaperSerializer(paper).data)
 		except:
-			a = OrderedDict({"errorInfo":"服务器出错，请稍后重试。"})
+			a = collections.OrderedDict({"errorInfo":"服务器出错，请稍后重试。"})
 			return Response(a, status = status.HTTP_400_BAD_REQUEST)
 		return Response(result, status = status.HTTP_200_OK)
 
