@@ -9,6 +9,7 @@ from User.serializers import *
 from django.template import loader
 from django.http import HttpResponse
 import re,json
+import hashlib
 # Create your views here.
 def checklen(pwd):
 	return len(pwd)>=8
@@ -68,6 +69,11 @@ def checkUsername(username):
 	username_pat = re.compile("[a-zA-z]\\w{0,9}")
 	return re.search(username_pat, username)
 
+def md5(arg):#这是加密函数，将传进来的函数加密
+	md5_pwd = hashlib.md5(bytes('admin'))
+	md5_pwd.update(bytes(arg))
+	return md5_pwd.hexdigest()#返回加密的数据
+
 def info(msg):
 	return json.dumps({'info': msg})
 
@@ -87,7 +93,7 @@ class UserViewSet(viewsets.ModelViewSet):
 	def login(self, request):
 	    if request.method == "POST":
 	        username = request.data.get('username')
-	        password = request.data.get('password')
+	        password = mad5( request.data.get('password') )
 	        user = User.objects.filter(username=username, password=password)
 	        '''
 	        template = loader.get_template('index.html')
@@ -131,6 +137,7 @@ class UserViewSet(viewsets.ModelViewSet):
 	    if not checkPhonenumber(tel):      #手机号位数为11位；开头为1，第二位为3或4或5或8;
 	       return  HttpResponse(errorInfo("电话号码不合法"), content_type="application/json")   
 	    user_serializer = UserSerializer(data = request.data)
+	    password = md5(password)
 	    if user_serializer.is_valid():
 	        thisUser = User(
 	            username = username,
