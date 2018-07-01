@@ -12,7 +12,7 @@ import re,json
 import hashlib
 # Create your views here.
 def checklen(pwd):
-	return len(pwd)>=8
+	return len(pwd)>=6
 
 def checkContainUpper(pwd):
 	pattern = re.compile('[A-Z]+')
@@ -59,7 +59,7 @@ def checkPassword(pwd):
 	numOK=checkContainNum(pwd)
 	#判断是否包含符号
 	symbolOK=checkSymbol(pwd)
-	return (lenOK and upperOK and lowerOK and numOK and symbolOK)
+	return (lenOK and upperOK and lowerOK and numOK and symbolOK )
 
 def checkPhonenumber(phone):
 	phone_pat = re.compile('1[3458]\\d{9}')
@@ -70,9 +70,9 @@ def checkUsername(username):
 	return re.search(username_pat, username)
 
 def md5(arg):#这是加密函数，将传进来的函数加密
-	md5_pwd = hashlib.md5(bytes('admin'))
-	md5_pwd.update(bytes(arg))
-	return md5_pwd.hexdigest()#返回加密的数据
+	arg = str(arg)
+	return hashlib.md5(arg.encode(encoding='UTF-8')).hexdigest()
+	#return md5_pwd.hexdigest()#返回加密的数据
 
 def info(msg):
 	return json.dumps({'info': msg})
@@ -126,8 +126,11 @@ class UserViewSet(viewsets.ModelViewSet):
 	    password2 = request.data.get("password2")
 	    email = request.data.get("email")
 	    tel = request.data.get("tel")
-	    if not User.objects.get(username = username):
-	       return  HttpResponse(errorInfo("用户名已存在"), content_type="application/json")
+	    try:
+	       if not User.objects.get(username = username):
+	           return  HttpResponse(errorInfo("用户名已存在"), content_type="application/json")
+	    except:
+	    	pass
 	    if not checkUsername(username):    #必须以字母开头，长度在10位以内
 	       return  HttpResponse(errorInfo("用户名不合法"), content_type="application/json")
 	    if not checkPassword(password):    #包含大写、小写、符号；长度大于等于8
