@@ -70,10 +70,10 @@ class MeetingViewSet(viewsets.ModelViewSet):
     @action(methods=['GET'],detail=False)
     def allpaper(self, request):
         pk = request.query_params.get('pk', None)
-        thismeeting = Meeting.objects.get(id=pk)
+        thismeeting = Meeting.objects.get(meeting_id=pk)
         papers = thismeeting.paper_set.all()
         template = loader.get_template('judgement.html')
         context = {
             'papers': papers,
-
         }
+        return HttpResponse(template.render(context, request))
