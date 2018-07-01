@@ -14,8 +14,7 @@ class Institution(models.Model):
 		max_length=256,
 		null=True,
 		)
-	establish_date=models.CharField(
-		max_length=128,
+	establish_date=models.DateField(
 		null=True,
 		)
 	place=models.CharField(

@@ -10,11 +10,11 @@ class Meeting(models.Model):
 		null = True,
 		)
 	intro = models.CharField(
-		max_length = 256,
+		max_length = 512,
 		null = True,
 		)
 	essay_request = models.CharField(
-		max_length = 64,
+		max_length = 512,
 		null=True,
 		)
 	ddl_date = models.DateTimeField(	#截稿日期
@@ -44,8 +44,7 @@ class Meeting(models.Model):
 		max_length = 64,
 		null = True,
 		)
-	receipt	= models.CharField(		#pdf或jpg(url)
-		max_length = 64,
+	receipt	= models.FloatField(		#pdf或jpg(url)
 		null = True,
 		)
 	support = models.CharField(		#住宿交通
