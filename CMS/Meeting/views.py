@@ -42,7 +42,11 @@ class MeetingViewSet(viewsets.ModelViewSet):
         thisMeeting=Meeting.objects.get(meeting_id=pk)
         papers=thisMeeting.paper_set.all()
         thisuser=User.objects.get(id=user_id)
-        isfavorite=thisuser.favorite.all().
+        favorite=thisuser.favorite.get(thisMeeting)
+        if favorite is None:
+            isfavorite = False
+        else : 
+            isfavorite =True
         i=0
         paper_list=list()
         serializer = MeetingSerializer(thisMeeting)
