@@ -9,6 +9,9 @@ from .models import Meeting
 from .serializers import MeetingSerializer
 from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.models import User
+from django.http import HttpResponse
+from django.template import loader
+
 
 class MeetingViewSet(viewsets.ModelViewSet):
     queryset = Meeting.objects.all()
@@ -17,18 +20,20 @@ class MeetingViewSet(viewsets.ModelViewSet):
     def create(self, request):
         meeting_serializer=MeetingSerializer(data=request.data)
         if meeting_serializer.is_valid():
-            thisMeeting = Meeting(title =request.data.get("title"),
-                                  intro =request.data.get("intro"),
-                                  essay_request=request.data.get("essay_request"),
-                                  ddl_date=request.data.get("ddl_date"),
-                                  result_notice_date=request.data.get("result_notice_date"),
-                                  regist_attend_date= request.data.get("regist_attend_date"),
-                                  meeting_date=request.data.get("meeting_date"),
-                                  schedule= request.data.get("schedule"),
-                                  )
-            thisMeeting.save()
-            return Response(thisMeeting.meeting_id, status=status.HTTP_201_CREATED)
-        return Response("error: Meeting is not valid",status=status.HTTP_400_BAD_REQUEST)
+            title = request.data.get("title")
+            intro = request.data.get("intro")
+            essay_request = request.data.get("essay_request")
+            ddl_date = request.data.get("ddl_date")
+            result_notice_date = request.data.get("result_notice_date")
+            regist_attend_date = request.data.get("regist_attend_date")
+            meeting_date = request.data.get("meeting_date")
+            meeting_end_date=request.data.get("meeting_end_date")
+            schedule = request.data.get("schedule")
+            if (ddl_date<=result_notice_date) and (result_notice_date<=regist_attend_date) and (regist_attend_date<=meeting_date) and (meeting_date<=meeting_end_date):
+                thisMeeting = Meeting(title,intro ,essay_request,ddl_date,result_notice_date,regist_attend_date, meeting_date,meeting_end_date, schedule, )
+                thisMeeting.save()
+                return Response(thisMeeting.meeting_id, status=status.HTTP_201_CREATED)
+            return Response("error: Meeting is not valid",status=status.HTTP_400_BAD_REQUEST)
 
     @action(methods=['GET'], detail=False)
     def showdetail(self, request):
@@ -47,8 +52,14 @@ class MeetingViewSet(viewsets.ModelViewSet):
             i=i+1
             if i>=10:
                 break
-
+        template = loader.get_template('conference.html')
+        context = {
+            'conference': thisMeeting,
+        }
+        return HttpResponse(template.render(context, request))
         return Response(paper_list,status=status.HTTP_200_OK)
+
+
 
 
 
