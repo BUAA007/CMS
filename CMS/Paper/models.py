@@ -28,7 +28,7 @@ class Paper(models.Model):
 		null = True,
 		)
 	content = models.FileField(
-		upload_to='paper/%Y/%m/%d'
+		upload_to='paper/'
 		)
 	status = models.IntegerField(
 		null = False,
