@@ -77,24 +77,50 @@
 
 
 <!--//header-->
-<form class="flatbox" method="post" action="register">
+<form class="flatbox">
     <div class="gslogen mb-4"><em>CMS</em></div>
     <h1 class="h3 mb-3 font-weight-normal">用户注册</h1>
-    <label class="sr-only" for="inputun" >用户名</label>
-    <input class="form-control"  id="inputun" autofocus="autofocus" required="required" type="text" placeholder="用户名"  name="userName" onfocus="this.value = '';" />
+    <label class="sr-only" for="username" >用户名</label>
+    <input class="form-control"  id="username" autofocus="autofocus" required="required" type="text" placeholder="用户名"  name="username" onfocus="this.value = '';" />
     <p></p>
-    <label class="sr-only" for="inputPassword" name="password1">密码</label>
-    <input class="form-control" name="password1" id="inputPassword" required="required" type="password" placeholder="密码" onfocus="this.value = '';" />
+    <label class="sr-only" for="password">密码</label>
+    <input class="form-control" name="password" id="password" required="required" type="password" placeholder="密码" onfocus="this.value = '';" />
     <p></p>
-    <input class="form-control" name="password2" id="reinputPassword" required="required" type="password" placeholder="重复密码" onfocus="this.value = '';" onkeyup="confirmpw()" />
+    <input class="form-control" name="password2" id="password2" required="required" type="password" placeholder="重复密码" onfocus="this.value = '';" onkeyup="confirmpw()" />
     <p></p>
-    <label class="sr-only" for="inputem">电子邮箱</label>
-    <input class="form-control" name="email" id="inputem" required="required" type="email" placeholder="电子邮箱" onfocus="this.value='';" />
+    <label class="sr-only" for="email">电子邮箱</label>
+    <input class="form-control" name="email" id="email" required="required" type="email" placeholder="电子邮箱" onfocus="this.value='';" />
     <p></p>
-    <label class="sr-only" for="inputpn">手机号</label>
-    <input class="form-control" name="phone" id="inputpn" required="required" type="text" placeholder="手机号" onfocus="this.value='';"/>
-    <button class="btn btn-lg btn-primary btn-block mt-4 mb-2" type="submit">注册</button>
+    <label class="sr-only" for="tel">手机号</label>
+    <input class="form-control" name="tel" id="tel" required="required" type="text" placeholder="手机号" onfocus="this.value='';"/>
+    <button class="btn btn-lg btn-primary btn-block mt-4 mb-2" onclick="up()" type="button">注册</button>
 </form>
+
+<script type="text/javascript">
+     function up(){
+        $.ajax({
+            method : 'POST',
+            url : "/user/register/",
+            data : {
+            'username' : document.getElementById("username").value,
+            'password' : document.getElementById("password").value,
+            'password2' : document.getElementById("password2").value,
+            'email' : document.getElementById("email").value,
+            'tel' : document.getElementById("tel").value,
+            },
+            dataType : 'json',
+            success : function(response) {
+                alert(response['errorInfo']);
+                document.getElementById("username").value = null
+                document.getElementById("password").value = null
+                document.getElementById("password2").value = null
+                document.getElementById("email").value = null
+                document.getElementById("tel").value = null
+            }
+        });
+
+    }
+</script>
 
 
 
