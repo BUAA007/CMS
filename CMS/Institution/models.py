@@ -33,16 +33,7 @@ class Institution(models.Model):
 		max_length=16,
 		null=True,
 		)
-	meetings=models.ForeignKey(
-		'Meeting.Meeting',
-		on_delete=models.CASCADE,
-		default = "",
-		)
-	paper=models.ForeignKey(
-		'Paper.Paper',
-		on_delete=models.CASCADE,
-		default = "",
-		)
+	
 
 class Employee(models.Model):
 	id=models.AutoField(
