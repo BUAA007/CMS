@@ -37,9 +37,12 @@ class MeetingViewSet(viewsets.ModelViewSet):
 
     @action(methods=['GET'], detail=False)
     def showdetail(self, request):
+        user_id=1
         pk = request.query_params.get('pk',None)
         thisMeeting=Meeting.objects.get(meeting_id=pk)
         papers=thisMeeting.paper_set.all()
+        thisuser=User.objects.get(id=user_id)
+        isfavorite=thisuser.favorite.all().
         i=0
         paper_list=list()
         serializer = MeetingSerializer(thisMeeting)
@@ -55,24 +58,26 @@ class MeetingViewSet(viewsets.ModelViewSet):
         template = loader.get_template('conference.html')
         context = {
             'conference': thisMeeting,
+            'isfavorite':isfavorite
         }
         return HttpResponse(template.render(context, request))
 
-
-    def list(self, request):
+    @action(methods=['GET'],detail=False)
+    def osearch(self, request):
         queryset = Meeting.objects.all()
-        word = request.GET.get("search", None)
-        if word is None:
+        word = request.query_params.get('s', None)
+        if word is not None:
             queryset = Meeting.objects.filter(title__contains = word)
         serializer = MeetingSerializer(queryset, many = True)
-        return Response(serializer.data, status = HTTP_200_OK)
+        return Response(serializer.data, status = status.HTTP_200_OK)
 
     @action(methods=['GET'],detail=False)
     def allpaper(self, request):
         pk = request.query_params.get('pk', None)
-        thismeeting = Meeting.objects.get(id=pk)
+        thismeeting = Meeting.objects.get(meeting_id=pk)
         papers = thismeeting.paper_set.all()
         template = loader.get_template('judgement.html')
         context = {
             'papers': papers,
         }
+        return HttpResponse(template.render(context, request))

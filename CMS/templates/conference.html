@@ -52,8 +52,7 @@
                             </div>
                         </div>
                         <div style="display: none">
-                            <label for="meeting_id"></label>
-                            <input name="meeting_id" id="meeting_id" value="1">
+                            <input type="hidden" name="meeting_id" id="meeting_id" value="{{ conference.meeting_id }}">
                         </div>
                     </form>
                 </div>
@@ -140,12 +139,20 @@
                                         投稿
                                     </a>
                                 </div>
-                                <div class="col-3" onclick="fuck()">
+                                {% if isfavorite %}
+                                    <div class="col-3">
+                                    <a href="#">
+                                        <i class="fa text-danger fa-heart"></i>
+                                        已收藏
+                                    </a>
+                                {% else %}
+                                    <div class="col-3" onclick="favorite()">
                                     <a href="#">
                                         <i class="fa fa-heart"></i>
                                         收藏
                                     </a>
                                 </div>
+                                {% endif %}
                                 <div class="col-3" onclick="fuck()">
                                     <a href="#">
                                         <i class="fa fa-phone"></i>
@@ -273,4 +280,20 @@
             }
         }
     </style>
+    <script>
+        function favorite() {
+            var user_id = 1;
+            var meeting_id = {{ conference.meeting_id }};
+            $.ajax({
+                url: '/user/favorite/',
+                type: 'POST',
+                data: {'user_id': user_id, 'meeting_id': meeting_id}, // Request body
+                dataType: 'json',
+                success: function (response) {
+                },
+                error: function (msg) {
+                }
+            });
+        }
+    </script>
 {% endblock %}
