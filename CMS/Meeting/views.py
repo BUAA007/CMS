@@ -58,6 +58,7 @@ class MeetingViewSet(viewsets.ModelViewSet):
         }
         return HttpResponse(template.render(context, request))
 
+
     def list(self, request):
         queryset = Meeting.objects.all()
         word = request.GET.get("search", None)
@@ -65,3 +66,13 @@ class MeetingViewSet(viewsets.ModelViewSet):
             queryset = Meeting.objects.filter(title__contains = word)
         serializer = MeetingSerializer(queryset, many = True)
         return Response(serializer.data, status = HTTP_200_OK)
+
+    @action(methods=['GET'],detail=False)
+    def allpaper(self, request):
+        pk = request.query_params.get('pk', None)
+        thismeeting = Meeting.objects.get(id=pk)
+        papers = thismeeting.paper_set.all()
+        template = loader.get_template('judgement.html')
+        context = {
+            'papers': papers,
+        }
