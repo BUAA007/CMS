@@ -3,13 +3,14 @@ from rest_framework import viewsets, response
 from rest_framework.response import Response
 from rest_framework import status
 from rest_framework.decorators import action
-from django import forms
-from Paper.models import Paper
+from Paper.models import *
+from Paper.serializers import *
 from User.models import *
 from User.serializers import *
 from django.template import loader
 from django.http import HttpResponse
 import re,json
+import collections
 import hashlib
 # Create your views here.
 
@@ -96,7 +97,10 @@ class UserViewSet(viewsets.ModelViewSet):
 	    if request.method == "POST":
 	        username = request.data.get('username')
 	        password = md5( request.data.get('password') )
-	        user = User.objects.filter(username=username, password=password)
+	        try:
+	            user = User.objects.get(username=username, password=password)
+	        except:
+	        	pass
 	        '''
 	        template = loader.get_template('index.html')
 	        context = {
@@ -109,7 +113,10 @@ class UserViewSet(viewsets.ModelViewSet):
 	            request.session['username'] = username
 	            request.session['id'] = user.id
 	            request.session.set_expiry(0)
-	            return render(request,'base.html',status = status.HTTP_201_CREATED)                ## 登录成功就将url重定向到后台的url
+	            template = loader.get_template('login.html')
+	            context = {}
+	            return HttpResponse(template.render(context, request))
+	            #return render(request,'base.html',status = status.HTTP_201_CREATED)                ## 登录成功就将url重定向到后台的url
 	    return HttpResponse(errorInfo('Username/Passwd is wrong'), content_type="application/json")
 
 	@action(methods = ['GET'],detail = False)
@@ -119,7 +126,10 @@ class UserViewSet(viewsets.ModelViewSet):
 	        request.session.flush()                  # 删除django-session表中的对应一行记录
 	    except KeyError:
 	        pass
-	    return render(request,'base.html')             #重定向回主页面
+	    template = loader.get_template('login.html')
+	    context = {}
+	    return HttpResponse(template.render(context, request))
+	    #return render(request,'base.html')             #重定向回主页面
 
 
 	@action(methods = ['POST'],detail = False)
@@ -130,16 +140,16 @@ class UserViewSet(viewsets.ModelViewSet):
 	    email = request.data.get("email")
 	    tel = request.data.get("tel")
 	    try:
-	       if not User.objects.get(username = username):
+	       if User.objects.get(username = username):
 	           return  HttpResponse(errorInfo("用户名已存在"), content_type="application/json")
 	    except:
-	    	pass
+	       pass
 	    if not checkUsername(username):    #必须以字母开头，长度在10位以内
 	       return  HttpResponse(errorInfo("用户名不合法"), content_type="application/json")
 	    if not checkPassword(password):    #包含大写、小写、符号；长度大于等于8
 	       return  HttpResponse(errorInfo("密码不合法"), content_type="application/json")
 	    if not password == password2:
-	       return  HttpResponse(errorInfo("确认密码不合法"), content_type="application/json")
+	       return  HttpResponse(errorInfo("确认密码不一致"), content_type="application/json")
 	    if not checkPhonenumber(tel):      #手机号位数为11位；开头为1，第二位为3或4或5或8;
 	       return  HttpResponse(errorInfo("电话号码不合法"), content_type="application/json")   
 	    user_serializer = UserSerializer(data = request.data)
@@ -151,9 +161,26 @@ class UserViewSet(viewsets.ModelViewSet):
 	            email = email,
 	            tel = tel,
 	            ).save()
-	        return render(request,'login.html',status = status.HTTP_201_CREATED)
-	    return HttpResponse(errorInfo("未知原因失败，请稍后再试"), content_type="application/json")
+	        template = loader.get_template('login.html')
+	        context = {}
+	        return HttpResponse(template.render(context, request))
+	        #return render(request,'login.html',status = status.HTTP_201_CREATED)
+	    return HttpResponse(errorInfo("未知原因失败，请稍后再试"), content_type="application/json") 
 
+	@action(methods = ['GET'],detail = False)
+	def info(self, request):
+		try:
+			pk = request.GET.get("username")
+			thisuser = User.objects.get(username = pk)
+			result = list()
+			result.append(UserSerializer(thisuser).data)
+			papers = thisuser.Paper_set.all()
+			for paper in papers:
+				result.append(PaperSerializer(paper).data)
+		except:
+			a = OrderedDict({"errorInfo":"服务器出错，请稍后重试。"})
+			return Response(a, status = status.HTTP_400_BAD_REQUEST)
+		return Response(result, status = status.HTTP_200_OK)
 
 	@action(methods=['POST'], detail=False)
 	def registermeeting(self, request):
