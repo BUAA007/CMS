@@ -5,6 +5,10 @@ from rest_framework.response import Response
 from rest_framework import status
 from django.core import serializers
 from django.core.exceptions import ObjectDoesNotExist
+
+from .models import Institution,Employee
+from .serializers import InstitutionSerializer,EmployeeSerializer
+
 from Institution.models import Institution,Employee
 from Institution.serializers import InstitutionSerializer,EmployeeSerializer
 from django.template import loader
@@ -97,8 +101,11 @@ class InstitutionViewSet(viewsets.ModelViewSet):
 	    password2 = request.data.get("password2")
 	    email = request.data.get("email")
 	    tel = request.data.get("tel")
-	    if not Institution.objects.get( name = name):
-	       return  HttpResponse(errorInfo("该机构已存在"), content_type="application/json")
+	    try:
+	        if Institution.objects.get( name = name):
+	           return  HttpResponse(errorInfo("该机构已存在"), content_type="application/json")
+	    except:
+	        pass
 	    if not Employee.objects.get(username = username):
 	       return  HttpResponse(errorInfo("用户名已存在"), content_type="application/json")
 	    if not checkUsername(username):    #必须以字母开头，长度在10位以内
@@ -130,7 +137,10 @@ class InstitutionViewSet(viewsets.ModelViewSet):
 	                )
 	            thisEmployee.institution.add(thisInstitution)
 	            thisEmployee.save()
-	            return render(request,'login.html',status = status.HTTP_201_CREATED)
+	            template = loader.get_template('login.html')
+	            context = {}
+	            return HttpResponse(template.render(context, request))
+	            #return render(request,'login.html',status = status.HTTP_201_CREATED)
 	        return Response(employee_serializer.errors, status = status.HTTP_400_BAD_REQUEST)
 	    return Response(institution_serializer.errors, status = status.HTTP_400_BAD_REQUEST)
 
@@ -148,8 +158,12 @@ class EmployeeViewSet(viewsets.ModelViewSet):
 	        if employee:
 	            request.session['is_login'] = 'true'         #定义session信息
 	            request.session['username'] = username
+	            request.session['id'] = employee.id
 	            request.session.set_expiry(0)
-	            return render(request,'base.html',status = status.HTTP_201_CREATED)                ## 登录成功就将url重定向到后台的url
+	            template = loader.get_template('login.html')
+	            context = {}
+	            return HttpResponse(template.render(context, request))
+	            #return render(request,'base.html',status = status.HTTP_201_CREATED)                ## 登录成功就将url重定向到后台的url
 	    return HttpResponse(errorInfo('用户名或密码错误'), content_type="application/json")
 
 	@action(methods = ['GET'],detail = False)
@@ -177,7 +191,7 @@ class EmployeeViewSet(viewsets.ModelViewSet):
 	    if not checkPassword(password):    #包含大写、小写、符号；长度大于等于8
 	       return  HttpResponse(errorInfo("密码不合法"), content_type="application/json")
 	    if not password == password2:
-	       return  HttpResponse(errorInfo("确认密码不合法"), content_type="application/json")
+	       return  HttpResponse(errorInfo("确认密码不一致"), content_type="application/json")
 	    if not checkPhonenumber(tel):      #手机号位数为11位；开头为1，第二位为3或4或5或8;
 	       return  HttpResponse(errorInfo("电话号码不合法"), content_type="application/json")   
 	    employee_serializer = EmployeeSerializer(data = request.data)
@@ -192,5 +206,8 @@ class EmployeeViewSet(viewsets.ModelViewSet):
 	        thisEmployee = Employee.objects.get(username=request.session['username'])
 	        otherEmployee.institution = thisEmployee.institution
 	        otherEmployee.save()
-	        return render(request,'login.html',status = status.HTTP_201_CREATED)
+	        template = loader.get_template('login.html')
+	        context = {}
+	        return HttpResponse(template.render(context, request))
+	        #return render(request,'login.html',status = status.HTTP_201_CREATED)
 	    return  HttpResponse(errorInfo("未知原因失败，请稍后再试"), content_type="application/json") 
