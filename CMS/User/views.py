@@ -105,6 +105,7 @@ class UserViewSet(viewsets.ModelViewSet):
 	        if user:
 	            request.session['is_login'] = 'true'         #定义session信息
 	            request.session['username'] = username
+	            request.session['id'] = user.id
 	            request.session.set_expiry(0)
 	            return render(request,'base.html',status = status.HTTP_201_CREATED)                ## 登录成功就将url重定向到后台的url
 	    return HttpResponse(errorInfo('Username/Passwd is wrong'), content_type="application/json")
