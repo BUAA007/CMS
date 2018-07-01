@@ -4,11 +4,14 @@ from rest_framework.response import Response
 from rest_framework import status
 from rest_framework.decorators import action
 
+from Paper.models import *
+from Paper.serializers import *
 from User.models import *
 from User.serializers import *
 from django.template import loader
 from django.http import HttpResponse
 import re,json
+import collections
 # Create your views here.
 def checklen(pwd):
 	return len(pwd)>=8
@@ -141,3 +144,17 @@ class UserViewSet(viewsets.ModelViewSet):
 	        return render(request,'login.html',status = status.HTTP_201_CREATED)
 	    return HttpResponse(errorInfo("未知原因失败，请稍后再试"), content_type="application/json") 
 
+	@action(methods = ['GET'],detail = False)
+	def info(self, request):
+		try:
+			pk = request.GET.get("username")
+			thisuser = User.objects.get(username = pk)
+			result = list()
+			result.append(UserSerializer(thisuser).data)
+			papers = thisuser.Paper_set.all()
+			for paper in papers:
+				result.append(PaperSerializer(paper).data)
+		except:
+			a = OrderedDict({"errorInfo":"服务器出错，请稍后重试。"})
+			return Response(a, status = status.HTTP_400_BAD_REQUEST)
+		return Response(result, status = status.HTTP_200_OK)
