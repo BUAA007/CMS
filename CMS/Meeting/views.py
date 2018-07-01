@@ -5,8 +5,8 @@ from rest_framework.response import Response
 from rest_framework import status
 from django.core import serializers
 from django.core.exceptions import ObjectDoesNotExist
-from .models import Meeting
-from .serializers import MeetingSerializer
+from Meeting.models import Meeting
+from Meeting.serializers import MeetingSerializer
 from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.models import User
 from django.http import HttpResponse
@@ -58,9 +58,10 @@ class MeetingViewSet(viewsets.ModelViewSet):
         }
         return HttpResponse(template.render(context, request))
 
-
-
-
-
-
-
+    def list(self, request):
+        queryset = Meeting.objects.all()
+        word = request.GET.get("search", None)
+        if word is None:
+            queryset = Meeting.objects.filter(title__contains = word)
+        serializer = MeetingSerializer(queryset, many = True)
+        return Response(serializer.data, status = HTTP_200_OK)
