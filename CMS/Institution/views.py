@@ -5,8 +5,15 @@ from rest_framework.response import Response
 from rest_framework import status
 from django.core import serializers
 from django.core.exceptions import ObjectDoesNotExist
+
 from .models import Institution,Employee
 from .serializers import InstitutionSerializer,EmployeeSerializer
+
+from Institution.models import Institution,Employee
+from Institution.serializer import InstitutionSerializer,EmployeeSerializer
+rom django.template import loader
+from django.http import HttpResponse
+import re,json
 
 # Create your views here.
 def checklen(pwd):
