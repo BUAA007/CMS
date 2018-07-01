@@ -111,7 +111,7 @@ class InstitutionViewSet(viewsets.ModelViewSet):
 	    if not checkPassword(password):    #包含大写、小写、符号；长度大于等于8
 	        return  HttpResponse(errorInfo("密码不合法"), content_type="application/json")
 	    if not password == password2:
-	        return  HttpResponse(errorInfo("确认密码不合法"), content_type="application/json")
+	        return  HttpResponse(errorInfo("两次密码不合法"), content_type="application/json")
 	    if  not checkPhonenumber(tel):      #手机号位数为11位；开头为1，第二位为3或4或5或8;
 	        return  HttpResponse(errorInfo("电话号码不合法"), content_type="application/json")   
 	    institution_serializer = InstitutionSerializer(data = request.data)
@@ -136,12 +136,10 @@ class InstitutionViewSet(viewsets.ModelViewSet):
 	                institution = thisInstitution,
 	                )
 	            thisEmployee.save()
-	            template = loader.get_template('login.html')
-	            context = {}
-	            return HttpResponse(template.render(context, request))
+	            return HttpResponse(info("success"), content_type="application/json")
 	        #return render(request,'login.html',status = status.HTTP_201_CREATED)
-	        return Response(employee_serializer.errors, status = status.HTTP_400_BAD_REQUEST)
-	    return Response("未知原因失败，请稍后再试", status = status.HTTP_400_BAD_REQUEST)
+	        
+	    return HttpResponse(errorInfo("未知原因失败，请稍后再试"), content_type="application/json") 
 
 class EmployeeViewSet(viewsets.ModelViewSet):
 	queryset = Employee.objects.all()
@@ -155,16 +153,14 @@ class EmployeeViewSet(viewsets.ModelViewSet):
 	        password = md5(password)
 	        try:
 	            employee = Employee.objects.get(username=username, password=password)
+	            if employee:
+	                request.session['is_login'] = 'true'         #定义session信息
+	                request.session['username'] = username
+	                request.session['id'] = employee.id
+	                request.session.set_expiry(0)
+	            return HttpResponse(info("success"), content_type="application/json")
 	        except:
 	            pass
-	        if employee:
-	            request.session['is_login'] = 'true'         #定义session信息
-	            request.session['username'] = username
-	            request.session['id'] = employee.id
-	            request.session.set_expiry(0)
-	            template = loader.get_template('login.html')
-	            context = {}
-	            return HttpResponse(template.render(context, request))
 	            #return render(request,'base.html',status = status.HTTP_201_CREATED)                ## 登录成功就将url重定向到后台的url
 	    return HttpResponse(errorInfo('用户名或密码错误'), content_type="application/json")
 
@@ -189,8 +185,11 @@ class EmployeeViewSet(viewsets.ModelViewSet):
 	    password2 = request.data.get("password2")
 	    email = request.data.get("email")
 	    tel = request.data.get("tel")
-	    if not Employee.objects.get(username = username):
-	       return  HttpResponse(errorInfo("用户名已存在"), content_type="application/json")
+	    try:
+	       if not Employee.objects.get(username = username):
+	           return  HttpResponse(errorInfo("用户名已存在"), content_type="application/json")
+	    except:
+	        pass
 	    if not checkUsername(username):    #必须以字母开头，长度在10位以内
 	       return  HttpResponse(errorInfo("用户名不合法"), content_type="application/json")
 	    if not checkPassword(password):    #包含大写、小写、符号；长度大于等于8
@@ -201,15 +200,18 @@ class EmployeeViewSet(viewsets.ModelViewSet):
 	       return  HttpResponse(errorInfo("电话号码不合法"), content_type="application/json")   
 	    employee_serializer = EmployeeSerializer(data = request.data)
 	    password = md5(password)
+	    try:
+	        thisEmployee = Employee.objects.get(username=request.session['username'])
+	    except:
+	        pass
 	    if employee_serializer.is_valid():
 	        otherEmployee = Employee(
 	            username = username,
 	            password = password,
 	            email = email,
 	            tel = tel,
+	            institution = thisInstitution.institution,
 	            )
-	        thisEmployee = Employee.objects.get(username=request.session['username'])
-	        otherEmployee.institution = thisEmployee.institution
 	        otherEmployee.save()
 	        template = loader.get_template('login.html')
 	        context = {}

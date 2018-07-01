@@ -90,7 +90,7 @@
             </div>
             <button class="btn btn-lg btn-primary btn-block mt-4 mb-2" type="button" onclick="up()" >登录</button>
             <a href="#">忘记密码</a>
-            <div class="lbot mb-2 mt-2"><a href="/registerGet">单位用户注册</a>&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp<a href="/registerGet">用户注册</a></div>
+            <div class="lbot mb-2 mt-2"><a href="/institution_register">单位用户注册</a>&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp<a href="/user_register">用户注册</a></div>
         </form>
 
     <script >
@@ -113,22 +113,26 @@
 	    }
         var url = '/user/login/';
         if(type == 0) {
-            url = '/institution/institution/login/';
+            url = '/institution/employee/login/';
         }
         var data = {
             "username" : document.getElementById("username").value,
             "password" : document.getElementById("password").value
         }
-        alert(data.password)
         $.ajax({
             url : url,
             type : 'POST',
             data : data,
             dataType : 'json',
             success : function(response) {
-                alert(response['errorInfo']);
-                document.getElementById("username").value = null;
-                document.getElementById("password").value = null;
+                if(response['errorInfo'] != null){
+                    alert(response['errorInfo']);
+                    document.getElementById("username").value = null;
+                    document.getElementById("password").value = null;
+                }else{
+                    window.location.href='/base/';
+                }
+
             }
         });
 

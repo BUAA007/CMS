@@ -105,9 +105,9 @@ class UserViewSet(viewsets.ModelViewSet):
 	                request.session['username'] = username
 	                request.session['id'] = user.id
 	                request.session.set_expiry(0)
-	                template = loader.get_template('login.html')
-	                context = {}
-	                return HttpResponse(template.render(context, request))
+	                # template = loader.get_template('base.html')
+	                # context = {}
+	                return HttpResponse(info('success'), content_type="application/json")
 	        except:
 	            pass
 	            #return render(request,'base.html',status = status.HTTP_201_CREATED)                ## 登录成功就将url重定向到后台的url
@@ -133,17 +133,12 @@ class UserViewSet(viewsets.ModelViewSet):
 	    password2 = request.data.get("password2")
 	    email = request.data.get("email")
 	    tel = request.data.get("tel")
-	    try:
-	       if User.objects.get(username = username):
-	           return  HttpResponse(errorInfo("用户名已存在"), content_type="application/json")
-	    except:
-	       pass
 	    if not checkUsername(username):    #必须以字母开头，长度在10位以内
 	       return  HttpResponse(errorInfo("用户名不合法"), content_type="application/json")
 	    if not checkPassword(password):    #包含大写、小写、符号；长度大于等于8
 	       return  HttpResponse(errorInfo("密码不合法"), content_type="application/json")
 	    if not password == password2:
-	       return  HttpResponse(errorInfo("确认密码不一致"), content_type="application/json")
+	       return  HttpResponse(errorInfo("两次密码不一致"), content_type="application/json")
 	    if not checkPhonenumber(tel):      #手机号位数为11位；开头为1，第二位为3或4或5或8;
 	       return  HttpResponse(errorInfo("电话号码不合法"), content_type="application/json")   
 	    user_serializer = UserSerializer(data = request.data)
@@ -154,10 +149,8 @@ class UserViewSet(viewsets.ModelViewSet):
 	            password = password,
 	            email = email,
 	            tel = tel,
-	            ).save()
-	        template = loader.get_template('login.html')
-	        context = {}
-	        return HttpResponse(template.render(context, request))
+	            ).save()   
+	        return HttpResponse(info("success"), content_type="application/json")
 	        #return render(request,'login.html',status = status.HTTP_201_CREATED)
 	    return HttpResponse(errorInfo("未知原因失败，请稍后再试"), content_type="application/json") 
 
@@ -216,7 +209,7 @@ class UserViewSet(viewsets.ModelViewSet):
 		thisuser.favorite.add(thismeeting)
 		return Response("info: favorite succsss", status=status.HTTP_200_OK)
 
-	@action(methods=['GET'])
+	@action(methods=['GET'], detail = False)
 	def allpaper(self,request):
 		pk = request.query_params.get('pk', None)
 		thisuser = User.objects.get(id=pk)

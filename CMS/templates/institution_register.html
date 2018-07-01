@@ -159,7 +159,7 @@ body {
             <input type="text" class="form-control" required="required" name="tel" id="tel"/>
         </div>
     </div>
-    <button class="btn btn-lg btn-primary btn-block mt-4 mb-2" type="button">注册</button>
+    <button class="btn btn-lg btn-primary btn-block mt-4 mb-2" type="button" onclick="up()">注册</button>
 </form>
 <script type="text/javascript">
      $('#establish_date').datetimepicker({
@@ -180,22 +180,25 @@ body {
             "tel" : document.getElementById("tel").value
         }
         $.ajax({
-            url : '/institution/institution/register',
+            url : '/institution/institution/register/',
             type : 'POST',
             data : data,
-            contentType : 'application/json; charset=utf-8',
             dataType : 'json',
             success : function(response) {
-                alert(response['errorInfo']);
-                document.getElementById("name").value = null
-                document.getElementById("corporate_id").value = null
-                document.getElementById("place").value = null
-                document.getElementById("legal_person").value = null
-                document.getElementById("username").value = null
-                document.getElementById("password").value = null
-                document.getElementById("password2").value = null
-                document.getElementById("email").value = null
-                document.getElementById("tel").value = null
+                if(response['errorInfo'] != null){
+                    alert(response['errorInfo']);
+                    document.getElementById("name").value = null
+                    document.getElementById("corporate_id").value = null
+                    document.getElementById("place").value = null
+                    document.getElementById("legal_person").value = null
+                    document.getElementById("username").value = null
+                    document.getElementById("password").value = null
+                    document.getElementById("password2").value = null
+                    document.getElementById("email").value = null
+                    document.getElementById("tel").value = null
+                }else{
+                    window.location.href='/login/';
+                }
             }
         });
 
