@@ -67,7 +67,7 @@ class MeetingViewSet(viewsets.ModelViewSet):
         context = {
             'papers': papers,
         }
-        
+
 
 
 
