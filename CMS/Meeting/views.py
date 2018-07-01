@@ -37,9 +37,12 @@ class MeetingViewSet(viewsets.ModelViewSet):
 
     @action(methods=['GET'], detail=False)
     def showdetail(self, request):
+        user_id=1
         pk = request.query_params.get('pk',None)
         thisMeeting=Meeting.objects.get(meeting_id=pk)
         papers=thisMeeting.paper_set.all()
+        thisuser=User.objects.get(id=user_id)
+        isfavorite=thisuser.favorite.all().
         i=0
         paper_list=list()
         serializer = MeetingSerializer(thisMeeting)
@@ -55,6 +58,7 @@ class MeetingViewSet(viewsets.ModelViewSet):
         template = loader.get_template('conference.html')
         context = {
             'conference': thisMeeting,
+            'isfavorite':isfavorite
         }
         return HttpResponse(template.render(context, request))
 
@@ -70,10 +74,10 @@ class MeetingViewSet(viewsets.ModelViewSet):
     @action(methods=['GET'],detail=False)
     def allpaper(self, request):
         pk = request.query_params.get('pk', None)
-        thismeeting = Meeting.objects.get(id=pk)
+        thismeeting = Meeting.objects.get(meeting_id=pk)
         papers = thismeeting.paper_set.all()
         template = loader.get_template('judgement.html')
         context = {
             'papers': papers,
-
         }
+        return HttpResponse(template.render(context, request))
