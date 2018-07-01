@@ -3,6 +3,6 @@ from django.conf.urls import url, include
 from .views import InstitutionViewSet,EmployeeViewSet
 
 router = routers.DefaultRouter()
-router.register('Institution', InstitutionViewSet)
-router.register('Employee', EmployeeViewSet)
+router.register('institution', InstitutionViewSet)
+router.register('employee', EmployeeViewSet)
 urlpatterns = router.urls 

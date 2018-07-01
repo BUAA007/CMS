@@ -10,11 +10,11 @@ from .models import Institution,Employee
 from .serializers import InstitutionSerializer,EmployeeSerializer
 
 from Institution.models import Institution,Employee
-from Institution.serializer import InstitutionSerializer,EmployeeSerializer
-rom django.template import loader
+from Institution.serializers import InstitutionSerializer,EmployeeSerializer
+from django.template import loader
 from django.http import HttpResponse
 import re,json
-
+import hashlib
 # Create your views here.
 def checklen(pwd):
 	return len(pwd)>=8
@@ -80,6 +80,11 @@ def info(msg):
 def errorInfo(msg):
 	return json.dumps({'errorInfo': msg})
 
+def md5(arg):#这是加密函数，将传进来的函数加密
+	md5_pwd = hashlib.md5(bytes('admin'))
+	md5_pwd.update(bytes(arg))
+	return md5_pwd.hexdigest()#返回加密的数据
+
 class InstitutionViewSet(viewsets.ModelViewSet):
 	queryset = Institution.objects.all()
 	serializer_class = InstitutionSerializer
@@ -111,6 +116,7 @@ class InstitutionViewSet(viewsets.ModelViewSet):
 	       return  HttpResponse(errorInfo("电话号码不合法"), content_type="application/json")   
 	    institution_serializer = InstitutionSerializer(data = request.data)
 	    employee_serializer = EmployeeSerializer(data = request.data)
+	    password = md5(password)
 	    if institution_serializer.is_valid():
 	        if employee_serializer.is_valid():
 	            thisInstitution = Institution(
@@ -142,6 +148,7 @@ class EmployeeViewSet(viewsets.ModelViewSet):
 	    if request.method == "POST":
 	        username = request.data.get('username')
 	        password = request.data.get('password')
+	        password = md5(password)
 	        employee = Employee.objects.filter(username=username, password=password)
 	        if employee:
 	            request.session['is_login'] = 'true'         #定义session信息
@@ -179,6 +186,7 @@ class EmployeeViewSet(viewsets.ModelViewSet):
 	    if not checkPhonenumber(tel):      #手机号位数为11位；开头为1，第二位为3或4或5或8;
 	       return  HttpResponse(errorInfo("电话号码不合法"), content_type="application/json")   
 	    employee_serializer = EmployeeSerializer(data = request.data)
+	    password = md5(password)
 	    if employee_serializer.is_valid():
 	        otherEmployee = Employee(
 	            username = username,
