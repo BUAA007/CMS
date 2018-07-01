@@ -111,9 +111,9 @@
 			    type = i
 		    }
 	    }
-        var url = '/user/login';
+        var url = '/user/login/';
         if(type == 0) {
-            url = '/institution/institution/login';
+            url = '/institution/institution/login/';
         }
         var data = {
             "username" : document.getElementById("username").value,
@@ -124,7 +124,6 @@
             url : url,
             type : 'POST',
             data : data,
-            contentType : 'application/json; charset=utf-8',
             dataType : 'json',
             success : function(response) {
                 alert(response['errorInfo']);
