@@ -3,7 +3,7 @@ from rest_framework import viewsets, response
 from rest_framework.response import Response
 from rest_framework import status
 from rest_framework.decorators import action
-
+from django import forms
 from Paper.models import Paper
 from User.models import *
 from User.serializers import *
@@ -12,6 +12,7 @@ from django.http import HttpResponse
 import re,json
 import hashlib
 # Create your views here.
+
 def checklen(pwd):
 	return len(pwd)>=6
 
@@ -173,8 +174,9 @@ class UserViewSet(viewsets.ModelViewSet):
 			title=request.data.get("title"),
 			abstract=request.data.get("abstract"),
 			keyword=request.data.get("keyword"),
-			content=request.data.get("content"),
-			status="未审核",
+			content=request.FILES['content'],
+			#content=request.data.get("content"),
+			status=-1,
 			owner=thisuser,
 		)
 		meeting_id=request.data.get("meeting_id")
