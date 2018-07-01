@@ -6,8 +6,8 @@ from rest_framework import status
 from django.core import serializers
 from django.core.exceptions import ObjectDoesNotExist
 from Institution.models import Institution,Employee
-from Institution.serializer import InstitutionSerializer,EmployeeSerializer
-rom django.template import loader
+from Institution.serializers import InstitutionSerializer,EmployeeSerializer
+from django.template import loader
 from django.http import HttpResponse
 import re,json
 # Create your views here.
