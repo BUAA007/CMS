@@ -187,6 +187,10 @@ class UserViewSet(viewsets.ModelViewSet):
         meeting_id = request.data.get("meeting_id")
         user_id = request.data.get("user_id")
         paper_id = request.data.get("paper_id")
+        people_name=request.data.get("people_name")
+        people_sex=request.data.get("people_sex")
+        isbook=request.data.get("isbook")
+        #缴费凭证pdf或者照片
         thispaper = Paper.objects.get(id=paper_id)
         print(111)
         if thispaper.status == 1:
@@ -198,8 +202,11 @@ class UserViewSet(viewsets.ModelViewSet):
 
     @action(methods=['POST'], detail=False)
     def contribute(self, request):
-        user_id = request.data.get("user_id")
+        #user_id = request.data.get("user_id")
+        user_id=1
         thisuser = User.objects.get(id=user_id)
+        meeting_id=request.data.get("meeting_id")
+        thismeeting=Meeting.objects.get(meeting_id=meeting_id)
         thispaper= Paper(author_1=request.data.get("author_1"),
             author_2=request.data.get("author_2"),
             author_3=request.data.get("author_3"),
@@ -210,9 +217,8 @@ class UserViewSet(viewsets.ModelViewSet):
             #content=request.data.get("content"),
             status=-1,
             owner=thisuser,
+            meeting=thismeeting,
         )
-        meeting_id=request.data.get("meeting_id")
-        thismeeting=Meeting.objects.get(meeting_id=meeting_id)
         thispaper.save()
         thisuser.participate.add(thismeeting)
         return Response("info: contribute succsss", status=status.HTTP_200_OK)
@@ -237,3 +243,4 @@ class UserViewSet(viewsets.ModelViewSet):
             'papers': papers,
         }
         return HttpResponse(template.render(context, request))
+

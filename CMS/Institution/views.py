@@ -125,6 +125,7 @@ class InstitutionViewSet(viewsets.ModelViewSet):
 	                place = place,
 	                legal_person = legal_person,
 	                establish_date = establish_date,
+	                status="0",
 	                type = type,
 	                )
 	            thisInstitution.save()
