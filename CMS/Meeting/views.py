@@ -8,10 +8,10 @@ from django.core.exceptions import ObjectDoesNotExist
 from Meeting.models import Meeting
 from Meeting.serializers import MeetingSerializer
 from django.contrib.auth import authenticate, login, logout
-from django.contrib.auth.models import User
+
 from django.http import HttpResponse
 from django.template import loader
-
+from User.models import * 
 
 class MeetingViewSet(viewsets.ModelViewSet):
     queryset = Meeting.objects.all()
@@ -37,13 +37,15 @@ class MeetingViewSet(viewsets.ModelViewSet):
 
     @action(methods=['GET'], detail=False)
     def showdetail(self, request):
-        user_id=1
+        user_id=2
+        #user_id = request.session['id']
         pk = request.query_params.get('pk',None)
         thisMeeting=Meeting.objects.get(meeting_id=pk)
         papers=thisMeeting.paper_set.all()
         thisuser=User.objects.get(id=user_id)
-        favorite=thisuser.favorite.get(thisMeeting)
-        if favorite is None:
+        try:
+            favorite=thisuser.favorite.get(meeting_id=thisMeeting.meeting_id)
+        except:
             isfavorite = False
         else :
             isfavorite =True
