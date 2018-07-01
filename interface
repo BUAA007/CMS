@@ -1,5 +1,52 @@
-http://127.0.0.1:8000/meet/Meeting/2/   #根据id查会议详细信息
+﻿
+http://127.0.0.1:8000/meeting/   #发布会议 POST
 {
+<<<<<<< HEAD
+Title  #标题  
+Intro  # 简介
+Essay request #需要的论文
+Ddl date #截稿日期（datetimefiled ）
+ 年 /月/日 --:--
+Result notice date （datetimefiled ）
+ 年 /月/日 --:--
+Regist attend date （datetimefiled ）
+ 年 /月/日 --:--
+Meeting date （datetimefiled ）
+ 年 /月/日 --:--
+Schedule #日程安排
+Organization #发布组织
+Template #选择模板
+Receipt #收据的pdf或图片文件的uri
+Support #住宿交通
+About us #关于我们
+}
+
+127.0.0.1:8000/meeting/showdetail/?pk=1       #GET方法放回会议详细信息和前十个paper的title，第一作者名字
+{
+        "meeting_id": 1,
+        "title": "sfotware",
+        "intro": "software",
+        "essay_request": "software",
+        "ddl_date": "2018-02-01T00:00:00Z",
+        "result_notice_date": "2018-01-01T00:00:00Z",
+        "regist_attend_date": "2018-01-01T00:00:00Z",
+        "meeting_date": "2018-01-01T00:00:00Z",
+        "schedule": "none",
+        "organization": "buaa",
+        "template": "1",
+        "receipt": "none",
+        "support": "none",
+        "about_us": "none"
+    },
+    {
+        "title": "sfotware",
+        "author": "hlz"
+    },
+    {
+        "title": "sfotware",
+        "author": "hlz"
+    }
+=======
     "meeting_id": 2,
     "title": "meeting2",
     "intro": "",
@@ -14,4 +61,16 @@ http://127.0.0.1:8000/meet/Meeting/2/   #根据id查会议详细信息
     "receipt": "",
     "support": "",
     "about_us": ""
+}
+
+http://192.144.149.197/user/1/ #根据id查用户信息
+{
+    "id": 1,
+    "username": "user",
+    "password": "7e8d6b2fe3006ed9d6a7e374f1853fb3",
+    "email": "Pass@123.com",
+    "tel": "13888634889",
+    "favorite": [],
+    "participate": []
+>>>>>>> 2faab4e7067b4734a60f520fe4b306db7c8b812b
 }

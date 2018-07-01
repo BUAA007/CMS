@@ -10,24 +10,27 @@ class Meeting(models.Model):
 		null = True,
 		)
 	intro = models.CharField(
-		max_length = 256,
+		max_length = 512,
 		null = True,
 		)
 	essay_request = models.CharField(
-		max_length = 64,
+		max_length = 512,
 		null=True,
 		)
 	ddl_date = models.DateTimeField(	#截稿日期
-
+		null=True,
 		)
 	result_notice_date = models.DateTimeField(	#录用通知日期
-
+		null=True,
 		)
 	regist_attend_date = models.DateTimeField(	#用户注册参加会议截止日期
-
+		null=True,
 		)
 	meeting_date = models.DateTimeField(	#会议开始日期
-
+		null=True,
+		)
+	meeting_end_date = models.DateTimeField(	#会议开始日期
+		null=True,
 		)
 	schedule = models.CharField(
 		max_length = 128,
@@ -41,8 +44,7 @@ class Meeting(models.Model):
 		max_length = 64,
 		null = True,
 		)
-	receipt	= models.CharField(		#pdf或jpg(url)
-		max_length = 64,
+	receipt	= models.FloatField(		#pdf或jpg(url)
 		null = True,
 		)
 	support = models.CharField(		#住宿交通

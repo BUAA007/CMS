@@ -59,15 +59,15 @@
     </head>
 
     <body background="{% static 'images/gxm.jpg' %}">
-        <form class="flatbox"  method="post" action="/login">
+        <form class="flatbox">
             <div class="gslogen mb-4"><em>CMS</em></div>
             <h1 class="h3 mb-3 font-weight-normal">登录</h1>
-            <label class="sr-only" for="inputun">用户名</label>
-            <input class="form-control" name="userName" id="inputun" autofocus="autofocus" required="required" type="text" placeholder="用户名" />
+            <label class="sr-only" for="username">用户名</label>
+            <input class="form-control" id="username" autofocus="autofocus" required="required" type="text" placeholder="用户名" />
             <p></p>
             <div class="input-group" id="main">
                 <!--<label class="sr-only" for="inputPassword">密码</label>-->
-                <input class="form-control" name="password"  required="required" type="password" placeholder="密码" v-model="password" v-show="!showPass"/>
+                <input class="form-control" id="password"  required="required" type="password" placeholder="密码" v-model="password" v-show="!showPass"/>
                 <input class="form-control" required="required" type="text" v-model="password" v-show="showPass"/>
                 <button type="button" @click="showPass = !showPass" class="btn btn-light">
                     <i v-show="!showPass" class="fa fa-eye-slash"></i>
@@ -78,22 +78,22 @@
             <p></p>
             <div class="form-group" style="color:#111111">
                 <label class="radio-inline">
-                    <input name="user_type" id="unit_user" type="radio">
+                    <input name="user_type" id="unit_user" type="radio" value="0" checked="true">
                     单位用户
                 </label>
                 &nbsp&nbsp&nbsp&nbsp&nbsp
                 <label class="radio-inline">
-                    <input name="user_type" id="user"  type="radio">
+                    <input name="user_type" id="user"  type="radio" value="1">
                     个体用户
                 </label>
 
             </div>
-            <button class="btn btn-lg btn-primary btn-block mt-4 mb-2" type="submit">登录</button>
+            <button class="btn btn-lg btn-primary btn-block mt-4 mb-2" type="button" onclick="up()" >登录</button>
             <a href="#">忘记密码</a>
             <div class="lbot mb-2 mt-2"><a href="/registerGet">单位用户注册</a>&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp<a href="/registerGet">用户注册</a></div>
         </form>
 
-    <script>
+    <script >
     new Vue({
         el:"#main",
         data:{
@@ -102,7 +102,38 @@
         methods:{
         }
     });
-</script>
+
+    function up(){
+        var type
+        var radio = document.getElementsByName("user_type");
+	    for (var i=0; i<radio.length; i++) {
+		    if (radio[i].checked) {
+			    type = i
+		    }
+	    }
+        var url = '/user/login/';
+        if(type == 0) {
+            url = '/institution/institution/login/';
+        }
+        var data = {
+            "username" : document.getElementById("username").value,
+            "password" : document.getElementById("password").value
+        }
+        alert(data.password)
+        $.ajax({
+            url : url,
+            type : 'POST',
+            data : data,
+            dataType : 'json',
+            success : function(response) {
+                alert(response['errorInfo']);
+                document.getElementById("username").value = null;
+                document.getElementById("password").value = null;
+            }
+        });
+
+    }
+    </script>
     </body>
 
 </html>
