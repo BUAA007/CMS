@@ -100,23 +100,16 @@ class UserViewSet(viewsets.ModelViewSet):
 	        password = md5( request.data.get('password') )
 	        try:
 	            user = User.objects.get(username=username, password=password)
+	            if user:
+	                request.session['is_login'] = 'true'         #定义session信息
+	                request.session['username'] = username
+	                request.session['id'] = user.id
+	                request.session.set_expiry(0)
+	                template = loader.get_template('login.html')
+	                context = {}
+	                return HttpResponse(template.render(context, request))
 	        except:
-	        	pass
-	        '''
-	        template = loader.get_template('index.html')
-	        context = {
-	            'latest_question_list': latest_question_list,
-	        }
-	        return HttpResponse(template.render(context, request))
-	        '''
-	        if user:
-	            request.session['is_login'] = 'true'         #定义session信息
-	            request.session['username'] = username
-	            request.session['id'] = user.id
-	            request.session.set_expiry(0)
-	            template = loader.get_template('login.html')
-	            context = {}
-	            return HttpResponse(template.render(context, request))
+	            pass
 	            #return render(request,'base.html',status = status.HTTP_201_CREATED)                ## 登录成功就将url重定向到后台的url
 	    return HttpResponse(errorInfo('Username/Passwd is wrong'), content_type="application/json")
 
