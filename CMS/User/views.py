@@ -181,5 +181,14 @@ class UserViewSet(viewsets.ModelViewSet):
 		thismeeting=Meeting.objects.get(meeting_id=meeting_id)
 		thispaper.save()
 		thisuser.participate.add(thismeeting)
-		return Response("info: register meeting succsss", status=status.HTTP_200_OK)
+		return Response("info: contribute succsss", status=status.HTTP_200_OK)
 
+
+	@action(methods=['POST'], detail=False)
+	def favorite(self, request):
+		user_id = request.data.get("user_id")
+		thisuser = User.objects.get(id=user_id)
+		meeting_id = request.data.get("meeting_id")
+		thismeeting = Meeting.objects.get(meeting_id=meeting_id)
+		thisuser.favorite.add(thismeeting)
+		return Response("info: favorite succsss", status=status.HTTP_200_OK)
