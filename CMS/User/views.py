@@ -152,7 +152,6 @@ class UserViewSet(viewsets.ModelViewSet):
 	            tel = tel,
 	            ).save()
 	        return render(request,'login.html',status = status.HTTP_201_CREATED)
-<<<<<<< HEAD
 	    return HttpResponse(errorInfo("未知原因失败，请稍后再试"), content_type="application/json") 
 
 	@action(methods = ['GET'],detail = False)
@@ -169,9 +168,6 @@ class UserViewSet(viewsets.ModelViewSet):
 			a = OrderedDict({"errorInfo":"服务器出错，请稍后重试。"})
 			return Response(a, status = status.HTTP_400_BAD_REQUEST)
 		return Response(result, status = status.HTTP_200_OK)
-=======
-	    return HttpResponse(errorInfo("未知原因失败，请稍后再试"), content_type="application/json")
-
 
 	@action(methods=['POST'], detail=False)
 	def registermeeting(self, request):
@@ -211,4 +207,3 @@ class UserViewSet(viewsets.ModelViewSet):
 		thismeeting = Meeting.objects.get(meeting_id=meeting_id)
 		thisuser.favorite.add(thismeeting)
 		return Response("info: favorite succsss", status=status.HTTP_200_OK)
->>>>>>> c4eca3044f237d2514e1d5855eedc1392bb5c4a1
