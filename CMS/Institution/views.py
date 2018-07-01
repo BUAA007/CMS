@@ -7,6 +7,9 @@ from django.core import serializers
 from django.core.exceptions import ObjectDoesNotExist
 from Institution.models import Institution,Employee
 from Institution.serializer import InstitutionSerializer,EmployeeSerializer
+rom django.template import loader
+from django.http import HttpResponse
+import re,json
 # Create your views here.
 def checklen(pwd):
 	return len(pwd)>=8
