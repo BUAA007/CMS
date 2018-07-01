@@ -5,10 +5,6 @@ from rest_framework.response import Response
 from rest_framework import status
 from django.core import serializers
 from django.core.exceptions import ObjectDoesNotExist
-
-from .models import Institution,Employee
-from .serializers import InstitutionSerializer,EmployeeSerializer
-
 from Institution.models import Institution,Employee
 from Institution.serializers import InstitutionSerializer,EmployeeSerializer
 from django.template import loader
@@ -154,7 +150,10 @@ class EmployeeViewSet(viewsets.ModelViewSet):
 	        username = request.data.get('username')
 	        password = request.data.get('password')
 	        password = md5(password)
-	        employee = Employee.objects.filter(username=username, password=password)
+	        try:
+	            employee = Employee.objects.get(username=username, password=password)
+	        except:
+	            pass
 	        if employee:
 	            request.session['is_login'] = 'true'         #定义session信息
 	            request.session['username'] = username
@@ -173,7 +172,10 @@ class EmployeeViewSet(viewsets.ModelViewSet):
 	        request.session.flush()                  # 删除django-session表中的对应一行记录
 	    except KeyError:
 	        pass
-	    return render(request,'base.html')             #重定向回主页面
+	    template = loader.get_template('login.html')
+	    context = {}
+	    return HttpResponse(template.render(context, request))
+	    #return render(request,'base.html')             #重定向回主页面
 
 	@action(methods = ['POST'],detail = False)
 	def registerother(self, request):

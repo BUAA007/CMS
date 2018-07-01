@@ -13,6 +13,7 @@ import re,json
 import collections
 import hashlib
 # Create your views here.
+
 def checklen(pwd):
 	return len(pwd)>=6
 
@@ -96,8 +97,10 @@ class UserViewSet(viewsets.ModelViewSet):
 	    if request.method == "POST":
 	        username = request.data.get('username')
 	        password = md5( request.data.get('password') )
-			try:;
+	        try:
 	            user = User.objects.get(username=username, password=password)
+	        except:
+	        	pass
 	        '''
 	        template = loader.get_template('index.html')
 	        context = {
@@ -198,8 +201,9 @@ class UserViewSet(viewsets.ModelViewSet):
 			title=request.data.get("title"),
 			abstract=request.data.get("abstract"),
 			keyword=request.data.get("keyword"),
-			content=request.data.get("content"),
-			status="未审核",
+			content=request.FILES['content'],
+			#content=request.data.get("content"),
+			status=-1,
 			owner=thisuser,
 		)
 		meeting_id=request.data.get("meeting_id")

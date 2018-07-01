@@ -57,10 +57,7 @@ class MeetingViewSet(viewsets.ModelViewSet):
             'conference': thisMeeting,
         }
         return HttpResponse(template.render(context, request))
-<<<<<<< HEAD
-        return Response(paper_list,status=status.HTTP_200_OK)
-=======
->>>>>>> c8b7be4dd411f1974dcce1e40c948a752ff72b2f
+
 
 
 

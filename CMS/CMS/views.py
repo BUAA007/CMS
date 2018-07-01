@@ -1,3 +1,3 @@
 from django.shortcuts import render	
 def index(request):
-    return render(request,'user_register.html')
+    return render(request,'login.html')

@@ -6,6 +6,64 @@
 {% endblock %}
 
 {% block content %}
+    <div class="modal fade" id="postPaper" tabindex="-1" role="dialog"
+         aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="exampleModalCenterTitle">投稿</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <form enctype="multipart/form-data" class="form-horizontal" action="/paper/" method="post"
+                          id="postPaperForm">
+                        <div class="form-group">
+                            <div class="col-4">
+                                <label for="author_1" class="col-form-label">第一作者:</label>
+                                <input type="text" class="form-control" id="author_1" name="author_1">
+                            </div>
+                            <div class="col-4">
+                                <label for="author_2" class="col-form-label">第二作者:</label>
+                                <input type="text" class="form-control" id="author_2" name="author_2">
+                            </div>
+                            <div class="col-4">
+                                <label for="author_3" class="col-form-label">第三作者:</label>
+                                <input type="text" class="form-control" id="author_3" name="author_3">
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label for="title" class="col-form-label">标题:</label>
+                            <input class="form-control" id="title" name="title">
+                        </div>
+                        <div class="form-group">
+                            <label for="keyword" class="keyword">关键字:</label>
+                            <input class="form-control" id="keyword" name="keyword">
+                        </div>
+                        <div class="form-group">
+                            <label for="abstract" class="keyword">摘要:</label>
+                            <textarea class="form-control" id="abstract" name="abstract" rows="5"></textarea>
+                        </div>
+                        <div class="form-group">
+                            <div class="custom-file">
+                                <input type="file" name="content" class="custom-file-input" id="content">
+                                <label class="custom-file-label" for="content">选择文件</label>
+                            </div>
+                        </div>
+                        <div style="display: none">
+                            <label for="meeting_id"></label>
+                            <input name="meeting_id" id="meeting_id" value="1">
+                        </div>
+                    </form>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">关闭</button>
+                    <button form="postPaperForm" type="submit" class="btn btn-primary">提交</button>
+                </div>
+            </div>
+        </div>
+    </div>
     <div class="animated fadeIn">
         <div class="row">
 
@@ -21,7 +79,7 @@
                             <hr class="my-4">
                             <h4 class="font-weight-normal"><i class="fa fa-question-circle"></i>
                                 征文信息</h4>
-                            <p></p>
+                            <p>{{ conference.essay_request }}</p>
                             <hr class="my-4">
                             <h4 class="font-weight-normal"><i class="fa fa-calendar"></i>
                                 日程安排</h4>
@@ -53,7 +111,7 @@
                                     </li>
                                     <li class="li">
                                         <div class="timestamp">
-                                            <span class="date">{{conference.meeting_date|date:'Y/m/d'}}</span>
+                                            <span class="date">{{ conference.meeting_date|date:'Y/m/d'}}</span>
                                             <span class="date">会议开始</span>
                                         </div>
                                         <div class="status">
@@ -61,7 +119,7 @@
                                     </li>
                                     <li class="li">
                                         <div class="timestamp">
-                                            <span class="date">{{conference.meeting_end_date|date:'Y/m/d'}}</span>
+                                            <span class="date">{{ conference.meeting_end_date|date:'Y/m/d' }}</span>
                                             <span class="date">会议结束</span>
                                         </div>
                                         <div class="status">
@@ -76,7 +134,7 @@
                             </div>
                             <hr class="my-4">
                             <div>
-                                <div class="col-3" onclick="fuck()">
+                                <div class="col-3" data-toggle="modal" data-target="#postPaper">
                                     <a href="#">
                                         <i class="fa fa-map"></i>
                                         投稿
@@ -127,7 +185,7 @@
                                 </li>
                                 <li class="list-group-item d-flex justify-content-between lh-condensed">
                                     <span>注册费用</span>
-                                    <strong>$20</strong>
+                                    <strong>￥{{ conference.receipt }}</strong>
                                 </li>
                             </ul>
                         </div>
