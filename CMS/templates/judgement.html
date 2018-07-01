@@ -246,26 +246,26 @@
                     <div class="card">
                         <div class="card-header">
                             <div class="float-left">
-                                <strong class="card-title">所有会议</strong>
+                                <strong class="card-title">评审结果</strong>
                             </div>
                             <div class="float-right">
                                 <div class="col-4">
                                     <a href="#">
-                                    <i class="fa fa-download"></i>
-                                    下载
-                                </a>
+                                        <i class="fa fa-download"></i>
+                                        下载
+                                    </a>
                                 </div>
                                 <div class="col-4">
                                     <a href="#">
-                                    <i class="fa fa-upload"></i>
+                                        <i class="fa fa-upload"></i>
                                         修改
-                                </a>
+                                    </a>
                                 </div>
                                 <div class="col-4">
                                     <a href="#">
-                                    <i class="fa fa-edit"></i>
-                                    注册
-                                </a>
+                                        <i class="fa fa-edit"></i>
+                                        注册
+                                    </a>
                                 </div>
                                 <div class="col-4">
 
@@ -284,16 +284,36 @@
                                     </tr>
                                     </thead>
                                     <tbody>
+                                    {% for paper in papers %}
+                                        <tr>
+                                            <td>
+                                                <div class="custom-radio">
+                                                    <input type="radio" name="id" id="id{{ forloop.counter }}">
+                                                    <label for="id{{ forloop.counter }}">{{ forloop.counter }}</label>
+                                                </div>
+                                            </td>
+                                            <td>{{ paper.meeting.title }}</td>
+                                            <td>{{ paper.title }}</td>
+                                            {% if paper.status == -1 %}
+                                                <td class="text-dark font-weight-bold">未通过</td>
+                                            {% elif paper.status == 0 %}
+                                                <td class="text-danger font-weight-bold">待修改</td>
+                                            {% else %}
+                                                <td class="text-success font-weight-bold">已通过</td>
+                                            {% endif %}
+                                        </tr>
+                                    {% endfor %}
+
                                     <tr>
                                         <td>
                                             <div class="custom-radio">
                                                 <input type="radio" name="id" id="id3">
-                                            <label for="id3">1</label>
+                                                <label for="id3">1</label>
                                             </div>
                                         </td>
                                         <td>第一次人工智能大会</td>
                                         <td>生成对抗网络</td>
-                                        <td>未开始</td>
+                                        <td class="text-dark font-weight-bold">未通过</td>
                                     </tr>
                                     <tr>
                                         <td>
@@ -302,7 +322,7 @@
                                         </td>
                                         <td>第一次人工智能大会</td>
                                         <td>生成对抗网络</td>
-                                        <td>未开始</td>
+                                        <td class="text-danger font-weight-bold">待修改</td>
                                     </tr>
                                     <tr>
                                         <td>
@@ -311,7 +331,7 @@
                                         </td>
                                         <td>第一次人工智能大会</td>
                                         <td>生成对抗网络</td>
-                                        <td>未开始</td>
+                                        <td class="text-success font-weight-bold">已通过</td>
                                     </tr>
                                     </tbody>
                                 </table>
