@@ -96,7 +96,10 @@ class UserViewSet(viewsets.ModelViewSet):
 	    if request.method == "POST":
 	        username = request.data.get('username')
 	        password = md5( request.data.get('password') )
-	        user = User.objects.filter(username=username, password=password)
+	        try:
+	            user = User.objects.get(username=username, password=password)
+	        except:
+	        	pass
 	        '''
 	        template = loader.get_template('index.html')
 	        context = {
