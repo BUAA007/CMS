@@ -185,12 +185,19 @@ class UserViewSet(viewsets.ModelViewSet):
 
 	@action(methods=['POST'], detail=False)
 	def registermeeting(self, request):
+		info=list()
 		meeting_id = request.data.get("meeting_id")
 		user_id = request.data.get("user_id")
-		thisuser=User.objects.get(id=user_id)
-		thismeeting=Meeting.objects.get(meeting_id=meeting_id)
-		thisuser.participate.add(thismeeting)
-		return Response("info: register meeting succsss",status=status.HTTP_200_OK)
+		paper_id = request.data.get("paper_id")
+		thispaper = Paper.objects.get(id=paper_id)
+		if thispaper.status == 1:
+			thisuser=User.objects.get(id=user_id)
+			thismeeting=Meeting.objects.get(meeting_id=meeting_id)
+			thisuser.participate.add(thismeeting)
+			info.append({"info":"register meeting succsss"})
+			return Response(info,status=status.HTTP_200_OK)
+		info.append({"errorinfo":"paper is not recived"})
+		return Response(info,status=status.HTTP_400_BAD_REQUEST)
 
 	@action(methods=['POST'], detail=False)
 	def contribute(self, request):
@@ -223,7 +230,7 @@ class UserViewSet(viewsets.ModelViewSet):
 		thisuser.favorite.add(thismeeting)
 		return Response("info: favorite succsss", status=status.HTTP_200_OK)
 
-	@action(methods=['GET'])
+	@action(methods=['GET'],detail=False)
 	def allpaper(self,request):
 		pk = request.query_params.get('pk', None)
 		thisuser = User.objects.get(id=pk)
