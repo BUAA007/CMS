@@ -181,5 +181,5 @@ class UserViewSet(viewsets.ModelViewSet):
 		thismeeting=Meeting.objects.get(meeting_id=meeting_id)
 		thispaper.save()
 		thisuser.participate.add(thismeeting)
-
+		return Response("info: register meeting succsss", status=status.HTTP_200_OK)
 
