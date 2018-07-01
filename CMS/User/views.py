@@ -127,7 +127,7 @@ class UserViewSet(viewsets.ModelViewSet):
 	    email = request.data.get("email")
 	    tel = request.data.get("tel")
 	    try:
-	       if not User.objects.get(username = username):
+	       if User.objects.get(username = username):
 	           return  HttpResponse(errorInfo("用户名已存在"), content_type="application/json")
 	    except:
 	    	pass

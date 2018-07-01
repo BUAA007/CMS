@@ -93,22 +93,21 @@
     <p></p>
     <label class="sr-only" for="tel">手机号</label>
     <input class="form-control" name="tel" id="tel" required="required" type="text" placeholder="手机号" onfocus="this.value='';"/>
-    <button class="btn btn-lg btn-primary btn-block mt-4 mb-2" type="submit">注册</button>
+    <button class="btn btn-lg btn-primary btn-block mt-4 mb-2" onclick="up()" type="button">注册</button>
 </form>
+
 <script type="text/javascript">
      function up(){
-         var data = {
-            "username" : document.getElementById("username").value,
-            "password" : document.getElementById("password").value,
-            "password2" : document.getElementById("password2").value,
-            "email" : document.getElementById("email").value,
-            "tel" : document.getElementById("tel").value
-        }
         $.ajax({
-            url : '/user/register',
-            type : 'POST',
-            data : data,
-            contentType : 'application/json; charset=utf-8',
+            method : 'POST',
+            url : "/user/register/",
+            data : {
+            'username' : document.getElementById("username").value,
+            'password' : document.getElementById("password").value,
+            'password2' : document.getElementById("password2").value,
+            'email' : document.getElementById("email").value,
+            'tel' : document.getElementById("tel").value,
+            },
             dataType : 'json',
             success : function(response) {
                 alert(response['errorInfo']);
