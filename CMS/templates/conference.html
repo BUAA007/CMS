@@ -52,8 +52,7 @@
                             </div>
                         </div>
                         <div style="display: none">
-                            <label for="meeting_id"></label>
-                            <input name="meeting_id" id="meeting_id" value="1">
+                            <input type="hidden" name="meeting_id" id="meeting_id" value="{{ conference.meeting_id }}">
                         </div>
                     </form>
                 </div>
@@ -273,4 +272,7 @@
             }
         }
     </style>
+    <script>
+
+    </script>
 {% endblock %}
