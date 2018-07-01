@@ -74,7 +74,7 @@ class UserViewSet(viewsets.ModelViewSet):
 	
 	@action(methods = ['GET'],detail = False)
 	def index(self,request):
-	    return render(request,'base.html',status = status.HTTP_201_CREATED)
+	    return render(request,'login.html',status = status.HTTP_201_CREATED)
 
 	@action(methods = ['POST'],detail = False)
 	def login(self, request):
