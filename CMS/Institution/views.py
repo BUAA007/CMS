@@ -5,8 +5,9 @@ from rest_framework.response import Response
 from rest_framework import status
 from django.core import serializers
 from django.core.exceptions import ObjectDoesNotExist
-from Institution.models import Institution,Employee
-from Institution.serializer import InstitutionSerializer,EmployeeSerializer
+from .models import Institution,Employee
+from .serializers import InstitutionSerializer,EmployeeSerializer
+
 # Create your views here.
 def checklen(pwd):
 	return len(pwd)>=8
