@@ -91,7 +91,7 @@ class UserViewSet(viewsets.ModelViewSet):
 	
 	@action(methods = ['GET'],detail = False)
 	def index(self,request):
-	    return render(request,'conference.html',status = status.HTTP_201_CREATED)
+	    return render(request,'judgement.html',status = status.HTTP_201_CREATED)
 
 	@action(methods = ['POST'],detail = False)
 	def login(self, request):
@@ -100,23 +100,16 @@ class UserViewSet(viewsets.ModelViewSet):
 	        password = md5( request.data.get('password') )
 	        try:
 	            user = User.objects.get(username=username, password=password)
+	            if user:
+	                request.session['is_login'] = 'true'         #定义session信息
+	                request.session['username'] = username
+	                request.session['id'] = user.id
+	                request.session.set_expiry(0)
+	                template = loader.get_template('login.html')
+	                context = {}
+	                return HttpResponse(template.render(context, request))
 	        except:
-	        	pass
-	        '''
-	        template = loader.get_template('index.html')
-	        context = {
-	            'latest_question_list': latest_question_list,
-	        }
-	        return HttpResponse(template.render(context, request))
-	        '''
-	        if user:
-	            request.session['is_login'] = 'true'         #定义session信息
-	            request.session['username'] = username
-	            request.session['id'] = user.id
-	            request.session.set_expiry(0)
-	            template = loader.get_template('login.html')
-	            context = {}
-	            return HttpResponse(template.render(context, request))
+	            pass
 	            #return render(request,'base.html',status = status.HTTP_201_CREATED)                ## 登录成功就将url重定向到后台的url
 	    return HttpResponse(errorInfo('Username/Passwd is wrong'), content_type="application/json")
 
@@ -230,7 +223,11 @@ class UserViewSet(viewsets.ModelViewSet):
 		thisuser.favorite.add(thismeeting)
 		return Response("info: favorite succsss", status=status.HTTP_200_OK)
 
+<<<<<<< HEAD
 	@action(methods=['GET'],detail=False)
+=======
+	@action(methods=['GET'], detail = False)
+>>>>>>> 4a0e2a8b1aa6edb56c1210244bd58985fd65fae7
 	def allpaper(self,request):
 		pk = request.query_params.get('pk', None)
 		thisuser = User.objects.get(id=pk)

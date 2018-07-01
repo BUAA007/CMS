@@ -5,8 +5,8 @@ from rest_framework.response import Response
 from rest_framework import status
 from django.core import serializers
 from django.core.exceptions import ObjectDoesNotExist
-from .models import Meeting
-from .serializers import MeetingSerializer
+from Meeting.models import Meeting
+from Meeting.serializers import MeetingSerializer
 from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.models import User
 from django.http import HttpResponse
@@ -59,6 +59,15 @@ class MeetingViewSet(viewsets.ModelViewSet):
         return HttpResponse(template.render(context, request))
 
     @action(methods=['GET'],detail=False)
+    def osearch(self, request):
+        queryset = Meeting.objects.all()
+        word = request.query_params.get('s', None)
+        if word is not None:
+            queryset = Meeting.objects.filter(title__contains = word)
+        serializer = MeetingSerializer(queryset, many = True)
+        return Response(serializer.data, status = status.HTTP_200_OK)
+
+    @action(methods=['GET'],detail=False)
     def allpaper(self, request):
         pk = request.query_params.get('pk', None)
         thismeeting = Meeting.objects.get(id=pk)
@@ -66,9 +75,4 @@ class MeetingViewSet(viewsets.ModelViewSet):
         template = loader.get_template('judgement.html')
         context = {
             'papers': papers,
-        }
-
-
-
-
 
