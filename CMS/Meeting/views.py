@@ -45,7 +45,7 @@ class MeetingViewSet(viewsets.ModelViewSet):
         favorite=thisuser.favorite.get(thisMeeting)
         if favorite is None:
             isfavorite = False
-        else : 
+        else :
             isfavorite =True
         i=0
         paper_list=list()

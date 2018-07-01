@@ -60,6 +60,10 @@ class Employee(models.Model):
 		null=True,
 		max_length=256,
 		)
+	tel=models.CharField(
+		null=True,
+		max_length=20,
+		)
 	institution=models.ForeignKey(
 		'Institution',
 		on_delete=models.CASCADE,
