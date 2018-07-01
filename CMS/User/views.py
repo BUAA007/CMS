@@ -3,12 +3,14 @@ from rest_framework import viewsets, response
 from rest_framework.response import Response
 from rest_framework import status
 from rest_framework.decorators import action
-
+from Paper.models import *
+from Paper.serializers import *
 from User.models import *
 from User.serializers import *
 from django.template import loader
 from django.http import HttpResponse
 import re,json
+import collections
 import hashlib
 # Create your views here.
 def checklen(pwd):
@@ -161,3 +163,56 @@ class UserViewSet(viewsets.ModelViewSet):
 	        #return render(request,'login.html',status = status.HTTP_201_CREATED)
 	    return HttpResponse(errorInfo("未知原因失败，请稍后再试"), content_type="application/json") 
 
+	@action(methods = ['GET'],detail = False)
+	def info(self, request):
+		try:
+			pk = request.GET.get("username")
+			thisuser = User.objects.get(username = pk)
+			result = list()
+			result.append(UserSerializer(thisuser).data)
+			papers = thisuser.Paper_set.all()
+			for paper in papers:
+				result.append(PaperSerializer(paper).data)
+		except:
+			a = OrderedDict({"errorInfo":"服务器出错，请稍后重试。"})
+			return Response(a, status = status.HTTP_400_BAD_REQUEST)
+		return Response(result, status = status.HTTP_200_OK)
+
+	@action(methods=['POST'], detail=False)
+	def registermeeting(self, request):
+		meeting_id = request.data.get("meeting_id")
+		user_id = request.data.get("user_id")
+		thisuser=User.objects.get(id=user_id)
+		thismeeting=Meeting.objects.get(meeting_id=meeting_id)
+		thisuser.participate.add(thismeeting)
+		return Response("info: register meeting succsss",status=status.HTTP_200_OK)
+
+	@action(methods=['POST'], detail=False)
+	def contribute(self, request):
+		user_id = request.data.get("user_id")
+		thisuser = User.objects.get(id=user_id)
+		thispaper= Paper(author_1=request.data.get("author_1"),
+			author_2=request.data.get("author_2"),
+			author_3=request.data.get("author_3"),
+			title=request.data.get("title"),
+			abstract=request.data.get("abstract"),
+			keyword=request.data.get("keyword"),
+			content=request.data.get("content"),
+			status="未审核",
+			owner=thisuser,
+		)
+		meeting_id=request.data.get("meeting_id")
+		thismeeting=Meeting.objects.get(meeting_id=meeting_id)
+		thispaper.save()
+		thisuser.participate.add(thismeeting)
+		return Response("info: contribute succsss", status=status.HTTP_200_OK)
+
+
+	@action(methods=['POST'], detail=False)
+	def favorite(self, request):
+		user_id = request.data.get("user_id")
+		thisuser = User.objects.get(id=user_id)
+		meeting_id = request.data.get("meeting_id")
+		thismeeting = Meeting.objects.get(meeting_id=meeting_id)
+		thisuser.favorite.add(thismeeting)
+		return Response("info: favorite succsss", status=status.HTTP_200_OK)

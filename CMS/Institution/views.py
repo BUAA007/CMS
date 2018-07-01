@@ -5,6 +5,10 @@ from rest_framework.response import Response
 from rest_framework import status
 from django.core import serializers
 from django.core.exceptions import ObjectDoesNotExist
+
+from .models import Institution,Employee
+from .serializers import InstitutionSerializer,EmployeeSerializer
+
 from Institution.models import Institution,Employee
 from Institution.serializers import InstitutionSerializer,EmployeeSerializer
 from django.template import loader
