@@ -27,8 +27,8 @@ class Paper(models.Model):
 		max_length = 128,
 		null = True,
 		)
-	content = models.CharField(
-		max_length = 64,
+	content = models.FileField(
+		upload_to='paper/%Y/%m/%d'
 		)
 	status = models.IntegerField(
 		null = False,
@@ -43,3 +43,4 @@ class Paper(models.Model):
 		on_delete=models.CASCADE,
 		default = "",
 		)
+

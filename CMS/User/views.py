@@ -221,7 +221,7 @@ class UserViewSet(viewsets.ModelViewSet):
 		meeting_id = request.data.get("meeting_id")
 		thismeeting = Meeting.objects.get(meeting_id=meeting_id)
 		thisuser.favorite.add(thismeeting)
-		return Response("info: favorite succsss", status=status.HTTP_200_OK)
+		return Response({"info":"favorite succsss"}, status=status.HTTP_200_OK)
 
 
 	@action(methods=['GET'],detail=False)
