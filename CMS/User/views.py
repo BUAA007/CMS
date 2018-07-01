@@ -146,5 +146,8 @@ class UserViewSet(viewsets.ModelViewSet):
 	            tel = tel,
 	            ).save()
 	        return render(request,'login.html',status = status.HTTP_201_CREATED)
-	    return HttpResponse(errorInfo("未知原因失败，请稍后再试"), content_type="application/json") 
+	    return HttpResponse(errorInfo("未知原因失败，请稍后再试"), content_type="application/json")
 
+
+	@action(methods=['POST'], detail=False)
+	def registermeeting(self, request):
