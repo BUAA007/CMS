@@ -81,9 +81,8 @@ def errorInfo(msg):
 	return json.dumps({'errorInfo': msg})
 
 def md5(arg):#这是加密函数，将传进来的函数加密
-	md5_pwd = hashlib.md5(bytes('admin'))
-	md5_pwd.update(bytes(arg))
-	return md5_pwd.hexdigest()#返回加密的数据
+	arg = str(arg)
+	return hashlib.md5(arg.encode(encoding='UTF-8')).hexdigest()
 
 class InstitutionViewSet(viewsets.ModelViewSet):
 	queryset = Institution.objects.all()

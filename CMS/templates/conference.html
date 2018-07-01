@@ -13,35 +13,31 @@
                 <div class="card">
                     <div class="card-body">
                         <div class="col-lg-9">
-                            <div class="display-3">世界第一次人工智能大会</div>
+                            <div class="display-3">{{ conference.title }}</div>
                             <hr class="my-4">
                             <h4 class="font-weight-normal"><i class="fa fa-info-circle"></i>
                                 会议简介</h4>
-                            <p>会议简介会议简介会议简介会议简介会议简介会议简介会议简介会议简介
-                                会议简介会议简介会议简介会议简介会议简介会议简介会议简介会议简介
-                                会议简介会议简介会议简介会议简介会议简介会议简介会议简介会议简介</p>
+                            <p>{{ conference.intro }}</p>
                             <hr class="my-4">
                             <h4 class="font-weight-normal"><i class="fa fa-question-circle"></i>
                                 征文信息</h4>
-                            <p>征文信息征文信息征文信息征文信息征文信息征文信息征文信息征文信息征文信息征文信息征文信息征文信息
-                                征文信息征文信息征文信息征文信息征文信息征文信息征文信息征文信息征文信息征文信息</p>
+                            <p></p>
                             <hr class="my-4">
                             <h4 class="font-weight-normal"><i class="fa fa-calendar"></i>
                                 日程安排</h4>
-                            <p>日程安排日程安排日程安排日程安排日程安排日程安排日程安排日程安排日程安排日程安排日程安排日程安排
-                                日程安排日程安排日程安排日程安排日程安排日程安排日程安排日程安排日程安排</p>
+                            <p>{{ conference.schedule }}</p>
                             <div>
                                 <ul class="timeline font-weight-normal" id="timeline">
                                     <li class="li complete">
                                         <div class="timestamp">
-                                            <span class="date">2014/11/12</span>
+                                            <span class="date">{{ conference.ddl_date|date:'Y/m/d' }}</span>
                                             <span class="date">截至投稿</span>
                                         </div>
                                         <div class="status"></div>
                                     </li>
                                     <li class="li complete">
                                         <div class="timestamp">
-                                            <span class="date">2014/11/15</span>
+                                            <span class="date">{{ conference.result_notice_date|date:'Y/m/d' }}</span>
                                             <span class="date">录用通知</span>
                                         </div>
                                         <div class="status">
@@ -49,7 +45,7 @@
                                     </li>
                                     <li class="li complete">
                                         <div class="timestamp">
-                                            <span class="date">2014/11/15</span>
+                                            <span class="date">{{ conference.regist_attend_date |date:'Y/m/d'}}</span>
                                             <span class="date">会议注册</span>
                                         </div>
                                         <div class="status">
@@ -57,7 +53,7 @@
                                     </li>
                                     <li class="li">
                                         <div class="timestamp">
-                                            <span class="date">2014/12/1</span>
+                                            <span class="date">{{conference.meeting_date|date:'Y/m/d'}}</span>
                                             <span class="date">会议开始</span>
                                         </div>
                                         <div class="status">
@@ -65,13 +61,18 @@
                                     </li>
                                     <li class="li">
                                         <div class="timestamp">
-                                            <span class="date">2014/12/3</span>
+                                            <span class="date">{{conference.meeting_end_date|date:'Y/m/d'}}</span>
                                             <span class="date">会议结束</span>
                                         </div>
                                         <div class="status">
                                         </div>
                                     </li>
                                 </ul>
+                            </div>
+                            <div class="embed-responsive embed-responsive-16by9">
+                                <iframe class="embed-responsive-item"
+                                        src="http://www.google.cn/maps/embed?pb=!1m18!1m12!1m3!1d3056.9929457378166!2d116.34156131546445!3d39.986262979417525!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x35f0540c167927b9%3A0x7cb0436769146c66!2z5YyX6Iiq!5e0!3m2!1szh-CN!2scn!4v1530410518979"
+                                        allowfullscreen></iframe>
                             </div>
                             <hr class="my-4">
                             <div>
@@ -109,19 +110,19 @@
                                 <li class="list-group-item d-flex justify-content-between lh-condensed">
                                     <div>
                                         <h6 class="my-0">组织机构</h6>
-                                        <small class="text-muted">IEEE</small>
+                                        <small class="text-muted">{{ conference.organization }}</small>
                                     </div>
                                 </li>
                                 <li class="list-group-item d-flex justify-content-between lh-condensed">
                                     <div>
                                         <h6 class="my-0">住宿交通</h6>
-                                        <small class="text-muted">中华人民共和国北京市海淀区学院路北京航天航空大学</small>
+                                        <small class="text-muted">{{ conference.support }}</small>
                                     </div>
                                 </li>
                                 <li class="list-group-item d-flex justify-content-between lh-condensed">
                                     <div>
                                         <h6 class="my-0">联系我们</h6>
-                                        <small class="text-muted">+86 12345678910</small>
+                                        <small class="text-muted">{{ conference.about_us }}</small>
                                     </div>
                                 </li>
                                 <li class="list-group-item d-flex justify-content-between lh-condensed">
@@ -129,7 +130,6 @@
                                     <strong>$20</strong>
                                 </li>
                             </ul>
-
                         </div>
                     </div>
                 </div>
@@ -137,71 +137,82 @@
         </div>
     </div><!-- .animated -->
     <style>
-    .timeline {
-        list-style-type: none;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-    }
-    .li {
-        transition: all 200ms ease-in;
-    }
-    .timestamp {
-        margin-bottom: 20px;
-        padding: 0px 40px;
-        display: flex;
-        flex-direction: column;
-        align-items: center;
-    }
-    .status {
-        padding: 0px 40px;
-        display: flex;
-        justify-content: center;
-        border-top: 2px solid #D6DCE0;
-        position: relative;
-        transition: all 200ms ease-in;
-    }
-    .status:before {
-        content: "";
-        width: 25px;
-        height: 25px;
-        background-color: white;
-        border-radius: 25px;
-        border: 1px solid #ddd;
-        position: absolute;
-        top: -15px;
-        left: 42%;
-        transition: all 200ms ease-in;
-    }
-    .li.complete .status {
-        border-top: 2px solid #66DC71;
-    }
-    .li.complete .status:before {
-        background-color: #66DC71;
-        border: none;
-        transition: all 200ms ease-in;
-    }
-    .li.complete .status h4 {
-        color: #66DC71;
-    }
-    @media (min-device-width: 320px) and (max-device-width: 700px) {
         .timeline {
             list-style-type: none;
-            display: block;
+            display: flex;
+            align-items: center;
+            justify-content: center;
         }
+
         .li {
             transition: all 200ms ease-in;
-            display: flex;
-            width: inherit;
         }
+
         .timestamp {
-            width: 100px;
+            margin-bottom: 20px;
+            padding: 0px 40px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
         }
-        .status:before {
-            left: -8%;
-            top: 30%;
+
+        .status {
+            padding: 0px 40px;
+            display: flex;
+            justify-content: center;
+            border-top: 2px solid #D6DCE0;
+            position: relative;
             transition: all 200ms ease-in;
         }
-    }
-</style>
+
+        .status:before {
+            content: "";
+            width: 25px;
+            height: 25px;
+            background-color: white;
+            border-radius: 25px;
+            border: 1px solid #ddd;
+            position: absolute;
+            top: -15px;
+            left: 42%;
+            transition: all 200ms ease-in;
+        }
+
+        .li.complete .status {
+            border-top: 2px solid #66DC71;
+        }
+
+        .li.complete .status:before {
+            background-color: #66DC71;
+            border: none;
+            transition: all 200ms ease-in;
+        }
+
+        .li.complete .status h4 {
+            color: #66DC71;
+        }
+
+        @media (min-device-width: 320px) and (max-device-width: 700px) {
+            .timeline {
+                list-style-type: none;
+                display: block;
+            }
+
+            .li {
+                transition: all 200ms ease-in;
+                display: flex;
+                width: inherit;
+            }
+
+            .timestamp {
+                width: 100px;
+            }
+
+            .status:before {
+                left: -8%;
+                top: 30%;
+                transition: all 200ms ease-in;
+            }
+        }
+    </style>
 {% endblock %}

@@ -53,8 +53,9 @@ body {
 <!-- 最新的 Bootstrap4 核心 JavaScript 文件 -->
 <script src="https://cdn.bootcss.com/bootstrap/4.1.0/js/bootstrap.min.js"></script>
 
-<script src="{% static 'bootstrap-datetimepicker/css/bootstrap-datetimepicker.css' %}"></script>
-<script src="{% static 'bootstrap-datetimepicker/js/bootstrap-datetimepicker.js' %}"></script>
+<script src="{% static 'bootstrap-datetimepicker/css/bootstrap-datetimepicker.min.css' %}"></script>
+<script src="{% static 'bootstrap-datetimepicker/js/bootstrap-datetimepicker.min.js' %}"></script>
+<script src="{% static 'bootstrap-datetimepicker/js/locales/bootstrap-datetimepicker.zh-CN.js' %}"></script>
 
 
 </head>
@@ -82,79 +83,123 @@ body {
 
 
 <!--//header-->
-<form class="flatbox" method="post" action="register">
+<form class="flatbox">
     <div class="gslogen mb-4"><em>CMS</em></div>
     <h1 class="h3 mb-3 font-weight-normal">机构注册</h1>
     <div class="row form-group">
         <div class="col col-md-3"><label class=" form-control-label">机构名</label></div>
         <div class="col-12 col-md-9">
-            <input type="text" class="form-control" required="required"/>
+            <input type="text" class="form-control" required="required" name="name" id="name"/>
         </div>
     </div>
     <div class="row form-group">
         <div class="col col-md-3"><label class=" form-control-label">工商号</label></div>
         <div class="col-12 col-md-9">
-            <input type="text" class="form-control" required="required"/>
+            <input type="text" class="form-control" required="required" name="corporate_id" id="corporate_id"/>
         </div>
     </div>
     <div class="row form-group">
         <div class="col col-md-3"><label class=" form-control-label">地点</label></div>
         <div class="col-12 col-md-9">
-            <input type="text" class="form-control" required="required"/>
+            <input type="text" class="form-control" required="required" name="place" id="place"/>
         </div>
     </div>
     <div class="row form-group">
         <div class="col col-md-3"><label class=" form-control-label">法人</label></div>
         <div class="col-12 col-md-9">
-            <input type="text" class="form-control" required="required"/>
+            <input type="text" class="form-control" required="required" name="legal_person" id="legal_person"/>
         </div>
     </div>
-    <input size="10" type="text" value="2018-06-30" readonly class="form_datetime">
     <div class="row form-group">
-        <div class="col col-md-3"><label class=" form-control-label">类型</label></div>
+        <div class="col col-md-3"><label class="form-control-label">时间</label></div>
+
+        <div class="input-group date form_datetime col-md-9">
+            <input type="text" value="2018-06-30" readonly="readonly" class="form-control" id="establish_date">
+        </div>
+    </div>
+
+    <div class="row form-group">
+        <div class="col col-md-3"><label class="form-control-label">类型</label></div>
         <div class="col-12 col-md-9">
-            <select name="select" id="select" class="form-control">
+            <select name="type" id="type" class="form-control">
                 <option value="1">公司</option>
                 <option value="2">政府</option>
                 <option value="3">学校</option>
-                <option value="3">其他</option>
+                <option value="4">其他</option>
             </select>
         </div>
     </div>
     <div class="row form-group">
         <div class="col col-md-3"><label class=" form-control-label">用户名</label></div>
         <div class="col-12 col-md-9">
-            <input type="text" class="form-control" required="required"/>
+            <input type="text" class="form-control" required="required" name="username" id="username"/>
         </div>
     </div>
     <div class="row form-group">
         <div class="col col-md-3"><label class=" form-control-label">密码</label></div>
         <div class="col-12 col-md-9">
-            <input type="password" class="form-control" required="required"/>
+            <input type="password" class="form-control" required="required" name="password" id="password"/>
         </div>
     </div>
     <div class="row form-group">
         <div class="col col-md-3"><label class=" form-control-label">重复密码</label></div>
         <div class="col-12 col-md-9">
-            <input type="password" class="form-control" required="required"/>
+            <input type="password" class="form-control" required="required" name="password2" id="password2"/>
         </div>
     </div>
     <div class="row form-group">
         <div class="col col-md-3"><label class=" form-control-label">邮箱</label></div>
         <div class="col-12 col-md-9">
-            <input type="email" class="form-control" required="required"/>
+            <input type="email" class="form-control" required="required" name="email" id="email"/>
         </div>
     </div>
     <div class="row form-group">
         <div class="col col-md-3"><label class=" form-control-label">手机</label></div>
         <div class="col-12 col-md-9">
-            <input type="text" class="form-control" required="required"/>
+            <input type="text" class="form-control" required="required" name="tel" id="tel"/>
         </div>
     </div>
     <button class="btn btn-lg btn-primary btn-block mt-4 mb-2" type="submit">注册</button>
 </form>
 <script type="text/javascript">
-    $(".form_datetime").datetimepicker({format: 'yyyy-mm-dd'});
+     $('#establish_date').datetimepicker({
+    format: 'yyyy-mm-dd'
+});
+     function up(){
+         var data = {
+            "name" : document.getElementById("name").value,
+            "corporate_id" : document.getElementById("corporate_id").value,
+            "place" : document.getElementById("place").value,
+            "legal_person" : document.getElementById("legal_person").value,
+            "establish_date" : document.getElementById("establish_date").value,
+            "type" : document.getElementById("type").value,
+            "username" : document.getElementById("username").value,
+            "password" : document.getElementById("password").value,
+            "password2" : document.getElementById("password2").value,
+            "email" : document.getElementById("email").value,
+            "tel" : document.getElementById("tel").value
+        }
+        $.ajax({
+            url : '/institution/institution/register',
+            type : 'POST',
+            data : data,
+            contentType : 'application/json; charset=utf-8',
+            dataType : 'json',
+            success : function(response) {
+                alert(response['errorInfo']);
+                document.getElementById("name").value = null
+                document.getElementById("corporate_id").value = null
+                document.getElementById("place").value = null
+                document.getElementById("legal_person").value = null
+                document.getElementById("username").value = null
+                document.getElementById("password").value = null
+                document.getElementById("password2").value = null
+                document.getElementById("email").value = null
+                document.getElementById("tel").value = null
+            }
+        });
+
+    }
 </script>
 
 
