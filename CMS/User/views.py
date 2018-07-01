@@ -4,6 +4,7 @@ from rest_framework.response import Response
 from rest_framework import status
 from rest_framework.decorators import action
 
+from Paper.models import Paper
 from User.models import *
 from User.serializers import *
 from django.template import loader
@@ -93,7 +94,7 @@ class UserViewSet(viewsets.ModelViewSet):
 	def login(self, request):
 	    if request.method == "POST":
 	        username = request.data.get('username')
-	        password = mad5( request.data.get('password') )
+	        password = md5( request.data.get('password') )
 	        user = User.objects.filter(username=username, password=password)
 	        '''
 	        template = loader.get_template('index.html')
@@ -162,7 +163,22 @@ class UserViewSet(viewsets.ModelViewSet):
 		return Response("info: register meeting succsss",status=status.HTTP_200_OK)
 
 	@action(methods=['POST'], detail=False)
-	def registermeeting(self, request):
+	def contribute(self, request):
 		user_id = request.data.get("user_id")
 		thisuser = User.objects.get(id=user_id)
-		thispaper= 
+		thispaper= Paper(author_1=request.data.get("author_1"),
+			author_2=request.data.get("author_2"),
+			author_3=request.data.get("author_3"),
+			title=request.data.get("title"),
+			abstract=request.data.get("abstract"),
+			keyword=request.data.get("keyword"),
+			content=request.data.get("content"),
+			status="未审核",
+			owner=thisuser,
+		)
+		meeting_id=request.data.get("meeting_id")
+		thismeeting=Meeting.objects.get(meeting_id=meeting_id)
+		thispaper.save()
+		thisuser.participate.add(thismeeting)
+
+
