@@ -58,14 +58,14 @@ class MeetingViewSet(viewsets.ModelViewSet):
         }
         return HttpResponse(template.render(context, request))
 
-
-    def list(self, request):
+    @action(methods=['GET'],detail=False)
+    def osearch(self, request):
         queryset = Meeting.objects.all()
-        word = request.GET.get("search", None)
-        if word is None:
+        word = request.query_params.get('s', None)
+        if word is not None:
             queryset = Meeting.objects.filter(title__contains = word)
         serializer = MeetingSerializer(queryset, many = True)
-        return Response(serializer.data, status = HTTP_200_OK)
+        return Response(serializer.data, status = status.HTTP_200_OK)
 
     @action(methods=['GET'],detail=False)
     def allpaper(self, request):

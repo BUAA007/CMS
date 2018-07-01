@@ -223,7 +223,7 @@ class UserViewSet(viewsets.ModelViewSet):
 		thisuser.favorite.add(thismeeting)
 		return Response("info: favorite succsss", status=status.HTTP_200_OK)
 
-	@action(methods=['GET'])
+	@action(methods=['GET'], detail = False)
 	def allpaper(self,request):
 		pk = request.query_params.get('pk', None)
 		thisuser = User.objects.get(id=pk)
