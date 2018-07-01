@@ -3,7 +3,6 @@ from rest_framework import viewsets, response
 from rest_framework.response import Response
 from rest_framework import status
 from rest_framework.decorators import action
-
 from Paper.models import *
 from Paper.serializers import *
 from User.models import *
@@ -96,7 +95,7 @@ class UserViewSet(viewsets.ModelViewSet):
 	def login(self, request):
 	    if request.method == "POST":
 	        username = request.data.get('username')
-	        password = mad5( request.data.get('password') )
+	        password = md5( request.data.get('password') )
 	        user = User.objects.filter(username=username, password=password)
 	        '''
 	        template = loader.get_template('index.html')
@@ -108,6 +107,7 @@ class UserViewSet(viewsets.ModelViewSet):
 	        if user:
 	            request.session['is_login'] = 'true'         #定义session信息
 	            request.session['username'] = username
+	            request.session['id'] = user.id
 	            request.session.set_expiry(0)
 	            return render(request,'base.html',status = status.HTTP_201_CREATED)                ## 登录成功就将url重定向到后台的url
 	    return HttpResponse(errorInfo('Username/Passwd is wrong'), content_type="application/json")
@@ -152,6 +152,7 @@ class UserViewSet(viewsets.ModelViewSet):
 	            tel = tel,
 	            ).save()
 	        return render(request,'login.html',status = status.HTTP_201_CREATED)
+<<<<<<< HEAD
 	    return HttpResponse(errorInfo("未知原因失败，请稍后再试"), content_type="application/json") 
 
 	@action(methods = ['GET'],detail = False)
@@ -168,3 +169,46 @@ class UserViewSet(viewsets.ModelViewSet):
 			a = OrderedDict({"errorInfo":"服务器出错，请稍后重试。"})
 			return Response(a, status = status.HTTP_400_BAD_REQUEST)
 		return Response(result, status = status.HTTP_200_OK)
+=======
+	    return HttpResponse(errorInfo("未知原因失败，请稍后再试"), content_type="application/json")
+
+
+	@action(methods=['POST'], detail=False)
+	def registermeeting(self, request):
+		meeting_id = request.data.get("meeting_id")
+		user_id = request.data.get("user_id")
+		thisuser=User.objects.get(id=user_id)
+		thismeeting=Meeting.objects.get(meeting_id=meeting_id)
+		thisuser.participate.add(thismeeting)
+		return Response("info: register meeting succsss",status=status.HTTP_200_OK)
+
+	@action(methods=['POST'], detail=False)
+	def contribute(self, request):
+		user_id = request.data.get("user_id")
+		thisuser = User.objects.get(id=user_id)
+		thispaper= Paper(author_1=request.data.get("author_1"),
+			author_2=request.data.get("author_2"),
+			author_3=request.data.get("author_3"),
+			title=request.data.get("title"),
+			abstract=request.data.get("abstract"),
+			keyword=request.data.get("keyword"),
+			content=request.data.get("content"),
+			status="未审核",
+			owner=thisuser,
+		)
+		meeting_id=request.data.get("meeting_id")
+		thismeeting=Meeting.objects.get(meeting_id=meeting_id)
+		thispaper.save()
+		thisuser.participate.add(thismeeting)
+		return Response("info: contribute succsss", status=status.HTTP_200_OK)
+
+
+	@action(methods=['POST'], detail=False)
+	def favorite(self, request):
+		user_id = request.data.get("user_id")
+		thisuser = User.objects.get(id=user_id)
+		meeting_id = request.data.get("meeting_id")
+		thismeeting = Meeting.objects.get(meeting_id=meeting_id)
+		thisuser.favorite.add(thismeeting)
+		return Response("info: favorite succsss", status=status.HTTP_200_OK)
+>>>>>>> c4eca3044f237d2514e1d5855eedc1392bb5c4a1

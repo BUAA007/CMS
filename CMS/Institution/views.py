@@ -5,6 +5,10 @@ from rest_framework.response import Response
 from rest_framework import status
 from django.core import serializers
 from django.core.exceptions import ObjectDoesNotExist
+
+from .models import Institution,Employee
+from .serializers import InstitutionSerializer,EmployeeSerializer
+
 from Institution.models import Institution,Employee
 from Institution.serializers import InstitutionSerializer,EmployeeSerializer
 from django.template import loader
@@ -148,6 +152,7 @@ class EmployeeViewSet(viewsets.ModelViewSet):
 	        if employee:
 	            request.session['is_login'] = 'true'         #定义session信息
 	            request.session['username'] = username
+	            request.session['id'] = employee.id
 	            request.session.set_expiry(0)
 	            return render(request,'base.html',status = status.HTTP_201_CREATED)                ## 登录成功就将url重定向到后台的url
 	    return HttpResponse(errorInfo('用户名或密码错误'), content_type="application/json")
