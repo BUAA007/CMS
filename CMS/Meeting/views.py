@@ -13,3 +13,42 @@ from django.contrib.auth.models import User
 class MeetingViewSet(viewsets.ModelViewSet):
     queryset = Meeting.objects.all()
     serializer_class = MeetingSerializer
+
+    def create(self, request):
+        meeting_serializer=MeetingSerializer(data=request.data)
+        if meeting_serializer.is_valid():
+            thisMeeting = Meeting(title =request.data.get("title"),
+                                  intro =request.data.get("intro"),
+                                  essay_request=request.data.get("essay_request"),
+                                  ddl_date=request.data.get("ddl_date"),
+                                  result_notice_date=request.data.get("result_notice_date"),
+                                  regist_attend_date= request.data.get("regist_attend_date"),
+                                  meeting_date=request.data.get("meeting_date"),
+                                  schedule= request.data.get("schedule"),
+                                  )
+            thisMeeting.save()
+            return Response(thisMeeting.meeting_id, status=status.HTTP_201_CREATED)
+        return Response("error: Meeting is not valid",status=status.HTTP_400_BAD_REQUEST)
+
+    @action(methods=['GET'], detail=False)
+    def showdetail(self, request):
+        pk = request.query_params.get('pk',None)
+        thisMeeting=Meeting.objects.get(meeting_id=pk)
+        papers=thisMeeting.paper_set.all()
+        i=0
+        paper_list=list()
+        serializer = MeetingSerializer(thisMeeting)
+        paper_list.append(serializer.data)
+        paper_info={"title":"","author":""}
+        for paper in papers:
+            paper_info["title"]=paper.title
+            paper_info["author"]=paper.author_1
+            paper_list.append(paper_info)
+            i=i+1
+            if i>=10:
+                break
+
+        return Response(paper_list,status=status.HTTP_200_OK)
+
+
+

@@ -77,6 +77,7 @@ def errorInfo(msg):
 class UserViewSet(viewsets.ModelViewSet):
 	queryset = User.objects.all()
 	serializer_class = UserSerializer
+
 	
 	@action(methods = ['GET'],detail = False)
 	def index(self,request):
@@ -139,3 +140,4 @@ class UserViewSet(viewsets.ModelViewSet):
 	            ).save()
 	        return render(request,'login.html',status = status.HTTP_201_CREATED)
 	    return HttpResponse(errorInfo("未知原因失败，请稍后再试"), content_type="application/json") 
+
