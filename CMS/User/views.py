@@ -9,9 +9,10 @@ from User.serializers import *
 from django.template import loader
 from django.http import HttpResponse
 import re,json
+import hashlib
 # Create your views here.
 def checklen(pwd):
-	return len(pwd)>=8
+	return len(pwd)>=6
 
 def checkContainUpper(pwd):
 	pattern = re.compile('[A-Z]+')
@@ -58,7 +59,7 @@ def checkPassword(pwd):
 	numOK=checkContainNum(pwd)
 	#判断是否包含符号
 	symbolOK=checkSymbol(pwd)
-	return (lenOK and upperOK and lowerOK and numOK and symbolOK)
+	return (lenOK and upperOK and lowerOK and numOK and symbolOK )
 
 def checkPhonenumber(phone):
 	phone_pat = re.compile('1[3458]\\d{9}')
@@ -67,6 +68,11 @@ def checkPhonenumber(phone):
 def checkUsername(username):
 	username_pat = re.compile("[a-zA-z]\\w{0,9}")
 	return re.search(username_pat, username)
+
+def md5(arg):#这是加密函数，将传进来的函数加密
+	arg = str(arg)
+	return hashlib.md5(arg.encode(encoding='UTF-8')).hexdigest()
+	#return md5_pwd.hexdigest()#返回加密的数据
 
 def info(msg):
 	return json.dumps({'info': msg})
@@ -81,13 +87,13 @@ class UserViewSet(viewsets.ModelViewSet):
 	
 	@action(methods = ['GET'],detail = False)
 	def index(self,request):
-	    return render(request,'login.html',status = status.HTTP_201_CREATED)
+	    return render(request,'conference.html',status = status.HTTP_201_CREATED)
 
 	@action(methods = ['POST'],detail = False)
 	def login(self, request):
 	    if request.method == "POST":
 	        username = request.data.get('username')
-	        password = request.data.get('password')
+	        password = mad5( request.data.get('password') )
 	        user = User.objects.filter(username=username, password=password)
 	        '''
 	        template = loader.get_template('index.html')
@@ -120,8 +126,11 @@ class UserViewSet(viewsets.ModelViewSet):
 	    password2 = request.data.get("password2")
 	    email = request.data.get("email")
 	    tel = request.data.get("tel")
-	    if not User.objects.get(username = username):
-	       return  HttpResponse(errorInfo("用户名已存在"), content_type="application/json")
+	    try:
+	       if not User.objects.get(username = username):
+	           return  HttpResponse(errorInfo("用户名已存在"), content_type="application/json")
+	    except:
+	    	pass
 	    if not checkUsername(username):    #必须以字母开头，长度在10位以内
 	       return  HttpResponse(errorInfo("用户名不合法"), content_type="application/json")
 	    if not checkPassword(password):    #包含大写、小写、符号；长度大于等于8
@@ -131,6 +140,7 @@ class UserViewSet(viewsets.ModelViewSet):
 	    if not checkPhonenumber(tel):      #手机号位数为11位；开头为1，第二位为3或4或5或8;
 	       return  HttpResponse(errorInfo("电话号码不合法"), content_type="application/json")   
 	    user_serializer = UserSerializer(data = request.data)
+	    password = md5(password)
 	    if user_serializer.is_valid():
 	        thisUser = User(
 	            username = username,

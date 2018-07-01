@@ -9,6 +9,9 @@ from .models import Meeting
 from .serializers import MeetingSerializer
 from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.models import User
+from django.http import HttpResponse
+from django.template import loader
+
 
 class MeetingViewSet(viewsets.ModelViewSet):
     queryset = Meeting.objects.all()
@@ -47,8 +50,11 @@ class MeetingViewSet(viewsets.ModelViewSet):
             i=i+1
             if i>=10:
                 break
-
-        return Response(paper_list,status=status.HTTP_200_OK)
+        template = loader.get_template('conference.html')
+        context = {
+            'conference': thisMeeting,
+        }
+        return HttpResponse(template.render(context, request))
 
 
 
