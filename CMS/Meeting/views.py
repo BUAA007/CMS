@@ -17,6 +17,7 @@ class MeetingViewSet(viewsets.ModelViewSet):
     queryset = Meeting.objects.all()
     serializer_class = MeetingSerializer
 
+    '''
     def create(self, request):
         meeting_serializer=MeetingSerializer(data=request.data)
         #Institution_id = request.session['id']
@@ -54,10 +55,11 @@ class MeetingViewSet(viewsets.ModelViewSet):
                     schedule = request.data.get("schedule"),
                     )
                 thisMeeting.save()
+                #thisinstitution.meetings.add(thisMeeting)
                 return Response(thisMeeting.meeting_id, status=status.HTTP_200_OK)
             return Response("error: Meeting is not valid",status=status.HTTP_200_OK)
         return Response({"error":"Meeting is not valid"},status=status.HTTP_200_OK)
-    
+    '''
     
     def retrieve(self ,request,pk=None):
         thisMeeting=Meeting.objects.get(meeting_id=pk)
