@@ -117,6 +117,7 @@ class UserViewSet(viewsets.ModelViewSet):
                     request.session['is_login'] = 'true'         #定义session信息
                     request.session['username'] = username
                     request.session['id'] = user.id
+                    request.session['type'] = '0'   #普通用户标记
                     request.session.set_expiry(0)
                     # template = loader.get_template('base.html')
                     # context = {}
@@ -128,14 +129,15 @@ class UserViewSet(viewsets.ModelViewSet):
 
     @action(methods = ['GET'],detail = False)
     def logout(self, request):
+        if request.session['is_login'] != 'true':
+            return HttpResponse(errorInfo("登入后操作"), content_type="application/json")
         try:
             del request.session['is_login']         # 删除is_login对应的value值
             request.session.flush()                  # 删除django-session表中的对应一行记录
+            return HttpResponse(info("success"), content_type="application/json")
         except KeyError:
             pass
-        template = loader.get_template('login.html')
-        context = {}
-        return HttpResponse(template.render(context, request))
+        return HttpResponse(errorInfo("登出失败"), content_type="application/json")
         #return render(request,'base.html')             #重定向回主页面
 
 
@@ -191,6 +193,16 @@ class UserViewSet(viewsets.ModelViewSet):
         people_name=request.data.get("people_name")
         people_sex=request.data.get("people_sex")
         isbook=request.data.get("isbook")
+<<<<<<< HEAD
+        #缴费凭证pdf或者照片
+        thispaper = Paper.objects.get(id=paper_id)
+        print(111)
+        if thispaper.status == 1:
+            thisuser = User.objects.get(id=user_id)
+            thismeeting = Meeting.objects.get(meeting_id=meeting_id)
+            thisuser.participate.add(thismeeting)
+            return Response({"info": "register meeting success"}, status=status.HTTP_200_OK)
+=======
         i=0
         #缴费凭证pdf或者照片
         try:
@@ -209,6 +221,7 @@ class UserViewSet(viewsets.ModelViewSet):
 
         except:
             pass
+>>>>>>> df9aca0e5741b4700138e8219b1f732080555761
         return Response({"errorInfo": "paper is not received"}, status=status.HTTP_200_OK)
     '''
 
