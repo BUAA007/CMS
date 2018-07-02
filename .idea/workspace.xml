@@ -2,8 +2,22 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="638f6e9f-3419-4460-808d-9aefe5dfaa02" name="Default" comment="主页">
-      <change afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/.idea/codeStyles/codeStyleConfig.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/CMS.iml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/CMS.iml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/misc.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/misc.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/CMS/CMS/urls.py" beforeDir="false" afterPath="$PROJECT_DIR$/CMS/CMS/urls.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/CMS/CMS/views.py" beforeDir="false" afterPath="$PROJECT_DIR$/CMS/CMS/views.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/CMS/Institution/views.py" beforeDir="false" afterPath="$PROJECT_DIR$/CMS/Institution/views.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/CMS/Meeting/views.py" beforeDir="false" afterPath="$PROJECT_DIR$/CMS/Meeting/views.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/CMS/User/views.py" beforeDir="false" afterPath="$PROJECT_DIR$/CMS/User/views.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/CMS/templates/base.html" beforeDir="false" afterPath="$PROJECT_DIR$/CMS/templates/base.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/CMS/templates/conference.html" beforeDir="false" afterPath="$PROJECT_DIR$/CMS/templates/conference.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/CMS/templates/index.html" beforeDir="false" afterPath="$PROJECT_DIR$/CMS/templates/index.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/CMS/templates/judge.html" beforeDir="false" afterPath="$PROJECT_DIR$/CMS/templates/judge.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/CMS/templates/judgement.html" beforeDir="false" afterPath="$PROJECT_DIR$/CMS/templates/judgement.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/CMS/templates/login.html" beforeDir="false" afterPath="$PROJECT_DIR$/CMS/templates/login.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/CMS/templates/personal_info.html" beforeDir="false" afterPath="$PROJECT_DIR$/CMS/templates/personal_info.html" afterDir="false" />
     </list>
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
     <option name="TRACKING_ENABLED" value="true" />
@@ -14,27 +28,18 @@
   </component>
   <component name="CoverageDataManager">
     <SUITE FILE_PATH="coverage/CMS$views.coverage" NAME="views Coverage Results" MODIFIED="1530235140144" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/CMS/Test" />
-    <SUITE FILE_PATH="coverage/CMS$manage.coverage" NAME="manage Coverage Results" MODIFIED="1530434464979" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/CMS" />
+    <SUITE FILE_PATH="coverage/CMS$manage.coverage" NAME="manage Coverage Results" MODIFIED="1530505115668" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/CMS" />
   </component>
   <component name="DjangoConsoleOptions" custom-start-script="import sys; print('Python %s on %s' % (sys.version, sys.platform))&#10;import django; print('Django %s' % django.get_version())&#10;sys.path.extend([WORKING_DIR_AND_PYTHON_PATHS])&#10;if 'setup' in dir(django): django.setup()&#10;import django_manage_shell; django_manage_shell.run(PROJECT_ROOT)">
     <option name="myCustomStartScript" value="import sys; print('Python %s on %s' % (sys.version, sys.platform))&#10;import django; print('Django %s' % django.get_version())&#10;sys.path.extend([WORKING_DIR_AND_PYTHON_PATHS])&#10;if 'setup' in dir(django): django.setup()&#10;import django_manage_shell; django_manage_shell.run(PROJECT_ROOT)" />
   </component>
   <component name="FileEditorManager">
     <leaf SIDE_TABS_SIZE_LIMIT_KEY="300">
-      <file leaf-file-name="index.html" pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/CMS/templates/index.html">
-          <provider selected="true" editor-type-id="text-editor">
-            <state>
-              <caret line="229" column="14" selection-start-line="229" selection-start-column="14" selection-end-line="229" selection-end-column="14" />
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file leaf-file-name="views.py" pinned="false" current-in-tab="true">
+      <file leaf-file-name="views.py" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/CMS/User/views.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="318">
-              <caret line="243" selection-start-line="243" selection-end-line="243" />
+            <state relative-caret-position="537">
+              <caret line="268" column="49" selection-start-line="268" selection-start-column="49" selection-end-line="268" selection-end-column="49" />
               <folding>
                 <element signature="e#0#35#0" expanded="true" />
               </folding>
@@ -42,32 +47,91 @@
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="base.html" pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/CMS/templates/base.html">
+      <file leaf-file-name="views.py" pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/CMS/CMS/views.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="632">
-              <caret line="50" selection-start-line="50" selection-end-line="50" />
+            <state relative-caret-position="-866">
+              <caret line="19" column="27" lean-forward="true" selection-start-line="19" selection-start-column="27" selection-end-line="19" selection-end-column="27" />
+              <folding>
+                <element signature="e#0#35#0" expanded="true" />
+              </folding>
             </state>
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="judgement.html" pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/CMS/templates/judgement.html">
+      <file leaf-file-name="models.py" pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/CMS/User/models.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="-2038" />
+            <state relative-caret-position="380">
+              <caret line="20" column="42" selection-start-line="20" selection-start-column="38" selection-end-line="20" selection-end-column="42" />
+              <folding>
+                <element signature="e#0#28#0" expanded="true" />
+              </folding>
+            </state>
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="font-awesome.min.css" pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/CMS/templates/assets/css/font-awesome.min.css">
+      <file leaf-file-name="models.py" pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/CMS/Institution/models.py">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="133">
+              <caret line="10" column="18" lean-forward="true" selection-start-line="10" selection-start-column="18" selection-end-line="10" selection-end-column="18" />
+              <folding>
+                <element signature="e#0#28#0" expanded="true" />
+              </folding>
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="views.py" pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/CMS/Institution/views.py">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="331">
+              <caret line="160" column="49" lean-forward="true" selection-start-line="160" selection-start-column="49" selection-end-line="160" selection-end-column="49" />
+              <folding>
+                <element signature="e#0#35#0" expanded="true" />
+              </folding>
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="judge.html" pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/CMS/templates/judge.html">
           <provider selected="true" editor-type-id="text-editor" />
         </entry>
       </file>
-      <file leaf-file-name="test.html" pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/CMS/templates/test.html">
+      <file leaf-file-name="login.html" pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/CMS/templates/login.html">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="171">
-              <caret line="9" column="14" selection-start-line="9" selection-start-column="14" selection-end-line="9" selection-end-column="14" />
+            <state relative-caret-position="272">
+              <caret line="91" column="22" selection-start-line="91" selection-start-column="22" selection-end-line="91" selection-end-column="22" />
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="base.html" pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/CMS/templates/base.html">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="-2907">
+              <caret line="85" column="92" selection-start-line="85" selection-start-column="92" selection-end-line="85" selection-end-column="92" />
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="settings.py" pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/CMS/CMS/settings.py">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="143">
+              <caret line="87" column="23" selection-start-line="87" selection-start-column="23" selection-end-line="87" selection-end-column="23" />
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="personal_info.html" pinned="false" current-in-tab="true">
+        <entry file="file://$PROJECT_DIR$/CMS/templates/personal_info.html">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="-82">
+              <caret line="285" column="52" lean-forward="true" selection-start-line="285" selection-start-column="52" selection-end-line="285" selection-end-column="52" />
             </state>
           </provider>
         </entry>
@@ -86,7 +150,14 @@
       <find>image</find>
       <find>admin</find>
       <find>nmsl</find>
+      <find>cmc</find>
+      <find>登出</find>
       <find>info</find>
+      <find>发布</find>
+      <find>忘记</find>
+      <find>meet</find>
+      <find>paper</find>
+      <find>login</find>
     </findStrings>
   </component>
   <component name="Git.Settings">
@@ -98,17 +169,21 @@
       <list>
         <option value="$PROJECT_DIR$/README.md" />
         <option value="$PROJECT_DIR$/CMS/Test/urls.py" />
-        <option value="$PROJECT_DIR$/CMS/CMS/urls.py" />
         <option value="$PROJECT_DIR$/CMS/templates/static/index.html" />
-        <option value="$PROJECT_DIR$/CMS/CMS/settings.py" />
         <option value="$PROJECT_DIR$/CMS/templates/Test/test.html" />
         <option value="$PROJECT_DIR$/CMS/templates/index.html" />
         <option value="$PROJECT_DIR$/CMS/Test/views.py" />
         <option value="$PROJECT_DIR$/CMS/templates/test.html" />
-        <option value="$PROJECT_DIR$/CMS/templates/base.html" />
         <option value="$PROJECT_DIR$/CMS/templates/release_meeting.html" />
-        <option value="$PROJECT_DIR$/CMS/templates/personal_info.html" />
         <option value="$PROJECT_DIR$/CMS/User/views.py" />
+        <option value="$PROJECT_DIR$/CMS/CMS/settings.py" />
+        <option value="$PROJECT_DIR$/CMS/CMS/urls.py" />
+        <option value="$PROJECT_DIR$/CMS/templates/base.html" />
+        <option value="$PROJECT_DIR$/CMS/Institution/views.py" />
+        <option value="$PROJECT_DIR$/CMS/templates/login.html" />
+        <option value="$PROJECT_DIR$/CMS/Institution/models.py" />
+        <option value="$PROJECT_DIR$/CMS/CMS/views.py" />
+        <option value="$PROJECT_DIR$/CMS/templates/personal_info.html" />
       </list>
     </option>
   </component>
@@ -137,7 +212,6 @@
       <foldersAlwaysOnTop value="true" />
     </navigator>
     <panes>
-      <pane id="Scope" />
       <pane id="ProjectPane">
         <subPane>
           <expand>
@@ -160,6 +234,12 @@
               <item name="CMS" type="b2602c69:ProjectViewProjectNode" />
               <item name="CMS" type="462c0819:PsiDirectoryNode" />
               <item name="CMS" type="462c0819:PsiDirectoryNode" />
+              <item name="Institution" type="462c0819:PsiDirectoryNode" />
+            </path>
+            <path>
+              <item name="CMS" type="b2602c69:ProjectViewProjectNode" />
+              <item name="CMS" type="462c0819:PsiDirectoryNode" />
+              <item name="CMS" type="462c0819:PsiDirectoryNode" />
               <item name="templates" type="462c0819:PsiDirectoryNode" />
             </path>
             <path>
@@ -172,6 +252,7 @@
           <select />
         </subPane>
       </pane>
+      <pane id="Scope" />
     </panes>
   </component>
   <component name="PropertiesComponent">
@@ -180,7 +261,7 @@
     <property name="last_opened_file_path" value="$PROJECT_DIR$/CMS/templates/base.html" />
     <property name="nodejs_interpreter_path.stuck_in_default_project" value="undefined stuck path" />
     <property name="nodejs_npm_path_reset_for_default_project" value="true" />
-    <property name="settings.editor.selected.configurable" value="com.jetbrains.python.configuration.PyActiveSdkModuleConfigurable" />
+    <property name="settings.editor.selected.configurable" value="preferences.sourceCode.Python" />
     <property name="two.files.diff.last.used.file" value="$PROJECT_DIR$/CMS/templates/base.html" />
   </component>
   <component name="RecentsManager">
@@ -216,7 +297,7 @@
       <envs>
         <env name="PYTHONUNBUFFERED" value="1" />
       </envs>
-      <option name="SDK_HOME" value="D:\Anaconda3\python.exe" />
+      <option name="SDK_HOME" value="C:\Users\10072\AppData\Local\Programs\Python\Python36\python.exe" />
       <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$/CMS" />
       <option name="IS_MODULE_SDK" value="false" />
       <option name="ADD_CONTENT_ROOTS" value="true" />
@@ -339,21 +420,28 @@
       <option name="project" value="LOCAL" />
       <updated>1530434451793</updated>
     </task>
-    <option name="localTasksCounter" value="11" />
+    <task id="LOCAL-00011" summary="主页">
+      <created>1530499378908</created>
+      <option name="number" value="00011" />
+      <option name="presentableId" value="LOCAL-00011" />
+      <option name="project" value="LOCAL" />
+      <updated>1530499378908</updated>
+    </task>
+    <option name="localTasksCounter" value="12" />
     <servers />
   </component>
   <component name="ToolWindowManager">
-    <frame x="-7" y="-7" width="1550" height="878" extended-state="6" />
+    <frame x="-7" y="-7" width="1550" height="838" extended-state="6" />
     <editor active="true" />
     <layout>
       <window_info anchor="bottom" id="TODO" order="6" />
       <window_info anchor="bottom" id="Event Log" order="7" side_tool="true" weight="0.32903227" />
       <window_info anchor="bottom" id="Database Changes" order="7" show_stripe_button="false" />
-      <window_info anchor="bottom" id="Version Control" order="7" weight="0.3297587" />
+      <window_info anchor="bottom" id="Version Control" order="7" weight="0.32876712" />
       <window_info anchor="bottom" id="Python Console" order="7" />
-      <window_info active="true" anchor="bottom" id="Run" order="2" visible="true" weight="0.32918397" />
+      <window_info active="true" anchor="bottom" id="Run" order="2" visible="true" weight="0.32876712" />
       <window_info anchor="bottom" id="Terminal" order="7" />
-      <window_info content_ui="combo" id="Project" order="0" visible="true" weight="0.18364611" />
+      <window_info content_ui="combo" id="Project" order="0" visible="true" weight="0.18359375" />
       <window_info anchor="bottom" id="Docker" order="7" show_stripe_button="false" />
       <window_info anchor="right" id="Database" order="3" />
       <window_info anchor="right" id="SciView" order="3" />
@@ -392,36 +480,6 @@
     </breakpoint-manager>
   </component>
   <component name="editorHistoryManager">
-    <entry file="file://$PROJECT_DIR$/CMS/templates/index.html">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="4351">
-          <caret line="229" column="14" selection-start-line="229" selection-start-column="14" selection-end-line="229" selection-end-column="14" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/CMS/templates/test.html">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="171">
-          <caret line="9" column="14" selection-start-line="9" selection-start-column="14" selection-end-line="9" selection-end-column="14" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/CMS/Test/urls.py" />
-    <entry file="file://$PROJECT_DIR$/CMS/Test/views.py" />
-    <entry file="file://$PROJECT_DIR$/CMS/templates/base.html">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="741">
-          <caret line="39" column="63" selection-start-line="39" selection-start-column="63" selection-end-line="39" selection-end-column="63" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/CMS/templates/index.html">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="4351">
-          <caret line="229" column="14" selection-start-line="229" selection-start-column="14" selection-end-line="229" selection-end-column="14" />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/CMS/templates/test.html">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="171">
@@ -515,16 +573,6 @@
     <entry file="file://$PROJECT_DIR$/CMS/Test/models.py" />
     <entry file="file://$PROJECT_DIR$/CMS/Test/apps.py" />
     <entry file="file://$PROJECT_DIR$/CMS/Test/tests.py" />
-    <entry file="file://$PROJECT_DIR$/CMS/CMS/urls.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="238">
-          <caret line="17" lean-forward="true" selection-start-line="17" selection-end-line="17" />
-          <folding>
-            <element signature="e#627#659#0" expanded="true" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/CMS/templates/index1.html" />
     <entry file="file://$PROJECT_DIR$/CMS/static/test.py">
       <provider selected="true" editor-type-id="text-editor" />
@@ -536,13 +584,6 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/CMS/templates/Test/index.html">
       <provider selected="true" editor-type-id="text-editor" />
-    </entry>
-    <entry file="file://$PROJECT_DIR$/CMS/CMS/settings.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="1245">
-          <caret line="122" selection-start-line="122" selection-end-line="122" />
-        </state>
-      </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/CMS/manage.py">
       <provider selected="true" editor-type-id="text-editor">
@@ -556,13 +597,6 @@
       <provider selected="true" editor-type-id="images" />
     </entry>
     <entry file="file://$PROJECT_DIR$/CMS/Test/views.py" />
-    <entry file="file://$PROJECT_DIR$/CMS/templates/index.html">
-      <provider selected="true" editor-type-id="text-editor">
-        <state>
-          <caret line="229" column="14" selection-start-line="229" selection-start-column="14" selection-end-line="229" selection-end-column="14" />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/CMS/templates/test.html">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="171">
@@ -573,13 +607,6 @@
     <entry file="file://$PROJECT_DIR$/CMS/templates/assets/css/font-awesome.min.css">
       <provider selected="true" editor-type-id="text-editor" />
     </entry>
-    <entry file="file://$PROJECT_DIR$/CMS/templates/personal_info.html">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="519">
-          <caret line="347" column="13" selection-start-line="347" selection-start-column="13" selection-end-line="347" selection-end-column="13" />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/CMS/templates/release_meeting.html">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="114">
@@ -587,25 +614,104 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/CMS/templates/base.html">
+    <entry file="file://$PROJECT_DIR$/CMS/templates/judgement.html">
+      <provider selected="true" editor-type-id="text-editor" />
+    </entry>
+    <entry file="file://$PROJECT_DIR$/CMS/CMS/urls.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="632">
-          <caret line="50" selection-start-line="50" selection-end-line="50" />
+        <state relative-caret-position="335">
+          <caret line="34" column="1" selection-start-line="34" selection-start-column="1" selection-end-line="34" selection-end-column="1" />
+          <folding>
+            <element signature="e#627#659#0" expanded="true" />
+          </folding>
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/CMS/templates/judgement.html">
+    <entry file="file://$PROJECT_DIR$/CMS/templates/index.html">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="-2038" />
+        <state relative-caret-position="399">
+          <caret line="229" column="14" selection-start-line="229" selection-start-column="14" selection-end-line="229" selection-end-column="14" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/CMS/templates/judge.html">
+      <provider selected="true" editor-type-id="text-editor" />
+    </entry>
+    <entry file="file://$PROJECT_DIR$/CMS/templates/login.html">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="272">
+          <caret line="91" column="22" selection-start-line="91" selection-start-column="22" selection-end-line="91" selection-end-column="22" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/CMS/CMS/settings.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="143">
+          <caret line="87" column="23" selection-start-line="87" selection-start-column="23" selection-end-line="87" selection-end-column="23" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/CMS/User/models.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="380">
+          <caret line="20" column="42" selection-start-line="20" selection-start-column="38" selection-end-line="20" selection-end-column="42" />
+          <folding>
+            <element signature="e#0#28#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/CMS/Institution/models.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="133">
+          <caret line="10" column="18" lean-forward="true" selection-start-line="10" selection-start-column="18" selection-end-line="10" selection-end-column="18" />
+          <folding>
+            <element signature="e#0#28#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/CMS/CMS/views.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="-866">
+          <caret line="19" column="27" lean-forward="true" selection-start-line="19" selection-start-column="27" selection-end-line="19" selection-end-column="27" />
+          <folding>
+            <element signature="e#0#35#0" expanded="true" />
+          </folding>
+        </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/CMS/User/views.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="318">
-          <caret line="243" selection-start-line="243" selection-end-line="243" />
+        <state relative-caret-position="537">
+          <caret line="268" column="49" selection-start-line="268" selection-start-column="49" selection-end-line="268" selection-end-column="49" />
           <folding>
             <element signature="e#0#35#0" expanded="true" />
           </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/CMS/Institution/views.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="331">
+          <caret line="160" column="49" lean-forward="true" selection-start-line="160" selection-start-column="49" selection-end-line="160" selection-end-column="49" />
+          <folding>
+            <element signature="e#0#35#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/CMS/templates/base.html">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="-2907">
+          <caret line="85" column="92" selection-start-line="85" selection-start-column="92" selection-end-line="85" selection-end-column="92" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/CMS/templates/personal_info.html">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="-82">
+          <caret line="285" column="52" lean-forward="true" selection-start-line="285" selection-start-column="52" selection-end-line="285" selection-end-column="52" />
         </state>
       </provider>
     </entry>
