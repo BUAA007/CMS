@@ -70,7 +70,7 @@
                     <a href="/base"> <i class="menu-icon fa fa-twitter"></i>主页 </a>
                 </li>
                 <h3 class="menu-title"></h3><!-- /.menu-title -->
-                {% if request.session.type == 1 %}
+                {% if request.session.type == '1' %}
                     <li class="menu-item-has-children dropdown">
                         <a href="#" class="dropdown-toggle" data-toggle="dropdown" aria-haspopup="true"
                            aria-expanded="false"> <i class="menu-icon fa fa-comments"></i>会议</a>
@@ -100,7 +100,7 @@
                     <!-- /.menu-title -->
                 {% endif %}
 
-                {% if request.session.type == 0 %}
+                {% if request.session.type == '0' %}
                     <h3 class="menu-title"></h3>
                     <li class="menu-item-has-children dropdown">
                         <a href="#" class="dropdown-toggle" data-toggle="dropdown" aria-haspopup="true"
