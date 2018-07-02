@@ -17,7 +17,7 @@
                     </button>
                 </div>
                 <div class="modal-body">
-                    <form enctype="multipart/form-data" class="form-horizontal" action="/user/contribute/" method="post"
+                    <form enctype="multipart/form-data" class="form-horizontal" action="/user/user/contribute/" method="post"
                           id="postPaperForm">
                         <div class="form-group">
                             <div class="col-4">
@@ -287,12 +287,11 @@
             isFavorite = false;
         {% endif %}
         function favorite() {
-            var user_id = 1;
             var meeting_id = {{ conference.meeting_id }};
             $.ajax({
-                url: '/user/favorite/',
+                url: '/user/user/favorite/',
                 type: 'POST',
-                data: {'user_id': user_id, 'meeting_id': meeting_id}, // Request body
+                data: {'meeting_id': meeting_id}, // Request body
                 dataType: 'json',
                 success: function (response) {
                     isFavorite = !isFavorite;
