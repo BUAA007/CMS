@@ -233,8 +233,7 @@ class UserViewSet(viewsets.ModelViewSet):
 
     @action(methods=['POST'], detail=False)
     def contribute(self, request):
-        #user_id = request.data.get("user_id")
-        user_id=1
+        user_id = request.data.get("user_id")
         thisuser = User.objects.get(id=user_id)
         meeting_id=request.data.get("meeting_id")
         thismeeting=Meeting.objects.get(meeting_id=meeting_id)
@@ -259,8 +258,7 @@ class UserViewSet(viewsets.ModelViewSet):
     def favorite(self, request):
         user_id = request.data.get("user_id")
         thisuser = User.objects.get(id=user_id)
-        meetingid = 1
-        #request.data.get("meeting_id")
+        request.data.get("meeting_id")
         thismeeting = Meeting.objects.get(meeting_id=meetingid)
         try:
             fae=thisuser.favorite.get(meeting_id=meetingid)
@@ -289,7 +287,7 @@ class JoinViewSet(viewsets.ModelViewSet):
     serializer_class = JoinSerializer
 
     def create(self, request):
-        user_id=1
+        user_id=request.session['id']
         thisuser = User.objects.get(id=user_id)
         meeting_id=request.data.get("meeting_id")
         thismeeting=Meeting.objects.get(meeting_id=meeting_id)
