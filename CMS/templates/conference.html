@@ -297,27 +297,29 @@
                     data: {'meeting_id': meeting_id}, // Request body
                     dataType: 'json',
                     success: function (response) {
-                        isFavorite = !isFavorite;
-                        var div = document.getElementById('favoriteDiv');
-                        if (isFavorite) {
-                            div.innerHTML = '<a href="#">\n' +
-                                '                                        <i class="fa text-danger fa-heart"></i>\n' +
-                                '                                        已收藏\n' +
-                                '                                    </a>'
+                        if (msg['errorInfo']) {
+                            document.getElementById('info').innerHTML = msg;
+                            jQuery(function ($) {
+                                $('#id_errors').modal('show')
+                            });
                         } else {
-                            div.innerHTML = '<a href="#">\n' +
-                                '                                        <i class="fa fa-heart"></i>\n' +
-                                '                                        收藏\n' +
-                                '                                    </a>'
+                            isFavorite = !isFavorite;
+                            var div = document.getElementById('favoriteDiv');
+                            if (isFavorite) {
+                                div.innerHTML = '<a href="#">\n' +
+                                    '                                        <i class="fa text-danger fa-heart"></i>\n' +
+                                    '                                        已收藏\n' +
+                                    '                                    </a>'
+                            } else {
+                                div.innerHTML = '<a href="#">\n' +
+                                    '                                        <i class="fa fa-heart"></i>\n' +
+                                    '                                        收藏\n' +
+                                    '                                    </a>'
+                            }
                         }
                     },
                     error: function (msg) {
-                        jQuery(function ($) {
-                            $('#id_errors').modal('show')
-                        });
-                        if (msg['errorInfo']) {
-                            document.getElementById('info').innerHTML = msg;
-                        }
+
                     }
                 });
             });
