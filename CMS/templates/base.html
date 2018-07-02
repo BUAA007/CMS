@@ -312,10 +312,10 @@
     })(jQuery);
 
     function logout() {
-        $.ajax({
+       $.ajax({
             url: "/logout/",
             type: 'GET',
-            dataType: 'json',
+            dataType : 'json',
             success: function (response) {
                 if (response['errorInfo'] != null) {
                     alert(response['errorInfo']);
@@ -324,8 +324,10 @@
                     window.location.href = '/base/';
                 }
             }
-        })
+
+    })
     }
+</script>
 
 </script>
 
