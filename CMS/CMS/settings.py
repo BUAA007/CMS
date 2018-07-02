@@ -84,10 +84,10 @@ DATABASES = {
  
     'default': {
         'ENGINE': 'django.db.backends.mysql',
-        'NAME': 'CMS',
+        'NAME': 'CMS2',
         'USER': "root",
 
-        'PASSWORD': 'a123456789',
+        'PASSWORD': '',
 
         'HOST': '123.206.65.175',
         'PORT': '3306',
