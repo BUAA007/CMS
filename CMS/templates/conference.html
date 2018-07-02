@@ -17,12 +17,13 @@
                     </button>
                 </div>
                 <div class="modal-body">
-                    <form enctype="multipart/form-data" class="form-horizontal" action="/user/contribute/" method="post"
+                    <form enctype="multipart/form-data" class="form-horizontal" action="/user/user/contribute/"
+                          method="post"
                           id="postPaperForm">
                         <div class="form-group">
                             <div class="col-4">
                                 <label for="author_1" class="col-form-label">第一作者:</label>
-                                <input type="text" class="form-control" id="author_1" name="author_1">
+                                <input type="text" required class="form-control" id="author_1" name="author_1">
                             </div>
                             <div class="col-4">
                                 <label for="author_2" class="col-form-label">第二作者:</label>
@@ -35,19 +36,20 @@
                         </div>
                         <div class="form-group">
                             <label for="title" class="col-form-label">标题:</label>
-                            <input class="form-control" id="title" name="title">
+                            <input class="form-control" required id="title" name="title">
                         </div>
                         <div class="form-group">
                             <label for="keyword" class="keyword">关键字:</label>
-                            <input class="form-control" id="keyword" name="keyword">
+                            <input class="form-control" required id="keyword" name="keyword">
                         </div>
                         <div class="form-group">
                             <label for="abstract" class="keyword">摘要:</label>
-                            <textarea class="form-control" id="abstract" name="abstract" rows="5"></textarea>
+                            <textarea class="form-control" required id="abstract" name="abstract" rows="5"
+                                      maxlength="150"></textarea>
                         </div>
                         <div class="form-group">
                             <div class="custom-file">
-                                <input type="file" name="content" class="custom-file-input" id="content">
+                                <input required type="file" name="content" class="custom-file-input" id="content">
                                 <label class="custom-file-label" for="content">选择文件</label>
                             </div>
                         </div>
@@ -140,14 +142,14 @@
                                         投稿
                                     </a>
                                 </div>
-                                <div class="col-3" onclick="favorite()" id="favoriteDiv">
+                                <div class="col-3" id="favoriteDiv">
                                     {% if isfavorite %}
-                                    <a href="#">
-                                        <i class="fa text-danger fa-heart"></i>
-                                        已收藏
-                                    </a>
+                                        <a href="#" onclick="favorite()">
+                                            <i class="fa text-danger fa-heart"></i>
+                                            已收藏
+                                        </a>
                                     {% else %}
-                                        <a href="#">
+                                        <a href="#" onclick="favorite()">
                                             <i class="fa fa-heart"></i>
                                             收藏
                                         </a>
@@ -288,30 +290,39 @@
             isFavorite = false;
         {% endif %}
         function favorite() {
-            var user_id = 1;
             var meeting_id = {{ conference.meeting_id }};
-            $.ajax({
-                url: '/user/favorite/',
-                type: 'POST',
-                data: {'user_id': user_id, 'meeting_id': meeting_id}, // Request body
-                dataType: 'json',
-                success: function (response) {
-                    isFavorite = !isFavorite;
-                    var div = document.getElementById('favoriteDiv');
-                    if (isFavorite) {
-                        div.innerHTML = '<a href="#">\n' +
-                            '                                        <i class="fa text-danger fa-heart"></i>\n' +
-                            '                                        已收藏\n' +
-                            '                                    </a>'
-                    } else {
-                        div.innerHTML = '<a href="#">\n' +
-                            '                                        <i class="fa fa-heart"></i>\n' +
-                            '                                        收藏\n' +
-                            '                                    </a>'
+            jQuery(function ($) {
+                $.ajax({
+                    url: '/user/user/favorite/',
+                    type: 'POST',
+                    data: {'meeting_id': meeting_id}, // Request body
+                    dataType: 'json',
+                    success: function (response) {
+                        if (response['errorInfo']) {
+                            document.getElementById('info').innerHTML = response;
+                            jQuery(function ($) {
+                                $('#id_errors').modal('show')
+                            });
+                        } else {
+                            isFavorite = !isFavorite;
+                            var div = document.getElementById('favoriteDiv');
+                            if (isFavorite) {
+                                div.innerHTML = '<a href="#">\n' +
+                                    '                                        <i class="fa text-danger fa-heart"></i>\n' +
+                                    '                                        已收藏\n' +
+                                    '                                    </a>'
+                            } else {
+                                div.innerHTML = '<a href="#">\n' +
+                                    '                                        <i class="fa fa-heart"></i>\n' +
+                                    '                                        收藏\n' +
+                                    '                                    </a>'
+                            }
+                        }
+                    },
+                    error: function (msg) {
+
                     }
-                },
-                error: function (msg) {
-                }
+                });
             });
         }
     </script>

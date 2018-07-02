@@ -1,6 +1,1 @@
-# Conference Management System
-  pip install --pre django
-  git clone https://github.com/django/django.git
-  pip install djangorestframework
-  pip install markdown       
-  pip install django-filter
+http://127.0.0.1:8000/meeting/Meeting/2/   #根据id查会议信息

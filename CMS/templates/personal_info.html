@@ -1,0 +1,57 @@
+{% extends 'base.html' %}
+{% load staticfiles %}
+
+{% block title %}
+    test
+{% endblock %}
+
+{% block content %}
+<div class="animated fadeIn">
+                <div class="container">
+                    <div class="col-lg-12 col-lg-offset-4">
+                        <div class="card">
+                            <div class="card-header" ><strong>个人信息</strong></div>
+                            <div class="card-body card-block">
+                                <div class="row form-group">
+                                    <div class="col col-md-3"><label for="text-input" class=" form-control-label">账号种类</label></div>
+                                    <div class="col-12 col-md-9">
+                                        <label for="text-input" class=" form-control-label" id="t1">
+                                            {% if request.session.type == '1' %}
+                                                单位账号
+                                            {% else %}
+                                                普通账号
+                                            {% endif %}
+                                        </label>
+                                    </div>
+                                </div>
+                                <div class="row form-group">
+                                    <div class="col col-md-3"><label for="text-input" class=" form-control-label">账号</label></div>
+                                    <div class="col-12 col-md-9"><label for="text-input" class=" form-control-label" id="t2">{{ request.session.username }}</label></div>
+                                </div>
+                                <div class="row form-group">
+                                    <div class="col col-md-3"><label for="text-input" class=" form-control-label">密码</label></div>
+                                    <div class="col-md-4" id="p"><label for="text-input" class=" form-control-label">*******</label></div>
+                                    <div class="col-md-3" id="p2"><a href="#" onclick="onclick5()"><i class="ti-pencil"></i></a></div>
+                                </div>
+                                <div class="row form-group">
+                                    <div class="col col-md-3"><label for="text-input" class=" form-control-label">绑定邮箱</label></div>
+                                    <div class="col-md-4" id="info"><label for="text-input" class=" form-control-label">{{ email }}</label></div>
+                                    <div class="col-md-3" id="info2"><a href="#" onclick="onclick1()"><i class="ti-pencil"></i></a></div>
+                                </div>
+                                <div class="row form-group">
+                                    <div class="col col-md-3" ><label for="text-input" class=" form-control-label">绑定手机</label></div>
+                                    <div class="col-md-4" id="info3"><label for="text-input" class=" form-control-label">{{ tel }}</label></div>
+                                    <div class="col-md-3" id="info4"><a href="#" onclick="onclick3()"><i class="ti-pencil"></i></a></div>
+                                </div>
+                                {%  if request.session.type == '1'%}
+                                    <div class="row form-group">
+                                        <div class="col col-md-3"><label for="text-input" class=" form-control-label">所属组织机构</label></div>
+                                        <div class="col-12 col-md-9"><label for="text-input" class=" form-control-label" id="t5">{{ institution }}</label></div>
+                                    </div>
+                                {% endif %}
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+{% endblock %}
