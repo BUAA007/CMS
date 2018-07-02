@@ -275,3 +275,29 @@ class UserViewSet(viewsets.ModelViewSet):
         }
         return HttpResponse(template.render(context, request))
 
+class JoinViewSet(viewsets.ModelViewSet):
+    queryset = Join.objects.all()
+    serializer_class = JoinSerializer
+
+    def create(self, request):
+        user_id=1
+        thisuser = User.objects.get(id=user_id)
+        meeting_id=request.data.get("meeting_id")
+        thismeeting=Meeting.objects.get(meeting_id=meeting_id)
+        namelist = request.data.get("name")
+        genderlist = request.data.get("gender")
+        reserlist = request.data.get("reservation")
+        receipt = request.FILES['file']
+        count = 0
+        for name in namelist:
+            people = Join(
+                name = name,
+                gender = gender[count],
+                receipt = receipt,
+                #content=request.data.get("content"),
+                user = thisuser,
+                meeting = thismeeting,
+            )
+            people.save()
+            count = count + 1
+        return Response("info: join success", status=status.HTTP_200_OK)

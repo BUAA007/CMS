@@ -20,4 +20,19 @@ class User(models.Model):
 		)
 	favorite = models.ManyToManyField(Meeting, related_name = "User_set",blank = True,)
 	participate = models.ManyToManyField(Meeting, related_name = "Attendee_set",blank = True,)
-	
+
+class Join(models.Model):
+	receipt = models.FileField(
+		upload_to = 'receipt',
+		)
+	name = models.CharField(
+		max_length = 32,
+		)
+	gender = models.CharField(
+		max_length = 10,
+		)
+	reservation = models.CharField(
+		max_length = 8,
+		)
+	meeting = models.ManyToManyField(Meeting)
+	user = models.ManyToManyField(User)
