@@ -22,7 +22,7 @@
                         <div class="form-group">
                             <div class="col-4">
                                 <label for="author_1" class="col-form-label">第一作者:</label>
-                                <input type="text" class="form-control" id="author_1" name="author_1">
+                                <input type="text" required class="form-control" id="author_1" name="author_1">
                             </div>
                             <div class="col-4">
                                 <label for="author_2" class="col-form-label">第二作者:</label>
@@ -35,19 +35,19 @@
                         </div>
                         <div class="form-group">
                             <label for="title" class="col-form-label">标题:</label>
-                            <input class="form-control" id="title" name="title">
+                            <input class="form-control" required id="title" name="title">
                         </div>
                         <div class="form-group">
                             <label for="keyword" class="keyword">关键字:</label>
-                            <input class="form-control" id="keyword" name="keyword">
+                            <input class="form-control" required id="keyword" name="keyword">
                         </div>
                         <div class="form-group">
                             <label for="abstract" class="keyword">摘要:</label>
-                            <textarea class="form-control" id="abstract" name="abstract" rows="5"></textarea>
+                            <textarea class="form-control" required id="abstract" name="abstract" rows="5" maxlength="150"></textarea>
                         </div>
                         <div class="form-group">
                             <div class="custom-file">
-                                <input type="file" name="content" class="custom-file-input" id="content">
+                                <input required type="file" name="content" class="custom-file-input" id="content">
                                 <label class="custom-file-label" for="content">选择文件</label>
                             </div>
                         </div>
