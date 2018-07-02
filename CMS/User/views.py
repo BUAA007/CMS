@@ -182,6 +182,7 @@ class UserViewSet(viewsets.ModelViewSet):
             return Response(a, status = status.HTTP_400_BAD_REQUEST)
         return Response(result, status = status.HTTP_200_OK)
 
+    '''
     @action(methods=['POST'], detail=False)
     def registermeeting(self, request):
         meeting_id = request.data.get("meeting_id")
@@ -190,15 +191,32 @@ class UserViewSet(viewsets.ModelViewSet):
         people_name=request.data.get("people_name")
         people_sex=request.data.get("people_sex")
         isbook=request.data.get("isbook")
+        i=0
         #缴费凭证pdf或者照片
-        thispaper = Paper.objects.get(id=paper_id)
-        print(111)
-        if thispaper.status == 1:
-            thisuser = User.objects.get(id=user_id)
-            thismeeting = Meeting.objects.get(meeting_id=meeting_id)
-            thisuser.participate.add(thismeeting)
-            return Response({"info": "register meeting success"}, status=status.HTTP_200_OK)
+        try:
+            thispaper = Paper.objects.get(id=paper_id)
+            #print(111)
+            if thispaper.status == 1:
+                thisuser = User.objects.get(id=user_id)
+                thismeeting = Meeting.objects.get(meeting_id=meeting_id)
+                for x in people_name:
+                    i++
+
+                type_participate(user=thisuser,meeting=thismeeting,people_name=people_name[str(i)],people_sex=people_sex,isbook=isbook)
+
+                thisuser.participate.add(thismeeting)
+                return Response({"info": "register meeting success"}, status=status.HTTP_200_OK)
+
+        except:
+            pass
         return Response({"errorInfo": "paper is not received"}, status=status.HTTP_200_OK)
+    '''
+
+    @action(methods=['POST'], detail=False)
+    def listentermmeting(self,request):
+        pass
+
+    
 
     @action(methods=['POST'], detail=False)
     def contribute(self, request):
