@@ -106,8 +106,8 @@ class InstitutionViewSet(viewsets.ModelViewSet):
 	    	pass
 	    if not checkUsername(name):    #必须以字母开头，长度在10位以内
 	        return  HttpResponse(errorInfo("机构名不合法"), content_type="application/json")
-	    if not checkUsername(username):    #必须以字母开头，长度在10位以内
-	        return  HttpResponse(errorInfo("用户名不合法"), content_type="application/json")
+	    # if not checkUsername(username):    #必须以字母开头，长度在10位以内
+	    #     return  HttpResponse(errorInfo("用户名不合法"), content_type="application/json")
 	    if not checkPassword(password):    #包含大写、小写、符号；长度大于等于8
 	        return  HttpResponse(errorInfo("密码不合法"), content_type="application/json")
 	    if not password == password2:
