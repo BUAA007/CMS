@@ -20,3 +20,4 @@ class User(models.Model):
 		)
 	favorite = models.ManyToManyField(Meeting, related_name = "User_set",blank = True,)
 	participate = models.ManyToManyField(Meeting, related_name = "Attendee_set",blank = True,)
+	

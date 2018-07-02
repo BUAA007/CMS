@@ -117,6 +117,7 @@ class UserViewSet(viewsets.ModelViewSet):
                     request.session['is_login'] = 'true'         #定义session信息
                     request.session['username'] = username
                     request.session['id'] = user.id
+                    request.session['type'] = '0'   #普通用户标记
                     request.session.set_expiry(0)
                     # template = loader.get_template('base.html')
                     # context = {}
@@ -128,14 +129,15 @@ class UserViewSet(viewsets.ModelViewSet):
 
     @action(methods = ['GET'],detail = False)
     def logout(self, request):
+        if request.session['is_login'] != 'true':
+            return HttpResponse(errorInfo("登入后操作"), content_type="application/json")
         try:
             del request.session['is_login']         # 删除is_login对应的value值
             request.session.flush()                  # 删除django-session表中的对应一行记录
+            return HttpResponse(info("success"), content_type="application/json")
         except KeyError:
             pass
-        template = loader.get_template('login.html')
-        context = {}
-        return HttpResponse(template.render(context, request))
+        return HttpResponse(errorInfo("登出失败"), content_type="application/json")
         #return render(request,'base.html')             #重定向回主页面
 
 
@@ -187,6 +189,10 @@ class UserViewSet(viewsets.ModelViewSet):
         meeting_id = request.data.get("meeting_id")
         user_id = request.data.get("user_id")
         paper_id = request.data.get("paper_id")
+        people_name=request.data.get("people_name")
+        people_sex=request.data.get("people_sex")
+        isbook=request.data.get("isbook")
+        #缴费凭证pdf或者照片
         thispaper = Paper.objects.get(id=paper_id)
         print(111)
         if thispaper.status == 1:
@@ -198,8 +204,11 @@ class UserViewSet(viewsets.ModelViewSet):
 
     @action(methods=['POST'], detail=False)
     def contribute(self, request):
-        user_id = request.data.get("user_id")
+        #user_id = request.data.get("user_id")
+        user_id=1
         thisuser = User.objects.get(id=user_id)
+        meeting_id=request.data.get("meeting_id")
+        thismeeting=Meeting.objects.get(meeting_id=meeting_id)
         thispaper= Paper(author_1=request.data.get("author_1"),
             author_2=request.data.get("author_2"),
             author_3=request.data.get("author_3"),
@@ -210,9 +219,8 @@ class UserViewSet(viewsets.ModelViewSet):
             #content=request.data.get("content"),
             status=-1,
             owner=thisuser,
+            meeting=thismeeting,
         )
-        meeting_id=request.data.get("meeting_id")
-        thismeeting=Meeting.objects.get(meeting_id=meeting_id)
         thispaper.save()
         thisuser.participate.add(thismeeting)
         return Response("info: contribute succsss", status=status.HTTP_200_OK)
@@ -237,3 +245,4 @@ class UserViewSet(viewsets.ModelViewSet):
             'papers': papers,
         }
         return HttpResponse(template.render(context, request))
+

@@ -1,6 +1,8 @@
 # Create your models here.
 from django.db import models
 import django.utils.timezone as timezone
+from Institution.models import *
+
 class Meeting(models.Model):
 	meeting_id = models.AutoField(
 		primary_key = True,
@@ -54,4 +56,9 @@ class Meeting(models.Model):
 	about_us = models.CharField(
 		max_length = 128,
 		null = True,
+		)
+	institution = models.ForeignKey(
+		'Institution.Institution',
+		on_delete=models.CASCADE,
+		default = "",
 		)
