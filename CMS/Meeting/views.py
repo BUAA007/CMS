@@ -60,7 +60,7 @@ class MeetingViewSet(viewsets.ModelViewSet):
     
     
     def retrieve(self ,request,pk=None):
-        user_id=4
+        user_id = 1
         thisMeeting=Meeting.objects.get(meeting_id=pk)
         papers=thisMeeting.paper_set.all()
         thisuser=User.objects.get(id=user_id)
