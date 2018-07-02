@@ -283,20 +283,22 @@ class UserViewSet(viewsets.ModelViewSet):
 
     @action(methods=['POST'], detail=False)
     def favorite(self, request):
-        user_id = request.data.get("user_id")
-        thisuser = User.objects.get(id=user_id)
-        request.data.get("meeting_id")
-        thismeeting = Meeting.objects.get(meeting_id=meetingid)
         try:
-            fae=thisuser.favorite.get(meeting_id=meetingid)
+            user_id = request.session['id']
         except:
-            fae = None
-        if fae is None:
-            thisuser.favorite.add(thismeeting)
-            return Response({"errorInfo":"favorite fail"}, status=status.HTTP_200_OK)
-        thisuser.favorite.remove(thismeeting)
-        return Response({"info":"favorite success"}, status=status.HTTP_200_OK)
-
+            return Response({"errorInfo":"请登录"}, status=status.HTTP_200_OK)
+        else:
+            thisuser = User.objects.get(id=user_id)
+            meeting=request.data.get("meeting_id")
+            thismeeting = Meeting.objects.get(meeting_id=meeting)
+            try:
+                fae=thisuser.favorite.get(meeting_id=meeting)
+            except:
+                fae = None
+            if fae is None:
+                thisuser.favorite.add(thismeeting)
+            thisuser.favorite.remove(thismeeting)
+        return Response({"info":"成功"}, status=status.HTTP_200_OK)
         
     @action(methods=['GET'], detail = False)
     def allpaper(self,request):
