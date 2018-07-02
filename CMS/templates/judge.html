@@ -16,7 +16,7 @@
                         </div>
                         <div class="float-right">
                             <div class="col-3">
-                                <a href="#" onclick="getValue()">
+                                <a href="#">
                                     <i class="fa fa-download"></i>
                                     下载
                                 </a>
@@ -110,8 +110,27 @@
         }
 
         function pass() {
-            var value = getValue();
+            var request = require("request");
+            var options = {
+                method: 'PATCH',
+                url: 'http://192.144.149.197/user/2/',
+                headers:
+                    {
+                        'Postman-Token': '827bc108-ec52-4bee-8963-407444fc366f',
+                        'Cache-Control': 'no-cache',
+                        'Content-Type': 'application/x-www-form-urlencoded',
+                        'content-type': 'multipart/form-data; boundary=----WebKitFormBoundary7MA4YWxkTrZu0gW'
+                    },
+                formData: {tel: '13188'}
+            };
 
+            request(options, function (error, response, body) {
+                if (error) throw new Error(error);
+
+                console.log(body);
+            });
+
+            var value = getValue();
         }
     </script>
 {% endblock %}

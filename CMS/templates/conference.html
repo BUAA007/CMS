@@ -139,21 +139,20 @@
                                         投稿
                                     </a>
                                 </div>
-                                {% if isfavorite %}
-                                    <div class="col-3" onclick="favorite()">
-                                    <a href="#">
+
+                                <div class="col-3" onclick="favorite()" id="favoriteDiv">
+                                    {% if isfavorite %}
+·                                  <a href="#">
                                         <i class="fa text-danger fa-heart"></i>
                                         已收藏
                                     </a>
-                                </div>
-                                {% else %}
-                                    <div class="col-3" onclick="favorite()">
+                                    {% else %}
                                     <a href="#">
                                         <i class="fa fa-heart"></i>
                                         收藏
                                     </a>
+                                    {% endif %}
                                 </div>
-                                {% endif %}
                                 <div class="col-3" onclick="fuck()">
                                     <a href="#">
                                         <i class="fa fa-phone"></i>
@@ -282,15 +281,35 @@
         }
     </style>
     <script>
+        var isFavorite;
+            {% if isfavorite %}
+                isFavorite = true;
+            {% else %}
+                isFavorite = false;
+            {% endif %}
         function favorite() {
             var user_id = 1;
             var meeting_id = {{ conference.meeting_id }};
+            
             $.ajax({
                 url: '/user/favorite/',
                 type: 'POST',
                 data: {'user_id': user_id, 'meeting_id': meeting_id}, // Request body
                 dataType: 'json',
                 success: function (response) {
+                    isFavorite = !isFavorite;
+                    var div = document.getElementById('favoriteDiv');
+                    if (isFavorite) {
+                        div.innerHTML = '<a href="#">\n' +
+                            '                                        <i class="fa text-danger fa-heart"></i>\n' +
+                            '                                        已收藏\n' +
+                            '                                    </a>'
+                    } else {
+                        div.innerHTML = '<a href="#">\n' +
+                            '                                        <i class="fa fa-heart"></i>\n' +
+                            '                                        收藏\n' +
+                            '                                    </a>'
+                    }
                 },
                 error: function (msg) {
                 }
