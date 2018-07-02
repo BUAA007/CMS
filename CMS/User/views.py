@@ -233,25 +233,35 @@ class UserViewSet(viewsets.ModelViewSet):
 
     @action(methods=['POST'], detail=False)
     def contribute(self, request):
-        user_id = request.data.get("user_id")
-        thisuser = User.objects.get(id=user_id)
-        meeting_id=request.data.get("meeting_id")
-        thismeeting=Meeting.objects.get(meeting_id=meeting_id)
-        thispaper= Paper(author_1=request.data.get("author_1"),
-            author_2=request.data.get("author_2"),
-            author_3=request.data.get("author_3"),
-            title=request.data.get("title"),
-            abstract=request.data.get("abstract"),
-            keyword=request.data.get("keyword"),
-            content=request.FILES['content'],
-            #content=request.data.get("content"),
-            status=-1,
-            owner=thisuser,
-            meeting=thismeeting,
-        )
-        thispaper.save()
-        thisuser.participate.add(thismeeting)
-        return Response("info: contribute succsss", status=status.HTTP_200_OK)
+        user_id=request.session['id']
+        user_type=request.session['type']
+        if user_type = 1:
+            thisuser = User.objects.get(id=user_id)
+            meeting_id=request.data.get("meeting_id")
+            thismeeting=Meeting.objects.get(meeting_id=meeting_id)
+            thispaper= Paper(author_1=request.data.get("author_1"),
+                author_2=request.data.get("author_2"),
+                author_3=request.data.get("author_3"),
+                title=request.data.get("title"),
+                abstract=request.data.get("abstract"),
+                keyword=request.data.get("keyword"),
+                content=request.FILES['content'],
+                #content=request.data.get("content"),
+                status=-1,
+                owner=thisuser,
+                meeting=thismeeting,
+            )
+            thispaper.save()
+            thisuser.participate.add(thismeeting)
+            template = loader.get_template('conference.html')
+            context = {
+                'conference': thismeeting,
+                'message':'success'
+            }
+            return HttpResponse(template.render(context, request))
+        
+
+
 
 
     @action(methods=['POST'], detail=False)
