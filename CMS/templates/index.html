@@ -243,40 +243,7 @@
         <button data-toggle="modal" data-target="#registerConference" class="btn btn-primary">button</button>
     </div><!-- .content -->
 </div><!-- /#right-panel -->
-<div class="modal fade" id="registerConference" tabindex="-1" role="dialog"
-     aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
-    <div class="modal-dialog modal-dialog-centered" role="document">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h5 class="modal-title" id="exampleModalCenterTitle">注册会议</h5>
-                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                    <span aria-hidden="true">&times;</span>
-                </button>
-            </div>
-            <div class="modal-body">
-                <form enctype="multipart/form-data" class="form-horizontal" action="/user/contribute/" method="post"
-                      id="postPaperForm">
-                    <div class="form-group">
-                        <input type="file" class="btn btn-primary">
-                    </div>
-                    <div class="form-group">
-                        <label class="keyword">参会人员</label> <a href="#" class="float-right fa fa-plus-square"
-                                                               onclick="addPerson()"></a>
-                    </div>
-                </form>
-            </div>
-            <div class="modal-footer">
-                <button type="button" class="btn btn-secondary" data-dismiss="modal">关闭</button>
-                <button form="postPaperForm" type="submit" class="btn btn-primary">提交</button>
-            </div>
-        </div>
-    </div>
-</div>
-<script>
-    function addPerson() {
 
-    }
-</script>
 
 <!-- Right Panel -->
 
