@@ -139,18 +139,17 @@
                                         投稿
                                     </a>
                                 </div>
-
                                 <div class="col-3" onclick="favorite()" id="favoriteDiv">
                                     {% if isfavorite %}
-·                                  <a href="#">
+                                    <a href="#">
                                         <i class="fa text-danger fa-heart"></i>
                                         已收藏
                                     </a>
                                     {% else %}
-                                    <a href="#">
-                                        <i class="fa fa-heart"></i>
-                                        收藏
-                                    </a>
+                                        <a href="#">
+                                            <i class="fa fa-heart"></i>
+                                            收藏
+                                        </a>
                                     {% endif %}
                                 </div>
                                 <div class="col-3" onclick="fuck()">
@@ -281,16 +280,15 @@
         }
     </style>
     <script>
-        var isFavorite;
-            {% if isfavorite %}
-                isFavorite = true;
-            {% else %}
-                isFavorite = false;
-            {% endif %}
+        var isFavorite = true;
+        {% if isfavorite %}
+            isFavorite = true;
+        {% else %}
+            isFavorite = false;
+        {% endif %}
         function favorite() {
             var user_id = 1;
             var meeting_id = {{ conference.meeting_id }};
-            
             $.ajax({
                 url: '/user/favorite/',
                 type: 'POST',

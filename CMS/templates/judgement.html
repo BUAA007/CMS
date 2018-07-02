@@ -7,62 +7,64 @@
 
 {% block content %}
     <div class="modal fade" id="registerConference" tabindex="-1" role="dialog"
-     aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
-    <div class="modal-dialog modal-dialog-centered" role="document">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h5 class="modal-title" id="exampleModalCenterTitle">注册会议</h5>
-                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                    <span aria-hidden="true">&times;</span>
-                </button>
-            </div>
-            <div class="modal-body">
-                <form enctype="multipart/form-data" class="form-horizontal" action="/user/contribute/" method="post"
-                      id="postPaperForm">
-                    <div class="form-group">
-                        <div class="col-4">
-                            <label for="author_1" class="col-form-label">第一作者:</label>
-                            <input type="text" class="form-control" id="author_1" name="author_1">
+         aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="exampleModalCenterTitle">注册会议</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <form enctype="multipart/form-data" class="form-horizontal" action="/user/join" method="post"
+                          id="registerConferenceForm">
+                        <div class="form-group">
+                            <div class="custom-file">
+                                <input type="file" name="file" class="custom-file-input" required id="content">
+                                <label class="custom-file-label" for="content">上传缴费凭证</label>
+                            </div>
                         </div>
-                        <div class="col-4">
-                            <label for="author_2" class="col-form-label">第二作者:</label>
-                            <input type="text" class="form-control" id="author_2" name="author_2">
+                        <div class="form-group">
+                            <div class="col-6">
+                                <h6>参会人员</h6>
+                            </div>
+                            <div class="col-1 float-right ">
+                                <a href="#" class="fa fa-plus-square" onclick="addPerson()"></a>
+                            </div>
                         </div>
-                        <div class="col-4">
-                            <label for="author_3" class="col-form-label">第三作者:</label>
-                            <input type="text" class="form-control" id="author_3" name="author_3">
+                        <div class="form-group">
+                            <div class="input-group mb-3">
+                                <div class="input-group-prepend">
+                                    <span class="input-group-text" id="inputGroup-sizing-default">姓名</span>
+                                </div>
+                                <input placeholder="请输入姓名" type="text" class="form-control" aria-label="Default"
+                                       aria-describedby="inputGroup-sizing-default" name="name">
+                            </div>
                         </div>
-                    </div>
-                    <div class="form-group">
-                        <label for="title" class="col-form-label">标题:</label>
-                        <input class="form-control" id="title" name="title">
-                    </div>
-                    <div class="form-group">
-                        <label for="keyword" class="keyword">关键字:</label>
-                        <input class="form-control" id="keyword" name="keyword">
-                    </div>
-                    <div class="form-group">
-                        <label for="abstract" class="keyword">摘要:</label>
-                        <textarea class="form-control" id="abstract" name="abstract" rows="5"></textarea>
-                    </div>
-                    <div class="form-group">
-                        <div class="custom-file">
-                            <input type="file" name="content" class="custom-file-input" id="content">
-                            <label class="custom-file-label" for="content">选择文件</label>
+                        <div class="form-group">
+                            <div class="col-6">
+                                <input type="checkbox" name="gender" value="male">
+                                <label>男</label>
+                                <input type="checkbox" name="gender" value="female">
+                                <label>女</label>
+                            </div>
+                            <div class="col-6">
+                                <input type="checkbox" name="reservation" value="yes">
+                                <label>预定住宿</label>
+                                <input type="checkbox" name="reservation" value="no">
+                                <label>不预定住宿</label>
+                            </div>
                         </div>
-                    </div>
-                    <div style="display: none">
-                        <input type="hidden" name="meeting_id" id="meeting_id" value="{{ conference.meeting_id }}">
-                    </div>
-                </form>
-            </div>
-            <div class="modal-footer">
-                <button type="button" class="btn btn-secondary" data-dismiss="modal">关闭</button>
-                <button form="postPaperForm" type="submit" class="btn btn-primary">提交</button>
+                    </form>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">关闭</button>
+                    <button form="registerConferenceForm" type="submit" class="btn btn-primary">提交</button>
+                </div>
             </div>
         </div>
     </div>
-</div>
     <div class="animated fadeIn">
         <div class="row">
             <div class="col-md-12">
@@ -85,7 +87,7 @@
                                 </a>
                             </div>
                             <div class="col-4">
-                                <a href="#" onclick="register()">
+                                <a href="#" data-toggle="modal" data-target="#registerConference">
                                     <i class="fa fa-edit"></i>
                                     注册
                                 </a>
@@ -111,10 +113,12 @@
                                     <tr>
                                         <td>
                                             <div class="custom-radio" id="div{{ forloop.counter }}">
-                                                <input type="radio" name="id" id="{{ forloop.counter}}">
-                                                <label for="{{ forloop.counter}}">{{ forloop.counter }}</label>
-                                                <input type="hidden" id="meeting_id{{ forloop.counter }}" value="{{ paper.meeting.meeting_id }}">
-                                                <input type="hidden" id="paper_id{{ forloop.counter }}" value="{{ paper.id }}">
+                                                <input type="radio" name="id" id="{{ forloop.counter }}">
+                                                <label for="{{ forloop.counter }}">{{ forloop.counter }}</label>
+                                                <input type="hidden" id="meeting_id{{ forloop.counter }}"
+                                                       value="{{ paper.meeting.meeting_id }}">
+                                                <input type="hidden" id="paper_id{{ forloop.counter }}"
+                                                       value="{{ paper.id }}">
                                             </div>
                                         </td>
                                         <td>{{ paper.meeting.title }}</td>
@@ -162,22 +166,35 @@
             }
         }
 
-        function register() {
+        function addPerson() {
+            var div = document.getElementById('registerConferenceForm')
             var id = getValue();
             var meeting_id = document.getElementById('meeting_id' + id).value;
             var paper_id = document.getElementById('paper_id' + id).value;
             var user_id = 1;
-            $.ajax({
-                url: '/user/registermeeting/',
-                type: 'POST',
-                data: {'user_id': user_id, 'meeting_id': meeting_id, 'paper_id': paper_id}, // Request body
-                dataType: 'json',
-                success: function (response) {
-                    alert(response)
-                },
-                error: function (msg) {
-                }
-            });
+            div.innerHTML += '<div class="form-group">\n' +
+                '                        <div class="input-group mb-3">\n' +
+                '                            <div class="input-group-prepend">\n' +
+                '                                <span class="input-group-text" id="inputGroup-sizing-default">姓名</span>\n' +
+                '                            </div>\n' +
+                '                            <input placeholder="请输入姓名" type="text" class="form-control" aria-label="Default"\n' +
+                '                                   aria-describedby="inputGroup-sizing-default" name="name">\n' +
+                '                        </div>\n' +
+                '                    </div>\n' +
+                '                    <div class="form-group">\n' +
+                '                        <div class="col-6">\n' +
+                '                            <input type="checkbox" name="gender" value="male">\n' +
+                '                            <label>男</label>\n' +
+                '                            <input type="checkbox" name="gender" value="female">\n' +
+                '                            <label>女</label>\n' +
+                '                        </div>\n' +
+                '                        <div class="col-6">\n' +
+                '                            <input type="checkbox" name="reservation" value="yes">\n' +
+                '                            <label>预定住宿</label>\n' +
+                '                            <input type="checkbox" name="reservation" value="no">\n' +
+                '                            <label>不预定住宿</label>\n' +
+                '                        </div>\n' +
+                '                    </div>'
         }
     </script>
 {% endblock %}

@@ -58,6 +58,13 @@ class MeetingViewSet(viewsets.ModelViewSet):
         return Response({"error":"Meeting is not valid"},status=status.HTTP_200_OK)
     
     
+    def list(self, request):
+        queryset = Meeting.objects.all().order_by('-meeting_id') 
+        template = loader.get_template('conference_list.html')
+        context = {'conference_list': queryset}
+        return HttpResponse(template.render(context, request))
+
+
     def retrieve(self ,request,pk=None):
         thisMeeting=Meeting.objects.get(meeting_id=pk)
         try:

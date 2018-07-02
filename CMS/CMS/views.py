@@ -1,5 +1,10 @@
 from django.shortcuts import render
 from django.http import StreamingHttpResponse
+from django.http import HttpResponse
+from django.shortcuts import render
+from Institution.models import *
+from User.models import *
+import re,json
 def base(request):
     return render(request,'base.html')
 
@@ -13,7 +18,24 @@ def institution_register(request):
     return render(request,'institution_register.html')
 
 def personal_info(request):
-    return render(request, 'personal_info.html')
+	try:
+		if request.session["type"] == '1':
+			employee = Employee.objects.get(username = request.session["username"])
+			email = employee.email
+			tel = employee.tel
+			institution = employee.institution.name
+			return render(request, 'personal_info.html', {'email' : email, 'tel' : tel, 'institution' : institution})
+		else :
+			user = User.objects.get(username = request.session["username"])
+			email = user.email
+			tel = user.tel
+			return render(request, 'personal_info.html', {'email' : email, 'tel' : tel})
+	except:
+		pass
+	return render(request, 'login.html')
+
+
+
 
 def download(request):
         def file_iterator(file_name, chunk_size=512):
@@ -41,13 +63,19 @@ def download(request):
         return Response(a, status = status.HTTP_400_BAD_REQUEST)
 
 def logout(request):
-    if request.session['is_login'] != 'true':
-        return HttpResponse(errorInfo("登入后操作"), content_type="application/json")
-    try:
-        del request.session['is_login']         # 删除is_login对应的value值
-        request.session.flush()                  # 删除django-session表中的对应一行记录
-        return HttpResponse(info("success"), content_type="application/json")
-    except KeyError:
-        pass
-    return HttpResponse(errorInfo("登出失败"), content_type="application/json")
+	try:
+		# if request.session['is_login'] != 'true':
+		# 	return HttpResponse(errorInfo("登入后操作"), content_type="application/json")
+		del request.session['is_login']         # 删除is_login对应的value值
+		request.session.flush()                  # 删除django-session表中的对应一行记录
+		return HttpResponse(info("登出成功"), content_type="application/json")
+	except:
+		pass
+	return HttpResponse(errorInfo("登入后操作"), content_type="application/json")
+
     #return render(request,'base.html')             #重定向回主页面
+def info(msg):
+	return json.dumps({'info': msg})
+
+def errorInfo(msg):
+	return json.dumps({'errorInfo': msg})
