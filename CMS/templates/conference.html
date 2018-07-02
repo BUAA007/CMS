@@ -297,8 +297,8 @@
                     data: {'meeting_id': meeting_id}, // Request body
                     dataType: 'json',
                     success: function (response) {
-                        if (msg['errorInfo']) {
-                            document.getElementById('info').innerHTML = msg;
+                        if (response['errorInfo']) {
+                            document.getElementById('info').innerHTML = response;
                             jQuery(function ($) {
                                 $('#id_errors').modal('show')
                             });
