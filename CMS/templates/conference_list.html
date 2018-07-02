@@ -27,27 +27,15 @@
                                 </tr>
                                 </thead>
                                 <tbody>
-                                <tr>
-                                    <td>1</td>
-                                    <td>第一次人工智能大会</td>
-                                    <td>电气电子工程师学会是一个建立于1963年1月1日的国际性电子技术与电子工程师协会，</td>
-                                    <td>电气电子工程师学会</td>
-                                    <td>未开始</td>
-                                </tr>
-                                <tr>
-                                    <td>2</td>
-                                    <td>第一次人工智能大会</td>
-                                    <td>电气电子工程师学会是一个建立于1963年1月1日的国际性电子技术与电子工程师协会...</td>
-                                    <td>电气电子工程师学会</td>
-                                    <td>未开始</td>
-                                </tr>
-                                <tr>
-                                    <td>3</td>
-                                    <td>第一次人工智能大会</td>
-                                    <td>电气电子工程师学会是一个建立于1963年1月1日的国际性电子技术与电子工程师协会，</td>
-                                    <td>电气电子工程师学会</td>
-                                    <td>未开始</td>
-                                </tr>
+                                {% for conference in conference_list %}
+                                    <tr>
+                                        <td>{{ forloop.counter }}</td>
+                                        <td class="text-truncate"><a href="/meeting/{{ conference.meeting_id }}">{{ conference.title }}</a></td>
+                                        <td>{{ conference.intro }}</td>
+                                        <td>{{ conference.institution }}</td>
+                                        <td>未开始</td>
+                                    </tr>
+                                {% endfor %}
                                 </tbody>
                             </table>
                         </div>
