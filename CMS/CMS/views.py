@@ -71,7 +71,7 @@ def logout(request):
 		return HttpResponse(info("登出成功"), content_type="application/json")
 	except:
 		pass
-	return HttpResponse(errorInfo("登入后操作"), content_type="application/json")
+	return HttpResponse(errorInfo("请登入后操作"), content_type="application/json")
 
     #return render(request,'base.html')             #重定向回主页面
 def info(msg):
