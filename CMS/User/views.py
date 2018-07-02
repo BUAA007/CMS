@@ -299,5 +299,5 @@ class JoinViewSet(viewsets.ModelViewSet):
                 meeting = thismeeting,
             )
             people.save()
-            count++
+            count = count + 1
         return Response("info: join success", status=status.HTTP_200_OK)
