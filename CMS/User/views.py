@@ -295,11 +295,12 @@ class UserViewSet(viewsets.ModelViewSet):
                 fae=thisuser.favorite.get(meeting_id=meeting)
             except:
                 fae = None
-            if fae is None:
-                thisuser.favorite.add(thismeeting)
-            thisuser.favorite.remove(thismeeting)
-        return Response({"info":"成功"}, status=status.HTTP_200_OK)
-        
+            else:
+                if fae is None:
+                    thisuser.favorite.add(thismeeting)
+                thisuser.favorite.remove(thismeeting)
+                return Response({"info":"成功"}, status=status.HTTP_200_OK)
+
     @action(methods=['GET'], detail = False)
     def allpaper(self,request):
         pk = request.query_params.get('pk', None)
