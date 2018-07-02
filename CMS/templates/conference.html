@@ -143,12 +143,12 @@
                                 </div>
                                 <div class="col-3" id="favoriteDiv">
                                     {% if isfavorite %}
-                                        <a href="#" onclick="favorite()">
+                                        <a  onclick="favorite()">
                                             <i class="fa text-danger fa-heart"></i>
                                             已收藏
                                         </a>
                                     {% else %}
-                                        <a href="#" onclick="favorite()">
+                                        <a  onclick="favorite()">
                                             <i class="fa fa-heart"></i>
                                             收藏
                                         </a>
@@ -306,12 +306,12 @@
                             isFavorite = !isFavorite;
                             var div = document.getElementById('favoriteDiv');
                             if (isFavorite) {
-                                div.innerHTML = '<a href="#">\n' +
+                                div.innerHTML = '<a >\n' +
                                     '                                        <i class="fa text-danger fa-heart"></i>\n' +
                                     '                                        已收藏\n' +
                                     '                                    </a>'
                             } else {
-                                div.innerHTML = '<a href="#">\n' +
+                                div.innerHTML = '<a >\n' +
                                     '                                        <i class="fa fa-heart"></i>\n' +
                                     '                                        收藏\n' +
                                     '                                    </a>'
