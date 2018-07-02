@@ -121,11 +121,11 @@ class UserViewSet(viewsets.ModelViewSet):
                     request.session.set_expiry(0)
                     # template = loader.get_template('base.html')
                     # context = {}
-                    return HttpResponse(info('success'), content_type="application/json")
+                    return HttpResponse(info('登陆成功'), content_type="application/json")
             except:
                 pass
                 #return render(request,'base.html',status = status.HTTP_201_CREATED)                ## 登录成功就将url重定向到后台的url
-        return HttpResponse(errorInfo('Username/Passwd is wrong'), content_type="application/json")
+        return HttpResponse(errorInfo('用户名或密码不正确'), content_type="application/json")
 
     @action(methods = ['GET'],detail = False)
     def logout(self, request):
@@ -134,7 +134,7 @@ class UserViewSet(viewsets.ModelViewSet):
         try:
             del request.session['is_login']         # 删除is_login对应的value值
             request.session.flush()                  # 删除django-session表中的对应一行记录
-            return HttpResponse(info("success"), content_type="application/json")
+            return HttpResponse(info("登出成功"), content_type="application/json")
         except KeyError:
             pass
         return HttpResponse(errorInfo("登出失败"), content_type="application/json")
@@ -151,11 +151,11 @@ class UserViewSet(viewsets.ModelViewSet):
         # if not checkUsername(username):    #必须以字母开头，长度在10位以内
         #    return  HttpResponse(errorInfo("用户名不合法"), content_type="application/json")
         if not checkPassword(password):    #包含大写、小写、符号；长度大于等于8
-           return  HttpResponse(errorInfo("密码不合法"), content_type="application/json")
+           return  HttpResponse(errorInfo("密码必须包含大写、小写、符号且长度大于等于8"), content_type="application/json")
         if not password == password2:
            return  HttpResponse(errorInfo("两次密码不一致"), content_type="application/json")
         if not checkPhonenumber(tel):      #手机号位数为11位；开头为1，第二位为3或4或5或8;
-           return  HttpResponse(errorInfo("电话号码不合法"), content_type="application/json")   
+           return  HttpResponse(errorInfo("电话号码应为11位"), content_type="application/json")
         user_serializer = UserSerializer(data = request.data)
         password = md5(password)
         if user_serializer.is_valid():
@@ -233,8 +233,7 @@ class UserViewSet(viewsets.ModelViewSet):
 
     @action(methods=['POST'], detail=False)
     def contribute(self, request):
-        #user_id = request.data.get("user_id")
-        user_id=1
+        user_id = request.data.get("user_id")
         thisuser = User.objects.get(id=user_id)
         meeting_id=request.data.get("meeting_id")
         thismeeting=Meeting.objects.get(meeting_id=meeting_id)
@@ -259,8 +258,7 @@ class UserViewSet(viewsets.ModelViewSet):
     def favorite(self, request):
         user_id = request.data.get("user_id")
         thisuser = User.objects.get(id=user_id)
-        meetingid = 1
-        #request.data.get("meeting_id")
+        request.data.get("meeting_id")
         thismeeting = Meeting.objects.get(meeting_id=meetingid)
         try:
             fae=thisuser.favorite.get(meeting_id=meetingid)
@@ -289,7 +287,7 @@ class JoinViewSet(viewsets.ModelViewSet):
     serializer_class = JoinSerializer
 
     def create(self, request):
-        user_id=1
+        user_id=request.session['id']
         thisuser = User.objects.get(id=user_id)
         meeting_id=request.data.get("meeting_id")
         thismeeting=Meeting.objects.get(meeting_id=meeting_id)

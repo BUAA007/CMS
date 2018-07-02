@@ -13,65 +13,73 @@ from django.http import HttpResponse
 from django.template import loader
 from User.models import * 
 from Institution.models import Employee
+import datetime
 class MeetingViewSet(viewsets.ModelViewSet):
     queryset = Meeting.objects.all()
     serializer_class = MeetingSerializer
 
-    '''
+    
     def create(self, request):
+        '''
+        try:
+            user_id=request.session['id']
+            employee=Employee.objects.get(id=user_id)
+        except:
+            return Response({"errorInfo":"have no access"}, status=status.HTTP_200_OK)
+        else:
+        '''
+        user_id=1
+        employee=Employee.objects.get(id=user_id)
+        thisinstitution=employee.institution
+        #if thisinstitution.status!="1":
+        #    return Response({"errorInfo":"have not been received"}, status=status.HTTP_200_OK)
         meeting_serializer=MeetingSerializer(data=request.data)
-        #Institution_id = request.session['id']
-        #Institution_id = request.data.get('institution_id')
-        #employee_id = request.data.get('employee_id')
-        #thisemployee=Employee.objects.get(id=employee_id)
-        #if thisinstitution.status!=1:
-        #   return Response({"errorInfo":"have not been received"}, status=status.HTTP_200_OK)
-        employee_id = 1#request.session['id']
-        thisinstitution=Employee.objects.get(id=employee_id).institution  
-        if thisinstitution.status!=1:
-            return Response({"errorInfo":"have not been received"}, status=status.HTTP_200_OK)
-        title = request.data.get("title")
-        intro = request.data.get("intro")
-        essay_request = request.data.get("essay_request")
-        ddl_date = request.data.get("ddl_date")
-        result_notice_date = request.data.get("result_notice_date")
-        regist_attend_date = request.data.get("regist_attend_date")
-        meeting_date = request.data.get("meeting_date")
-        meeting_end_date=request.data.get("meeting_end_date")
-        schedule = request.data.get("schedule")
-        #thisinstitution=request.data.get("institution")
-        #return Response(thisinstitution.name,status=status.HTTP_200_OK)
+        ddl_date=request.data.get("ddl_date"),
+        result_notice_date = request.data.get("result_notice_date"),
+        regist_attend_date = request.data.get("regist_attend_date"),
+        meeting_date = request.data.get("meeting_date"),
+        meeting_end_date=request.data.get("meeting_end_date"),
         if meeting_serializer.is_valid():
             if (ddl_date<=result_notice_date) and (result_notice_date<=regist_attend_date) and (regist_attend_date<=meeting_date) and (meeting_date<=meeting_end_date):
-                return Response("2",status=status.HTTP_200_OK)
                 thisMeeting = Meeting(title = request.data.get("title"),
-                    intro = request.data.get("intro"),
-                    essay_request = request.data.get("essay_request"),
-                    ddl_date = request.data.get("ddl_date"),
-                    result_notice_date = request.data.get("result_notice_date"),
-                    regist_attend_date = request.data.get("regist_attend_date"),
-                    meeting_date = request.data.get("meeting_date"),
-                    meeting_end_date=request.data.get("meeting_end_date"),
-                    schedule = request.data.get("schedule"),
-                    )
+                intro = request.data.get("intro"),
+                essay_request = request.data.get("essay_request"),
+                ddl_date = request.data.get("ddl_date"),
+                result_notice_date = request.data.get("result_notice_date"),
+                regist_attend_date = request.data.get("regist_attend_date"),
+                meeting_date = request.data.get("meeting_date"),
+                meeting_end_date=request.data.get("meeting_end_date"),
+                schedule = request.data.get("schedule"),
+                institution=thisinstitution,
+                )
                 thisMeeting.save()
-                #thisinstitution.meetings.add(thisMeeting)
+    
                 return Response(thisMeeting.meeting_id, status=status.HTTP_200_OK)
             return Response("error: Meeting is not valid",status=status.HTTP_200_OK)
         return Response({"error":"Meeting is not valid"},status=status.HTTP_200_OK)
-    '''
-    
-    def list(self, request):
+
+    @action(methods=['GET'], detail=False)
+    def list2(self, request):
         queryset = Meeting.objects.all().order_by('-meeting_id') 
         template = loader.get_template('conference_list.html')
+        # def check_time(conference):
+        #     now_time = datetime.datetime.now()
+        #     if now_time > conference.meeting_end_date:
+        #         conference.status = '已结束'
+        #     elif now_time < conference.meeting_date:
+        #         conference.status = '未开始'
+        #     else:
+        #         conference.status = '正在进行'
+        # list(map(check_time, queryset))
         context = {'conference_list': queryset}
         return HttpResponse(template.render(context, request))
+
 
 
     def retrieve(self ,request,pk=None):
         thisMeeting=Meeting.objects.get(meeting_id=pk)
         try:
-            user_id=1
+            user_id=request.session['id']
             #user_id=request.session.get['id']
             thisuser=User.objects.get(id=user_id)
             #return Response("info: contribute succsss", status=status.HTTP_200_OK)
@@ -105,7 +113,8 @@ class MeetingViewSet(viewsets.ModelViewSet):
         papers=thisMeeting.paper_set.all()
 
         try:
-            user_id=request.session.get['id']
+            user_id=request.session['id']
+            #user_id=request.session.get['id']
             #user_id = request.session['id']
             thisuser=User.objects.get(id=user_id)
             try:

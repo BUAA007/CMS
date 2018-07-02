@@ -105,13 +105,13 @@ class InstitutionViewSet(viewsets.ModelViewSet):
 	    except:
 	    	pass
 	    if not checkUsername(name):    #必须以字母开头，长度在10位以内
-	        return  HttpResponse(errorInfo("机构名不合法"), content_type="application/json")
+	        return  HttpResponse(errorInfo("机构名必须以字母开头且长度在10位以内"), content_type="application/json")
 	    # if not checkUsername(username):    #必须以字母开头，长度在10位以内
 	    #     return  HttpResponse(errorInfo("用户名不合法"), content_type="application/json")
 	    if not checkPassword(password):    #包含大写、小写、符号；长度大于等于8
-	        return  HttpResponse(errorInfo("密码不合法"), content_type="application/json")
+	        return  HttpResponse(errorInfo("密码必须包含大写、小写、符号且长度大于等于8"), content_type="application/json")
 	    if not password == password2:
-	        return  HttpResponse(errorInfo("两次密码不合法"), content_type="application/json")
+	        return  HttpResponse(errorInfo("两次密码不一致"), content_type="application/json")
 	    if  not checkPhonenumber(tel):      #手机号位数为11位；开头为1，第二位为3或4或5或8;
 	        return  HttpResponse(errorInfo("电话号码不合法"), content_type="application/json")   
 	    institution_serializer = InstitutionSerializer(data = request.data)
