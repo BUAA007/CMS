@@ -140,11 +140,12 @@
                                     </a>
                                 </div>
                                 {% if isfavorite %}
-                                    <div class="col-3">
+                                    <div class="col-3" onclick="favorite()">
                                     <a href="#">
                                         <i class="fa text-danger fa-heart"></i>
                                         已收藏
                                     </a>
+                                </div>
                                 {% else %}
                                     <div class="col-3" onclick="favorite()">
                                     <a href="#">
