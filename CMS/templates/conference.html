@@ -17,7 +17,8 @@
                     </button>
                 </div>
                 <div class="modal-body">
-                    <form enctype="multipart/form-data" class="form-horizontal" action="/user/user/contribute/" method="post"
+                    <form enctype="multipart/form-data" class="form-horizontal" action="/user/user/contribute/"
+                          method="post"
                           id="postPaperForm">
                         <div class="form-group">
                             <div class="col-4">
@@ -43,7 +44,8 @@
                         </div>
                         <div class="form-group">
                             <label for="abstract" class="keyword">摘要:</label>
-                            <textarea class="form-control" required id="abstract" name="abstract" rows="5" maxlength="150"></textarea>
+                            <textarea class="form-control" required id="abstract" name="abstract" rows="5"
+                                      maxlength="150"></textarea>
                         </div>
                         <div class="form-group">
                             <div class="custom-file">
@@ -141,10 +143,10 @@
                                 </div>
                                 <div class="col-3" onclick="favorite()" id="favoriteDiv">
                                     {% if isfavorite %}
-                                    <a href="#">
-                                        <i class="fa text-danger fa-heart"></i>
-                                        已收藏
-                                    </a>
+                                        <a href="#">
+                                            <i class="fa text-danger fa-heart"></i>
+                                            已收藏
+                                        </a>
                                     {% else %}
                                         <a href="#">
                                             <i class="fa fa-heart"></i>
@@ -288,28 +290,30 @@
         {% endif %}
         function favorite() {
             var meeting_id = {{ conference.meeting_id }};
-            $.ajax({
-                url: '/user/user/favorite/',
-                type: 'POST',
-                data: {'meeting_id': meeting_id}, // Request body
-                dataType: 'json',
-                success: function (response) {
-                    isFavorite = !isFavorite;
-                    var div = document.getElementById('favoriteDiv');
-                    if (isFavorite) {
-                        div.innerHTML = '<a href="#">\n' +
-                            '                                        <i class="fa text-danger fa-heart"></i>\n' +
-                            '                                        已收藏\n' +
-                            '                                    </a>'
-                    } else {
-                        div.innerHTML = '<a href="#">\n' +
-                            '                                        <i class="fa fa-heart"></i>\n' +
-                            '                                        收藏\n' +
-                            '                                    </a>'
+            jQuery(function ($) {
+                $.ajax({
+                    url: '/user/user/favorite/',
+                    type: 'POST',
+                    data: {'meeting_id': meeting_id}, // Request body
+                    dataType: 'json',
+                    success: function (response) {
+                        isFavorite = !isFavorite;
+                        var div = document.getElementById('favoriteDiv');
+                        if (isFavorite) {
+                            div.innerHTML = '<a href="#">\n' +
+                                '                                        <i class="fa text-danger fa-heart"></i>\n' +
+                                '                                        已收藏\n' +
+                                '                                    </a>'
+                        } else {
+                            div.innerHTML = '<a href="#">\n' +
+                                '                                        <i class="fa fa-heart"></i>\n' +
+                                '                                        收藏\n' +
+                                '                                    </a>'
+                        }
+                    },
+                    error: function (msg) {
                     }
-                },
-                error: function (msg) {
-                }
+                });
             });
         }
     </script>
