@@ -235,30 +235,38 @@ class UserViewSet(viewsets.ModelViewSet):
     def contribute(self, request):
         user_id=request.session['id']
         user_type=request.session['type']
-        if user_type = 1:
-            thisuser = User.objects.get(id=user_id)
-            meeting_id=request.data.get("meeting_id")
-            thismeeting=Meeting.objects.get(meeting_id=meeting_id)
-            thispaper= Paper(author_1=request.data.get("author_1"),
-                author_2=request.data.get("author_2"),
-                author_3=request.data.get("author_3"),
-                title=request.data.get("title"),
-                abstract=request.data.get("abstract"),
-                keyword=request.data.get("keyword"),
-                content=request.FILES['content'],
-                #content=request.data.get("content"),
-                status=-1,
-                owner=thisuser,
-                meeting=thismeeting,
-            )
+        thisuser = User.objects.get(id=user_id)
+        meeting_id=request.data.get("meeting_id")
+        thismeeting=Meeting.objects.get(meeting_id=meeting_id)
+        thispaper= Paper(author_1=request.data.get("author_1"),
+            author_2=request.data.get("author_2"),
+            author_3=request.data.get("author_3"),
+            title=request.data.get("title"),
+            abstract=request.data.get("abstract"),
+            keyword=request.data.get("keyword"),
+            content=request.FILES['content'],
+            #content=request.data.get("content"),
+            status=-1,
+            owner=thisuser,
+            meeting=thismeeting,
+        )
+        try:
             thispaper.save()
             thisuser.participate.add(thismeeting)
             template = loader.get_template('conference.html')
             context = {
                 'conference': thismeeting,
-                'message':'success'
+                'message':'成功'
             }
             return HttpResponse(template.render(context, request))
+        except:
+            template = loader.get_template('conference.html')
+            context = {
+                'conference': thismeeting,
+                'message':'失败'
+            }
+            return HttpResponse(template.render(context, request))
+
         
 
 
