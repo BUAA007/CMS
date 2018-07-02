@@ -79,3 +79,13 @@ def info(msg):
 
 def errorInfo(msg):
 	return json.dumps({'errorInfo': msg})
+
+def release(request):
+	try:
+		if request.session["type"] == '1':
+			return render(request, 'release_meeting.html')
+		else:
+			return render(request, 'login.html')
+	except:
+		pass
+	return render(request, 'login.html')
