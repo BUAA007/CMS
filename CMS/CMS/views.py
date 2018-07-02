@@ -7,11 +7,13 @@ def login(request):
     return render(request,'login.html')
 
 def user_register(request):
-	return render(request,'user_register.html')
+    return render(request,'user_register.html')
 
 def institution_register(request):
-	return render(request,'institution_register.html')
+    return render(request,'institution_register.html')
 
+def personal_info(request):
+    return render(request, 'personal_info.html')
 
 def download(request):
         def file_iterator(file_name, chunk_size=512):
@@ -37,3 +39,15 @@ def download(request):
                 return response
         a = collections.OrderedDict({"errorInfo":"服务器出错，请稍后重试。"})
         return Response(a, status = status.HTTP_400_BAD_REQUEST)
+
+def logout(request):
+    if request.session['is_login'] != 'true':
+        return HttpResponse(errorInfo("登入后操作"), content_type="application/json")
+    try:
+        del request.session['is_login']         # 删除is_login对应的value值
+        request.session.flush()                  # 删除django-session表中的对应一行记录
+        return HttpResponse(info("success"), content_type="application/json")
+    except KeyError:
+        pass
+    return HttpResponse(errorInfo("登出失败"), content_type="application/json")
+    #return render(request,'base.html')             #重定向回主页面

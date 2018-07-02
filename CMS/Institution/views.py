@@ -158,6 +158,7 @@ class EmployeeViewSet(viewsets.ModelViewSet):
 	                request.session['is_login'] = 'true'         #定义session信息
 	                request.session['username'] = username
 	                request.session['id'] = employee.id
+	                request.session['type'] = '1'   #标记单位用户
 	                request.session.set_expiry(0)
 	            return HttpResponse(info("success"), content_type="application/json")
 	        except:
@@ -167,14 +168,15 @@ class EmployeeViewSet(viewsets.ModelViewSet):
 
 	@action(methods = ['GET'],detail = False)
 	def logout(self, request):
+	    if request.session['is_login'] != 'true':
+	        return HttpResponse(errorInfo("登入后操作"), content_type="application/json")
 	    try:
 	        del request.session['is_login']         # 删除is_login对应的value值
 	        request.session.flush()                  # 删除django-session表中的对应一行记录
+	        return HttpResponse(info("success"), content_type="application/json")
 	    except KeyError:
 	        pass
-	    template = loader.get_template('login.html')
-	    context = {}
-	    return HttpResponse(template.render(context, request))
+	    return HttpResponse(errorInfo("登出失败"), content_type="application/json")
 	    #return render(request,'base.html')             #重定向回主页面
 
 	@action(methods = ['POST'],detail = False)
@@ -199,13 +201,9 @@ class EmployeeViewSet(viewsets.ModelViewSet):
 	       return  HttpResponse(errorInfo("确认密码不一致"), content_type="application/json")
 	    if not checkPhonenumber(tel):      #手机号位数为11位；开头为1，第二位为3或4或5或8;
 	       return  HttpResponse(errorInfo("电话号码不合法"), content_type="application/json")   
-	    employee_serializer = EmployeeSerializer(data = request.data)
 	    password = md5(password)
 	    try:
 	        thisEmployee = Employee.objects.get(username=request.session['username'])
-	    except:
-	        pass
-	    if employee_serializer.is_valid():
 	        otherEmployee = Employee(
 	            username = username,
 	            password = password,
@@ -214,8 +212,8 @@ class EmployeeViewSet(viewsets.ModelViewSet):
 	            institution = thisInstitution.institution,
 	            )
 	        otherEmployee.save()
-	        template = loader.get_template('login.html')
-	        context = {}
-	        return HttpResponse(template.render(context, request))
+	        return HttpResponse(info("success"), content_type="application/json")
+	    except:
+	        pass
 	        #return render(request,'login.html',status = status.HTTP_201_CREATED)
 	    return  HttpResponse(errorInfo("未知原因失败，请稍后再试"), content_type="application/json") 

@@ -16,7 +16,8 @@ from Institution.models import Employee
 class MeetingViewSet(viewsets.ModelViewSet):
     queryset = Meeting.objects.all()
     serializer_class = MeetingSerializer
-    
+
+    '''
     def create(self, request):
         meeting_serializer=MeetingSerializer(data=request.data)
         #Institution_id = request.session['id']
@@ -54,64 +55,84 @@ class MeetingViewSet(viewsets.ModelViewSet):
                     schedule = request.data.get("schedule"),
                     )
                 thisMeeting.save()
+                #thisinstitution.meetings.add(thisMeeting)
                 return Response(thisMeeting.meeting_id, status=status.HTTP_200_OK)
             return Response("error: Meeting is not valid",status=status.HTTP_200_OK)
         return Response({"error":"Meeting is not valid"},status=status.HTTP_200_OK)
-    
+    '''
     
     def retrieve(self ,request,pk=None):
-        user_id = 1
         thisMeeting=Meeting.objects.get(meeting_id=pk)
-        papers=thisMeeting.paper_set.all()
-        thisuser=User.objects.get(id=user_id)
         try:
-            favorite=thisuser.favorite.get(meeting_id=thisMeeting.meeting_id)
-        except:
-            isfavorite = False
-        else :
-            isfavorite =True
-        template = loader.get_template('conference.html')
-        context = {
-            'conference': thisMeeting,
-            'isfavorite':isfavorite
-        }
-        return HttpResponse(template.render(context, request))
+            user_id=1
+            #user_id=request.session.get['id']
+            thisuser=User.objects.get(id=user_id)
+            #return Response("info: contribute succsss", status=status.HTTP_200_OK)
 
+            try:
+                favorite=thisuser.favorite.get(meeting_id=thisMeeting.meeting_id)
+            except:
+                isfavorite = False
+            else :
+                isfavorite =True
+            template = loader.get_template('conference.html')
+            context = {
+                'conference': thisMeeting,
+                'isfavorite':isfavorite
+            }
+            return HttpResponse(template.render(context, request))
+        except:
+            template = loader.get_template('conference.html')
+            context = {
+                'conference': thisMeeting,
+                'isfavorite': False
+            }
+            return HttpResponse(template.render(context, request))
 
 
 
     @action(methods=['GET'], detail=False)
     def showdetail(self, request):
-        user_id=1
-        #user_id = request.session['id']
         pk = request.query_params.get('pk',None)
         thisMeeting=Meeting.objects.get(meeting_id=pk)
         papers=thisMeeting.paper_set.all()
-        thisuser=User.objects.get(id=user_id)
+
         try:
-            favorite=thisuser.favorite.get(meeting_id=thisMeeting.meeting_id)
+            user_id=request.session.get['id']
+            #user_id = request.session['id']
+            thisuser=User.objects.get(id=user_id)
+            try:
+                favorite=thisuser.favorite.get(meeting_id=thisMeeting.meeting_id)
+            except:
+                isfavorite = False
+            else :
+                isfavorite =True
+            i=0
+            paper_list=list()
+            serializer = MeetingSerializer(thisMeeting)
+            paper_list.append(serializer.data)
+            paper_info={"title":"","author":""}
+            for paper in papers:
+                paper_info["title"]=paper.title
+                paper_info["author"]=paper.author_1
+                paper_list.append(paper_info)
+                i=i+1
+                if i>=10:
+                    break
+            template = loader.get_template('conference.html')
+            context = {
+                'conference': thisMeeting,
+                'isfavorite':isfavorite
+            }
+            return HttpResponse(template.render(context, request))
         except:
-            isfavorite = False
-        else :
-            isfavorite =True
-        i=0
-        paper_list=list()
-        serializer = MeetingSerializer(thisMeeting)
-        paper_list.append(serializer.data)
-        paper_info={"title":"","author":""}
-        for paper in papers:
-            paper_info["title"]=paper.title
-            paper_info["author"]=paper.author_1
-            paper_list.append(paper_info)
-            i=i+1
-            if i>=10:
-                break
-        template = loader.get_template('conference.html')
-        context = {
-            'conference': thisMeeting,
-            'isfavorite':isfavorite
-        }
-        return HttpResponse(template.render(context, request))
+            template = loader.get_template('conference.html')
+            context = {
+                'conference': thisMeeting,
+                'isfavorite': False,
+            }
+            return HttpResponse(template.render(context, request))
+
 
     @action(methods=['GET'],detail=False)
     def osearch(self, request):

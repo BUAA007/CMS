@@ -117,6 +117,7 @@ class UserViewSet(viewsets.ModelViewSet):
                     request.session['is_login'] = 'true'         #定义session信息
                     request.session['username'] = username
                     request.session['id'] = user.id
+                    request.session['type'] = '0'   #普通用户标记
                     request.session.set_expiry(0)
                     # template = loader.get_template('base.html')
                     # context = {}
@@ -128,14 +129,15 @@ class UserViewSet(viewsets.ModelViewSet):
 
     @action(methods = ['GET'],detail = False)
     def logout(self, request):
+        if request.session['is_login'] != 'true':
+            return HttpResponse(errorInfo("登入后操作"), content_type="application/json")
         try:
             del request.session['is_login']         # 删除is_login对应的value值
             request.session.flush()                  # 删除django-session表中的对应一行记录
+            return HttpResponse(info("success"), content_type="application/json")
         except KeyError:
             pass
-        template = loader.get_template('login.html')
-        context = {}
-        return HttpResponse(template.render(context, request))
+        return HttpResponse(errorInfo("登出失败"), content_type="application/json")
         #return render(request,'base.html')             #重定向回主页面
 
 
@@ -191,6 +193,16 @@ class UserViewSet(viewsets.ModelViewSet):
         people_name=request.data.get("people_name")
         people_sex=request.data.get("people_sex")
         isbook=request.data.get("isbook")
+<<<<<<< HEAD
+        #缴费凭证pdf或者照片
+        thispaper = Paper.objects.get(id=paper_id)
+        print(111)
+        if thispaper.status == 1:
+            thisuser = User.objects.get(id=user_id)
+            thismeeting = Meeting.objects.get(meeting_id=meeting_id)
+            thisuser.participate.add(thismeeting)
+            return Response({"info": "register meeting success"}, status=status.HTTP_200_OK)
+=======
         i=0
         #缴费凭证pdf或者照片
         try:
@@ -209,6 +221,7 @@ class UserViewSet(viewsets.ModelViewSet):
 
         except:
             pass
+>>>>>>> df9aca0e5741b4700138e8219b1f732080555761
         return Response({"errorInfo": "paper is not received"}, status=status.HTTP_200_OK)
     '''
 
@@ -246,11 +259,20 @@ class UserViewSet(viewsets.ModelViewSet):
     def favorite(self, request):
         user_id = request.data.get("user_id")
         thisuser = User.objects.get(id=user_id)
-        meeting_id = request.data.get("meeting_id")
-        thismeeting = Meeting.objects.get(meeting_id=meeting_id)
-        thisuser.favorite.add(thismeeting)
-        return Response({"info":"favorite succsss"}, status=status.HTTP_200_OK)
+        meetingid = 1
+        #request.data.get("meeting_id")
+        thismeeting = Meeting.objects.get(meeting_id=meetingid)
+        try:
+            fae=thisuser.favorite.get(meeting_id=meetingid)
+        except:
+            fae = None
+        if fae is None:
+            thisuser.favorite.add(thismeeting)
+            return Response({"errorInfo":"favorite fail"}, status=status.HTTP_200_OK)
+        thisuser.favorite.remove(thismeeting)
+        return Response({"info":"favorite success"}, status=status.HTTP_200_OK)
 
+        
     @action(methods=['GET'], detail = False)
     def allpaper(self,request):
         pk = request.query_params.get('pk', None)
@@ -262,3 +284,29 @@ class UserViewSet(viewsets.ModelViewSet):
         }
         return HttpResponse(template.render(context, request))
 
+class JoinViewSet(viewsets.ModelViewSet):
+    queryset = Join.objects.all()
+    serializer_class = JoinSerializer
+
+    def create(self, request):
+        user_id=1
+        thisuser = User.objects.get(id=user_id)
+        meeting_id=request.data.get("meeting_id")
+        thismeeting=Meeting.objects.get(meeting_id=meeting_id)
+        namelist = request.data.get("name")
+        genderlist = request.data.get("gender")
+        reserlist = request.data.get("reservation")
+        receipt = request.FILES['file']
+        count = 0
+        for name in namelist:
+            people = Join(
+                name = name,
+                gender = gender[count],
+                receipt = receipt,
+                #content=request.data.get("content"),
+                user = thisuser,
+                meeting = thismeeting,
+            )
+            people.save()
+            count = count + 1
+        return Response("info: join success", status=status.HTTP_200_OK)
