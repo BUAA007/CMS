@@ -33,16 +33,7 @@ class Institution(models.Model):
 		max_length=16,
 		null=True,
 		)
-	meetings=models.ForeignKey(
-		'Meeting.Meeting',
-		on_delete=models.CASCADE,
-		default = "",
-		)
-	paper=models.ForeignKey(
-		'Paper.Paper',
-		on_delete=models.CASCADE,
-		default = "",
-		)
+	
 
 class Employee(models.Model):
 	id=models.AutoField(
@@ -59,6 +50,10 @@ class Employee(models.Model):
 	email=models.CharField(
 		null=True,
 		max_length=256,
+		)
+	tel=models.CharField(
+		null=True,
+		max_length=20,
 		)
 	institution=models.ForeignKey(
 		'Institution',
