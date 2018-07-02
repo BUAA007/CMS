@@ -52,7 +52,7 @@
                                     <img width="30%" height="30%" class="user-avatar rounded-circle" src="{% static 'images/admin.jpg' %}" alt="User Avatar">
                                 </div>
                                 <div class="bk-padding-top-10">
-                                    <i class="fa fa-circle text-success"></i> <a href="#"> 公绪民 </a>
+                                    <i class="fa fa-circle text-success"></i> <a href="#"> {{ request.session.username }} </a>
                                 </div>
                             </div>
 {#            <div class="navbar-header">#}
@@ -66,7 +66,7 @@
             <div id="main-menu" class="main-menu collapse navbar-collapse">
                 <ul class="nav navbar-nav">
                     <li class="active">
-                        <a href="base.html"> <i class="menu-icon fa fa-twitter"></i>主页 </a>
+                        <a href="/base"> <i class="menu-icon fa fa-twitter"></i>主页 </a>
                     </li>
                     <h3 class="menu-title"></h3><!-- /.menu-title -->
                     <li class="menu-item-has-children dropdown">
@@ -90,7 +90,7 @@
                         <a href="#" class="dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"> <i class="menu-icon fa fa-user"></i>个人信息</a>
                         <ul class="sub-menu children dropdown-menu">
                             <li><i class="menu-icon fa fa-user-circle"></i><a href="page-login.html">个人主页</a></li>
-                            <li><i class="menu-icon fa fa-edit"></i><a href="page-register.html">修改信息</a></li>
+                            <li><i class="menu-icon fa fa-edit"></i><a href="#">修改信息</a></li>
                             <li><i class="menu-icon fa fa-paper-plane"></i><a href="pages-forget.html">评审结果</a></li>
                         </ul>
                     </li>
@@ -282,17 +282,17 @@
                                     <div class="col col-md-3"><label for="text-input" class=" form-control-label">账号种类</label></div>
                                     <div class="col-12 col-md-9">
                                         <label for="text-input" class=" form-control-label" id="t1">
-                                            {% with type = request.session.type %}
-                                            {% ifequel type 0%}
-                                                普通账号
-                                            {% else %}
+                                            {% if request.session.type == '1' %}
                                                 单位账号
+                                            {% else %}
+                                                普通账号
+                                            {% endif %}
                                         </label>
                                     </div>
                                 </div>
                                 <div class="row form-group">
                                     <div class="col col-md-3"><label for="text-input" class=" form-control-label">账号</label></div>
-                                    <div class="col-12 col-md-9"><label for="text-input" class=" form-control-label" id="t2">Gzh7777777</label></div>
+                                    <div class="col-12 col-md-9"><label for="text-input" class=" form-control-label" id="t2">{{ request.session.username }}</label></div>
                                 </div>
                                 <div class="row form-group">
                                     <div class="col col-md-3"><label for="text-input" class=" form-control-label">密码</label></div>
@@ -301,18 +301,20 @@
                                 </div>
                                 <div class="row form-group">
                                     <div class="col col-md-3"><label for="text-input" class=" form-control-label">绑定邮箱</label></div>
-                                    <div class="col-md-4" id="info"><label for="text-input" class=" form-control-label">Gzh7777777@777.com</label></div>
+                                    <div class="col-md-4" id="info"><label for="text-input" class=" form-control-label">{{ email }}</label></div>
                                     <div class="col-md-3" id="info2"><a href="#" onclick="onclick1()"><i class="ti-pencil"></i></a></div>
                                 </div>
                                 <div class="row form-group">
                                     <div class="col col-md-3" ><label for="text-input" class=" form-control-label">绑定手机</label></div>
-                                    <div class="col-md-4" id="info3"><label for="text-input" class=" form-control-label">13777777777</label></div>
+                                    <div class="col-md-4" id="info3"><label for="text-input" class=" form-control-label">{{ tel }}</label></div>
                                     <div class="col-md-3" id="info4"><a href="#" onclick="onclick3()"><i class="ti-pencil"></i></a></div>
                                 </div>
-                                <div class="row form-group">
-                                    <div class="col col-md-3"><label for="text-input" class=" form-control-label">所属组织机构</label></div>
-                                    <div class="col-12 col-md-9"><label for="text-input" class=" form-control-label" id="t5">北京航空航天大学</label></div>
-                                </div>
+                                {%  if request.session.type == '1'%}
+                                    <div class="row form-group">
+                                        <div class="col col-md-3"><label for="text-input" class=" form-control-label">所属组织机构</label></div>
+                                        <div class="col-12 col-md-9"><label for="text-input" class=" form-control-label" id="t5">{{ institution }}</label></div>
+                                    </div>
+                                {% endif %}
                             </div>
                         </div>
                     </div>
@@ -368,7 +370,22 @@
             var p2 =document.getElementById("p2")
             p2.innerHTML='<a herf="#" onclick="onclick2()"><font color="#0000FF">保存</font></a>'
         }
+        function logout(){
+            $.ajax({
+                url : "/logout/",
+                type : 'GET',
+                dataType : 'json',
+                success : function(response) {
+                if(response['errorInfo'] != null){
+                    alert(response['errorInfo']);
+                }else{
+                    alert(response['info']);
+                    window.location.href='/base/';
+                }
 
+            }
+            })
+        }
     </script>
 
 </body>
