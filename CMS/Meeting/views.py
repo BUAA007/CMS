@@ -14,49 +14,94 @@ from django.template import loader
 from User.models import * 
 from Institution.models import Employee
 import datetime
+from datetime import *
+
+def checkNull(msg):
+    return msg
+
+def errorInfo(msg):
+    return {"errorInfo":str(msg)}
+
 class MeetingViewSet(viewsets.ModelViewSet):
     queryset = Meeting.objects.all()
     serializer_class = MeetingSerializer
 
     
     def create(self, request):
-        '''
-        try:
-            user_id=request.session['id']
-            employee=Employee.objects.get(id=user_id)
-        except:
-            return Response({"errorInfo":"have no access"}, status=status.HTTP_200_OK)
-        else:
-        '''
-        user_id=1
-        employee=Employee.objects.get(id=user_id)
-        thisinstitution=employee.institution
+        #try:
+        if request.session['type'] == '0' or request.session['is_login'] != 'true':
+            return Response(errorInfo("succsss"), status=status.HTTP_200_OK)
+
+        thisEmployee = Employee.objects.get( username = request.session['username'])
+        thisInstitution= thisEmployee.institution
         #if thisinstitution.status!="1":
         #    return Response({"errorInfo":"have not been received"}, status=status.HTTP_200_OK)
-        meeting_serializer=MeetingSerializer(data=request.data)
+        title = request.data.get("title")
+        if not title:
+            return HttpResponse(errorInfo("会议标题不能为空"), content_type="application/json")
+        about_us = request.data.get("about_us")
+        if not about_us:
+            return HttpResponse(errorInfo("联系我们不能为空"), content_type="application/json")
         ddl_date=request.data.get("ddl_date"),
+        if not ddl_date:
+            return HttpResponse(errorInfo("请填写截稿日期"), content_type="application/json" )
         result_notice_date = request.data.get("result_notice_date"),
+        if not result_notice_date:
+            return HttpResponse(errorInfo("请填写论文通知日期"), content_type="application/json" )
         regist_attend_date = request.data.get("regist_attend_date"),
+        if not regist_attend_date:
+            return HttpResponse(errorInfo("请填写用户参会注册截止日期"), content_type="application/json" )
         meeting_date = request.data.get("meeting_date"),
+        if not meeting_date:
+            return HttpResponse(errorInfo("请填写会议开始日期"),content_type="application/json" )
         meeting_end_date=request.data.get("meeting_end_date"),
-        if meeting_serializer.is_valid():
-            if (ddl_date<=result_notice_date) and (result_notice_date<=regist_attend_date) and (regist_attend_date<=meeting_date) and (meeting_date<=meeting_end_date):
-                thisMeeting = Meeting(title = request.data.get("title"),
-                intro = request.data.get("intro"),
-                essay_request = request.data.get("essay_request"),
-                ddl_date = request.data.get("ddl_date"),
-                result_notice_date = request.data.get("result_notice_date"),
-                regist_attend_date = request.data.get("regist_attend_date"),
-                meeting_date = request.data.get("meeting_date"),
-                meeting_end_date=request.data.get("meeting_end_date"),
-                schedule = request.data.get("schedule"),
-                institution=thisinstitution,
+        if not meeting_end_date:
+            return HttpResponse(errorInfo("请填写会议结束日期"),content_type="application/json" )
+        receipt = request.data.get("receipt")
+        if not receipt:
+            return HttpResponse(errorInfo("请填写用户参会注册所需费用"), content_type="application/json" )
+        intro = request.data.get("intro")
+        if not intro:
+            return HttpResponse(errorInfo("请填写会议简介"), content_type="application/json" )
+        essay_request = request.data.get("essay_request")
+        if not essay_request:
+            return HttpResponse(errorInfo("请填写征文要求信息"), content_type="application/json" )
+        organization = request.data.get("organization")
+        if not organization:
+            return HttpResponse(errorInfo("请填写会议地址"),content_type="application/json" )
+        schedule = request.data.get("schedule")
+        if not schedule:
+            return HttpResponse(errorInfo("请填写会议日程安排"), content_type="application/json" )
+        support = request.data.get("support")
+        if not support:
+            return HttpResponse(errorInfo("请填写住宿交通信息"), content_type="application/json" )
+        #meeting_serializer = MeetingSerializer(data = request.data)
+        #return HttpResponse(request.session['username']+" "+str(ddl_date))
+        #if meeting_serializer.is_valid():
+        if (ddl_date<=result_notice_date) and (result_notice_date<=regist_attend_date) and (regist_attend_date<=meeting_date) and (meeting_date<=meeting_end_date):
+            #return HttpResponse(request.session['username'])
+            thisMeeting = Meeting(
+                title = title,
+                organization = organization,
+                ddl_date = datetime.strptime(ddl_date[0], "%Y-%m-%dT%H:%M"),
+                result_notice_date = datetime.strptime(result_notice_date[0], "%Y-%m-%dT%H:%M"),
+                regist_attend_date = datetime.strptime(regist_attend_date[0], "%Y-%m-%dT%H:%M"),
+                meeting_date = datetime.strptime(meeting_date[0], "%Y-%m-%dT%H:%M"),
+                meeting_end_date=datetime.strptime(meeting_end_date[0], "%Y-%m-%dT%H:%M"),
+                receipt = receipt,
+                intro = intro,
+                essay_request = essay_request,
+                about_us = about_us,
+                schedule = schedule,
+                institution = thisInstitution,
                 )
-                thisMeeting.save()
-    
-                return Response(thisMeeting.meeting_id, status=status.HTTP_200_OK)
-            return Response("error: Meeting is not valid",status=status.HTTP_200_OK)
-        return Response({"error":"Meeting is not valid"},status=status.HTTP_200_OK)
+            thisMeeting.save()
+            return HttpResponse({"info":"meeting is created"},status=status.HTTP_200_OK)
+        #return HttpResponse("时间不合法")
+            #return HttpResponse(meeting_serializer.errors)
+        #except:
+        #    pass
+        return HttpResponse(str(datetime.strptime(result_notice_date, "%Y-%m-%dT%H:%M")),status=status.HTTP_200_OK)
 
     @action(methods=['GET'], detail=False)
     def list2(self, request):
