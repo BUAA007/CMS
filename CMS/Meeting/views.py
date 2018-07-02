@@ -13,6 +13,7 @@ from django.http import HttpResponse
 from django.template import loader
 from User.models import * 
 from Institution.models import Employee
+import datetime
 class MeetingViewSet(viewsets.ModelViewSet):
     queryset = Meeting.objects.all()
     serializer_class = MeetingSerializer
@@ -56,13 +57,23 @@ class MeetingViewSet(viewsets.ModelViewSet):
                 return Response(thisMeeting.meeting_id, status=status.HTTP_200_OK)
             return Response("error: Meeting is not valid",status=status.HTTP_200_OK)
         return Response({"error":"Meeting is not valid"},status=status.HTTP_200_OK)
-    
-    
-    def list(self, request):
+
+    @action(methods=['GET'], detail=False)
+    def list2(self, request):
         queryset = Meeting.objects.all().order_by('-meeting_id') 
         template = loader.get_template('conference_list.html')
+        # def check_time(conference):
+        #     now_time = datetime.datetime.now()
+        #     if now_time > conference.meeting_end_date:
+        #         conference.status = '已结束'
+        #     elif now_time < conference.meeting_date:
+        #         conference.status = '未开始'
+        #     else:
+        #         conference.status = '正在进行'
+        # list(map(check_time, queryset))
         context = {'conference_list': queryset}
         return HttpResponse(template.render(context, request))
+
 
 
     def retrieve(self ,request,pk=None):
@@ -153,7 +164,7 @@ class MeetingViewSet(viewsets.ModelViewSet):
         pk = request.query_params.get('pk', None)
         thismeeting = Meeting.objects.get(meeting_id=pk)
         papers = thismeeting.paper_set.all()
-        template = loader.get_template('judgement.html')
+        template = loader.get_template('judge.html')
         context = {
             'papers': papers,
         }
