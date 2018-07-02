@@ -287,12 +287,11 @@
             isFavorite = false;
         {% endif %}
         function favorite() {
-            var user_id = 1;
             var meeting_id = {{ conference.meeting_id }};
             $.ajax({
-                url: '/user/favorite/',
+                url: '/user/user/favorite/',
                 type: 'POST',
-                data: {'user_id': user_id, 'meeting_id': meeting_id}, // Request body
+                data: {'meeting_id': meeting_id}, // Request body
                 dataType: 'json',
                 success: function (response) {
                     isFavorite = !isFavorite;
