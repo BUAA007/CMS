@@ -141,14 +141,14 @@
                                         投稿
                                     </a>
                                 </div>
-                                <div class="col-3" onclick="favorite()" id="favoriteDiv">
+                                <div class="col-3" id="favoriteDiv">
                                     {% if isfavorite %}
-                                        <a href="#">
+                                        <a href="#" onclick="favorite()">
                                             <i class="fa text-danger fa-heart"></i>
                                             已收藏
                                         </a>
                                     {% else %}
-                                        <a href="#">
+                                        <a href="#" onclick="favorite()">
                                             <i class="fa fa-heart"></i>
                                             收藏
                                         </a>
@@ -312,6 +312,12 @@
                         }
                     },
                     error: function (msg) {
+                        jQuery(function ($) {
+                            $('#id_errors').modal('show')
+                        });
+                        if (msg['errorInfo']) {
+                            document.getElementById('info').innerHTML = msg;
+                        }
                     }
                 });
             });
