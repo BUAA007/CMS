@@ -259,15 +259,17 @@ class UserViewSet(viewsets.ModelViewSet):
     def favorite(self, request):
         user_id = request.data.get("user_id")
         thisuser = User.objects.get(id=user_id)
-        meeting_id = request.data.get("meeting_id")
-        thismeeting = Meeting.objects.get(meeting_id=meeting_id)
+        meetingid = 1
+        #request.data.get("meeting_id")
+        thismeeting = Meeting.objects.get(meeting_id=meetingid)
         try:
-            #favorite=thisuser.favorite.get(meeting_id=thisMeeting.meeting_id)
-            thisuser.favorite.remove(thismeeting)
-            return Response({"errorInfo":"favorite fail"}, status=status.HTTP_200_OK)
+            fae=thisuser.favorite.get(meeting_id=meetingid)
         except:
-            pass
-        thisuser.favorite.add(thismeeting)
+            fae = None
+        if fae is None:
+            thisuser.favorite.add(thismeeting)
+            return Response({"errorInfo":"favorite fail"}, status=status.HTTP_200_OK)
+        thisuser.favorite.remove(thismeeting)
         return Response({"info":"favorite success"}, status=status.HTTP_200_OK)
 
         
