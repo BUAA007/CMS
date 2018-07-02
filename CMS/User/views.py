@@ -249,13 +249,14 @@ class UserViewSet(viewsets.ModelViewSet):
         meeting_id = request.data.get("meeting_id")
         thismeeting = Meeting.objects.get(meeting_id=meeting_id)
         try:
-            favorite=thisuser.favorite.get(meeting_id=thisMeeting.meeting_id)
-        except:
-            thisuser.favorite.add(thismeeting)
-        else :
+            #favorite=thisuser.favorite.get(meeting_id=thisMeeting.meeting_id)
             thisuser.favorite.remove(thismeeting)
-        
-        return Response({"errorInfo":"favorite fail"}, status=status.HTTP_200_OK)
+            return Response({"errorInfo":"favorite fail"}, status=status.HTTP_200_OK)
+        except:
+            pass
+        thisuser.favorite.add(thismeeting)
+        return Response({"info":"favorite success"}, status=status.HTTP_200_OK)
+
         
     @action(methods=['GET'], detail = False)
     def allpaper(self,request):

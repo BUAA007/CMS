@@ -83,7 +83,7 @@ class MeetingViewSet(viewsets.ModelViewSet):
             template = loader.get_template('conference.html')
             context = {
                 'conference': thisMeeting,
-                'isfavorite':False
+                'isfavorite': False
             }
             return HttpResponse(template.render(context, request))
 
