@@ -233,10 +233,20 @@ class UserViewSet(viewsets.ModelViewSet):
 
     @action(methods=['POST'], detail=False)
     def contribute(self, request):
-        user_id = request.data.get("user_id")
-        thisuser = User.objects.get(id=user_id)
         meeting_id=request.data.get("meeting_id")
         thismeeting=Meeting.objects.get(meeting_id=meeting_id)
+        try:
+            user_id=request.session['id']
+        except:
+            template = loader.get_template('conference.html')
+            context = {
+                'conference': thismeeting,
+                'message':'失败，请登录'
+            }
+            return HttpResponse(template.render(context, request))
+        user_type=request.session['type']
+        thisuser = User.objects.get(id=user_id)
+        
         thispaper= Paper(author_1=request.data.get("author_1"),
             author_2=request.data.get("author_2"),
             author_3=request.data.get("author_3"),
@@ -249,28 +259,49 @@ class UserViewSet(viewsets.ModelViewSet):
             owner=thisuser,
             meeting=thismeeting,
         )
-        thispaper.save()
-        thisuser.participate.add(thismeeting)
-        return Response("info: contribute succsss", status=status.HTTP_200_OK)
+        try:
+            thispaper.save()
+            thisuser.participate.add(thismeeting)
+            template = loader.get_template('conference.html')
+            context = {
+                'conference': thismeeting,
+                'message':'成功'
+            }
+            return HttpResponse(template.render(context, request))
+        except:
+            template = loader.get_template('conference.html')
+            context = {
+                'conference': thismeeting,
+                'message':'失败,填写信息错误'
+            }
+        return HttpResponse(template.render(context, request))
+
+        
+
+
 
 
     @action(methods=['POST'], detail=False)
     def favorite(self, request):
-        user_id = request.data.get("user_id")
-        thisuser = User.objects.get(id=user_id)
-        request.data.get("meeting_id")
-        thismeeting = Meeting.objects.get(meeting_id=meetingid)
         try:
-            fae=thisuser.favorite.get(meeting_id=meetingid)
+            user_id = request.session['id']
         except:
-            fae = None
-        if fae is None:
-            thisuser.favorite.add(thismeeting)
-            return Response({"errorInfo":"favorite fail"}, status=status.HTTP_200_OK)
-        thisuser.favorite.remove(thismeeting)
-        return Response({"info":"favorite success"}, status=status.HTTP_200_OK)
+            return Response({"errorInfo":"请登录"}, status=status.HTTP_200_OK)
+        else:
+            thisuser = User.objects.get(id=user_id)
+            meeting=request.data.get("meeting_id")
+            thismeeting = Meeting.objects.get(meeting_id=meeting)
+            try:
+                fae=thisuser.favorite.get(meeting_id=meeting)
+            except:
+                thisuser.favorite.add(thismeeting)
+                thisuser.save()
+            else:
+                thisuser.favorite.remove(thismeeting)
+                thisuser.save()
+        finally:
+            return Response({"info":"成功"}, status=status.HTTP_200_OK)
 
-        
     @action(methods=['GET'], detail = False)
     def allpaper(self,request):
         pk = request.query_params.get('pk', None)
