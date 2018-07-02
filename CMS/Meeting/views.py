@@ -155,7 +155,7 @@ class MeetingViewSet(viewsets.ModelViewSet):
         pk = request.query_params.get('pk', None)
         thismeeting = Meeting.objects.get(meeting_id=pk)
         papers = thismeeting.paper_set.all()
-        template = loader.get_template('judgement.html')
+        template = loader.get_template('judge.html')
         context = {
             'papers': papers,
         }
