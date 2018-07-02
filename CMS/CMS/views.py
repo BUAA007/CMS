@@ -12,6 +12,8 @@ def user_register(request):
 def institution_register(request):
 	return render(request,'institution_register.html')
 
+def personal_info(request):
+    return render(request, 'personal_info.html')
 
 def download(request):
         def file_iterator(file_name, chunk_size=512):
