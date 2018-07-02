@@ -233,11 +233,20 @@ class UserViewSet(viewsets.ModelViewSet):
 
     @action(methods=['POST'], detail=False)
     def contribute(self, request):
-        user_id=request.session['id']
-        user_type=request.session['type']
-        thisuser = User.objects.get(id=user_id)
         meeting_id=request.data.get("meeting_id")
         thismeeting=Meeting.objects.get(meeting_id=meeting_id)
+        try:
+            user_id=request.session['id']
+        except:
+            template = loader.get_template('conference.html')
+            context = {
+                'conference': thismeeting,
+                'message':'失败，请登录'
+            }
+            return HttpResponse(template.render(context, request))
+        user_type=request.session['type']
+        thisuser = User.objects.get(id=user_id)
+        
         thispaper= Paper(author_1=request.data.get("author_1"),
             author_2=request.data.get("author_2"),
             author_3=request.data.get("author_3"),
@@ -263,9 +272,9 @@ class UserViewSet(viewsets.ModelViewSet):
             template = loader.get_template('conference.html')
             context = {
                 'conference': thismeeting,
-                'message':'失败'
+                'message':'失败,填写信息错误'
             }
-            return HttpResponse(template.render(context, request))
+        return HttpResponse(template.render(context, request))
 
         
 
