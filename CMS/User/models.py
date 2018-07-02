@@ -22,17 +22,17 @@ class User(models.Model):
 	participate = models.ManyToManyField(Meeting, related_name = "Attendee_set",blank = True,)
 
 class Join(models.Model):
-	receipt = FileField(
+	receipt = models.FileField(
 		upload_to = 'receipt',
 		)
-	name = CharField(
+	name = models.CharField(
 		max_length = 32,
 		)
-	gender = CharField(
+	gender = models.CharField(
 		max_length = 10,
 		)
-	reservation = CharField(
+	reservation = models.CharField(
 		max_length = 8,
 		)
-	meeting = ManyToManyField(Meeting)
-	user = ManyToManyField(User)
+	meeting = models.ManyToManyField(Meeting)
+	user = models.ManyToManyField(User)
