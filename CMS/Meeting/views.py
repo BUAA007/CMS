@@ -214,3 +214,4 @@ class MeetingViewSet(viewsets.ModelViewSet):
             'papers': papers,
         }
         return HttpResponse(template.render(context, request))
+
