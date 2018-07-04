@@ -267,19 +267,20 @@ class UserViewSet(viewsets.ModelViewSet):
         try:
             thispaper.save()
             #thisuser.participate.add(thismeeting) 暂时还未参加会议，需要审核和注册
+            url="../../../meeting/"+thismeeting.meeting_id
+            return HttpResponseRedirect(url)
+            '''
             template = loader.get_template('conference.html')
             context = {
                 'conference': thismeeting,
                 'message':'成功'
             }
             return HttpResponse(template.render(context, request))
+            '''
         except:
-            template = loader.get_template('conference.html')
-            context = {
-                'conference': thismeeting,
-                'message':'失败,填写信息错误'
-            }
-        return HttpResponse(template.render(context, request))
+            url = "../../../meeting/" + str(thismeeting.meeting_id)
+            return HttpResponseRedirect(url)
+        #return HttpResponse(template.render(context, request))
 
     @action(methods=['POST'], detail=False)
     def modify(self, request):
@@ -324,6 +325,9 @@ class UserViewSet(viewsets.ModelViewSet):
                     thispaper.content = request.FILES['content']
                     thispaper.save()
                     thisuser = User.objects.get(id=user_id)
+                    url = "../allpaper"
+                    return HttpResponseRedirect(url)
+                    '''
                     papers = thisuser.paper_set.all()
                     template = loader.get_template('judgement.html')
                     context = {
@@ -331,17 +335,10 @@ class UserViewSet(viewsets.ModelViewSet):
                         'message': '修改成功，请等待审核'
                     }
                     return HttpResponse(template.render(context, request))
-
+                  '''
                 else:
-                    thisuser = User.objects.get(id=user_id)
-                    # thismeeting = Meeting.objects.get(meeting_id=pk)
-                    papers = thisuser.paper_set.all()
-                    template = loader.get_template('judgement.html')
-                    context = {
-                        'papers': papers,
-                        'message': '失败,该论文不可修改'
-                    }
-                    return HttpResponse(template.render(context, request))
+                    url = "../allpaper"
+                    return HttpResponseRedirect(url)
 
     @action(methods=['POST'], detail=False)
     def favorite(self, request):
