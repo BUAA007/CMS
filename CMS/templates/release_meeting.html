@@ -11,6 +11,7 @@
             <div class="col-lg-12 col-lg-offset-4">
                 <div class="card">
                     <div class="card-header"><strong>会议信息登记</strong></div>
+                    <form method="POST" action="/meeting/create">
                     <div class="card-body card-block">
                     <div class="row form-group">
                         <div class="col col-md-3"><label for="text-input" class=" form-control-label">会议标题</label></div>
@@ -82,7 +83,7 @@
                     <div class="row form-group">
                         <div class="col col-md-3"><label for="textarea-input"
                                                          class=" form-control-label">地点</label></div>
-                        <div class="col-12 col-md-9"><textarea name="orgnization" rows="2"
+                        <div class="col-12 col-md-9"><textarea name="organization" rows="2"
                                                                placeholder="填写会议地点(例如北京市海淀区北京航空航天大学南门)"
                                                                class="form-control"></textarea></div>
                     </div>
@@ -102,6 +103,7 @@
                         <i class="fa fa-dot-circle-o"></i> 提交
                     </button>
                 </div>
+                        </form>
             </div>
 
         </div>
@@ -111,10 +113,6 @@
 
 
 </div>
-    <script>
-    $('#date1').datetimepicker({
-    format: 'yyyy-mm-dd hh:ii'
-});
-    </script>
+
 
 {% endblock %}

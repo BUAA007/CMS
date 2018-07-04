@@ -68,8 +68,7 @@ def checkPhonenumber(phone):
 	return re.search(phone_pat, phone)
 
 def checkUsername(username):
-	username_pat = re.compile("[a-zA-z]\\w{0,9}")
-	return re.search(username_pat, username)
+	return (username != "")
 
 def info(msg):
 	return json.dumps({'info': msg})
@@ -105,8 +104,8 @@ class InstitutionViewSet(viewsets.ModelViewSet):
 	            return  HttpResponse(errorInfo("用户名已存在"), content_type="application/json")
 	    except:
 	    	pass
-	    if not checkUsername(name):    #必须以字母开头，长度在10位以内
-	        return  HttpResponse(errorInfo("机构名必须以字母开头且长度在10位以内"), content_type="application/json")
+	    if not checkUsername(name):    #必须不为空
+	        return  HttpResponse(errorInfo("机构名不能为空"), content_type="application/json")
 	    # if not checkUsername(username):    #必须以字母开头，长度在10位以内
 	    #     return  HttpResponse(errorInfo("用户名不合法"), content_type="application/json")
 	    if not checkPassword(password):    #包含大写、小写、符号；长度大于等于8

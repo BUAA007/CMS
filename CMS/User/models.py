@@ -35,12 +35,16 @@ class Join(models.Model):
 	reservation = models.CharField(
 		max_length = 8,
 		)
-	type=models.IntegerField(
+	types=models.IntegerField(
 		null=True,
 		default = 1,
 		)
+	# papid = models.IntegerField(
+	# 	null=True,
+	# 	default = 1,
+	# 	)
 	paper = models.ForeignKey(
-		Paper,
+		"Paper.Paper",
 		on_delete=models.CASCADE,
 		default = "",
 		)

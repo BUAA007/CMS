@@ -67,10 +67,10 @@ def logout(request):
 		# 	return HttpResponse(errorInfo("登入后操作"), content_type="application/json")
 		del request.session['is_login']         # 删除is_login对应的value值
 		request.session.flush()                  # 删除django-session表中的对应一行记录
-		return HttpResponse(info("登出成功"), content_type="application/json")
+		return render(request, 'base.html', {'info' : '登出成功'})
 	except:
 		pass
-	return HttpResponse(errorInfo("请登入后操作"), content_type="application/json")
+	return render(request, 'base.html',{'errorInfo' : "请先登录"})
 
     #return render(request,'base.html')             #重定向回主页面
 def info(msg):
