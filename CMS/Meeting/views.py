@@ -208,17 +208,17 @@ class MeetingViewSet(viewsets.ModelViewSet):
 
     @action(methods=['GET'],detail=False)
     def allpaper(self, request):
-        user_id=request.session
-        try:
-            thisemployee=Employee.objects.get(id=user_id)
-        except:
+        user_id=request.session['id']
+        type=request.session['type']
+        if type==0:
             template = loader.get_template('judge.html')
             context = {
                 #'conference': thismeeting,
-                'message': '失败，请登录'
+                'message': '失败，不是该会议的单位用户'
             }
             return HttpResponse(template.render(context, request))
         else:
+            thisemployee = Employee.objects.get(id=user_id)
             institution=thisemployee.institution
             thismeeting=institution.meeting_set
             #thismeeting = Meeting.objects.get(meeting_id=pk)
