@@ -6,6 +6,7 @@ from rest_framework import status
 from django.core import serializers
 from django.core.exceptions import ObjectDoesNotExist
 from Institution.models import Institution,Employee
+from Paper.models import Paper
 from Institution.serializers import InstitutionSerializer,EmployeeSerializer
 from django.template import loader
 from django.http import HttpResponse
@@ -67,8 +68,7 @@ def checkPhonenumber(phone):
 	return re.search(phone_pat, phone)
 
 def checkUsername(username):
-	username_pat = re.compile("[a-zA-z]\\w{0,9}")
-	return re.search(username_pat, username)
+	return (username != "")
 
 def info(msg):
 	return json.dumps({'info': msg})
@@ -104,8 +104,8 @@ class InstitutionViewSet(viewsets.ModelViewSet):
 	            return  HttpResponse(errorInfo("用户名已存在"), content_type="application/json")
 	    except:
 	    	pass
-	    if not checkUsername(name):    #必须以字母开头，长度在10位以内
-	        return  HttpResponse(errorInfo("机构名必须以字母开头且长度在10位以内"), content_type="application/json")
+	    if not checkUsername(name):    #必须不为空
+	        return  HttpResponse(errorInfo("机构名不能为空"), content_type="application/json")
 	    # if not checkUsername(username):    #必须以字母开头，长度在10位以内
 	    #     return  HttpResponse(errorInfo("用户名不合法"), content_type="application/json")
 	    if not checkPassword(password):    #包含大写、小写、符号；长度大于等于8
@@ -139,8 +139,9 @@ class InstitutionViewSet(viewsets.ModelViewSet):
 	            thisEmployee.save()
 	            return HttpResponse(info("success"), content_type="application/json")
 	        #return render(request,'login.html',status = status.HTTP_201_CREATED)
-	        
-	    return HttpResponse(errorInfo("未知原因失败，请稍后再试"), content_type="application/json") 
+
+	    return HttpResponse(errorInfo("未知原因失败，请稍后再试"), content_type="application/json")
+
 
 class EmployeeViewSet(viewsets.ModelViewSet):
 	queryset = Employee.objects.all()
@@ -216,4 +217,15 @@ class EmployeeViewSet(viewsets.ModelViewSet):
 	    except:
 	        pass
 	        #return render(request,'login.html',status = status.HTTP_201_CREATED)
-	    return  HttpResponse(errorInfo("未知原因失败，请稍后再试"), content_type="application/json") 
+	    return  HttpResponse(errorInfo("未知原因失败，请稍后再试"), content_type="application/json")
+
+
+	@action(methods=['POST'], detail=False)#添加发邮件功能，需要传paper_id,管理员下载论文有
+	def checkpaper(self, request):
+		paper_id=request.data.get('paper_id')
+		thispaper=Paper.objects.get(id=paper_id)
+		thisstatus=request.data.get("status")
+		thispaper.status=thisstatus
+		thispaper.save()
+		return Response("成功 ", status=status.HTTP_200_OK)
+

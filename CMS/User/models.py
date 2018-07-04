@@ -36,3 +36,5 @@ class Join(models.Model):
 		)
 	meeting = models.ManyToManyField(Meeting)
 	user = models.ManyToManyField(User)
+
+
