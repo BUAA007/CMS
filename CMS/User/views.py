@@ -377,47 +377,94 @@ class JoinViewSet(viewsets.ModelViewSet):
         # thisuser = User.objects.get(id=user_id)
         # meeting_id=request.data.get("meeting_id")
         # thismeeting=Meeting.objects.get(meeting_id=meeting_id)
-        namelist = request.data.get("name")
-        genderlist = request.data.get("gender")
-        reserlist = request.data.get("reservation")
+
+        # namelist = request.data.get("name")
+        # genderlist = request.data.get("gender")
+        # reserlist = request.data.get("reservation")
         receipt = request.FILES['file']
         type = int(request.data.get("type"))
         if type == 1:
             paperid = int(request.data.get("paper"))
             thispaper = Paper.objects.get(id = paperid)
             thismeeting = Meeting.objects.get(meeting_id = thispaper.meeting_id)
-            count = 0
-            for name in namelist:
+            count = 1
+            namename = "name" + str(count)
+            gendername = "gender" + str(count)
+            resername = "reservation" + str(count)
+            name = request.data.get(namename)
+            while name is not None:
+                gender = request.data.get(gendername)
+                reservation = request.data.get(resername)
                 people = Join(
                     name = name,
-                    gender = gender[count],
+                    gender = gender,
                     receipt = receipt,
                     #content=request.data.get("content"),
-                    reservation = reserlist[count],
+                    reservation = reservation,
                     types = 1,
                     paper = thispaper,
                     meeting = thismeeting,
                 )
                 people.save()
                 count = count + 1
-            thispaper.owner.participate.add(thispaper.meeting)
+                namename = "name" + str(count)
+                name = request.data.get(namename)
+            # for name in namelist:
+            #     people = Join(
+            #         name = name,
+            #         gender = genderlist[count],
+            #         receipt = receipt,
+            #         #content=request.data.get("content"),
+            #         reservation = reserlist[count],
+            #         types = 1,
+            #         paper = thispaper,
+            #         meeting = thismeeting,
+            #     )
+            #     people.save()
+            #     count = count + 1
+            thispaper.owner.participate.add(thismeeting)
             return Response("info: join success", status=status.HTTP_200_OK)
-        count = 0
-        for name in namelist:
-            meetingid = request.data.get("meeting")
-            if meetingid is None:
-                return Response("errorinfo: no meeting", status=status.HTTP_200_OK)
-            meeting_id = int(meetingid)
-            thismeeting = Meeting.objects.get(meeting_id = meeting_id)
+        meetingid = int(request.data.get("meeting"))
+        thismeeting = Meeting.objects.get(meeting_id = meetingid)
+        count = 1
+        namename = "name" + str(count)
+        gendername = "gender" + str(count)
+        resername = "reservation" + str(count)
+        name = request.data.get(namename)
+        while name is not None:
+            gender = request.data.get(gendername)
+            reservation = request.data.get(resername)
             people = Join(
                 name = name,
-                gender = gender[count],
+                gender = gender,
                 receipt = receipt,
                 #content=request.data.get("content"),
-                reservation = reserlist[count],
+                reservation = reservation,
                 types = 2,
                 meeting = thismeeting,
             )
             people.save()
             count = count + 1
+            namename = "name" + str(count)
+            name = request.data.get(namename)
+        thispaper.owner.participate.add(thismeeting)
         return Response("info: listen success", status=status.HTTP_200_OK)
+        # count = 0
+        # for name in namelist:
+        #     meetingid = request.data.get("meeting")
+        #     if meetingid is None:
+        #         return Response("errorinfo: no meeting", status=status.HTTP_200_OK)
+        #     meeting_id = int(meetingid)
+        #     thismeeting = Meeting.objects.get(meeting_id = meeting_id)
+        #     people = Join(
+        #         name = name,
+        #         gender = gender[count],
+        #         receipt = receipt,
+        #         #content=request.data.get("content"),
+        #         reservation = reserlist[count],
+        #         types = 2,
+        #         meeting = thismeeting,
+        #     )
+        #     people.save()
+        #     count = count + 1
+        # return Response("info: listen success", status=status.HTTP_200_OK)
