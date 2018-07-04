@@ -17,7 +17,7 @@
                     </button>
                 </div>
                 <div class="modal-body">
-                    <form enctype="multipart/form-data" class="form-horizontal" action="/user/join" method="post"
+                    <form enctype="multipart/form-data" class="form-horizontal" action="/user/join/" method="post"
                           id="registerConferenceForm">
                         <div class="form-group">
                             <div class="custom-file">
@@ -25,6 +25,11 @@
                                 <label class="custom-file-label" for="content">上传缴费凭证</label>
                             </div>
                         </div>
+                        <div class="form-group">
+                            <label for="paper_id">论文编号:</label>
+                            <input class="form-control" required id="paper_id" name="paper">
+                        </div>
+                        <input type="hidden" name="type" value="1">
                         <div class="form-group">
                             <div class="col-6">
                                 <h6>参会人员</h6>
@@ -94,8 +99,8 @@
                             </div>
                         </div>
                         <div class="form-group">
-                            <label for="keyword" class="keyword">论文编号:</label>
-                            <input class="form-control" required id="keyword" name="paper_id">
+                            <label for="paper_id">论文编号:</label>
+                            <input class="form-control" required id="paper_id" name="paper_id">
                         </div>
                         <div class="form-group">
                             <label for="title" class="col-form-label">标题:</label>
