@@ -25,7 +25,7 @@
                                 待修改
                                 </a>
                             </label>
-                            <textarea rows="3" class="form-control" id="text1" placeholder="请输入修改意见..."></textarea>
+                            <textarea rows="3" class="form-control" id="id_suggestion" placeholder="请输入修改意见..."></textarea>
                         </div>
                     </div>
                     <p></p>
@@ -157,15 +157,46 @@
         }
 
         function reject() {
-            alert('reject' + paperId)
+            jQuery(function ($) {
+                $.ajax({
+                    url: '/institution/checkpaper/',
+                    type: 'POST',
+                    data: {'paper_id': paperId, 'status': -2}, // Request body
+                    dataType: 'json',
+                    success: function (response) {
+                        alert('reject')
+                    },
+                });
+            });
         }
 
         function pass() {
-            alert('pass' + paperId)
+            jQuery(function ($) {
+                $.ajax({
+                    url: '/institution/checkpaper/',
+                    type: 'POST',
+                    data: {'paper_id': paperId, 'status': 1}, // Request body
+                    dataType: 'json',
+                    success: function (response) {
+                        alert('pass')
+                    },
+                });
+            });
         }
 
         function update() {
-            alert('update' + paperId)
+            var suggestion = document.getElementById('id_suggestion').value;
+            jQuery(function ($) {
+                $.ajax({
+                    url: '/institution/checkpaper/',
+                    type: 'POST',
+                    data: {'paper_id': paperId, 'status': 0, 'suggestion': suggestion}, // Request body
+                    dataType: 'json',
+                    success: function (response) {
+                        alert('update')
+                    },
+                });
+            });
         }
     </script>
 {% endblock %}
