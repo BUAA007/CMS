@@ -233,6 +233,9 @@ class EmployeeViewSet(viewsets.ModelViewSet):
 		thispaper=Paper.objects.get(id=paper_id)
 		thisstatus=request.data.get("status")
 		thispaper.status=thisstatus
+		if status == 0:
+			suggestion=request.data.get("suggestion")
+			thispaper.suggestion=suggestion
 		thispaper.save()
 		return Response("成功 ", status=status.HTTP_200_OK)
 
