@@ -425,6 +425,8 @@ class JoinViewSet(viewsets.ModelViewSet):
                 people.save()
                 count = count + 1
                 namename = "name" + str(count)
+                gendername = "gender" + str(count)
+                resername = "reservation" + str(count)
                 name = request.data.get(namename)
             # for name in namelist:
             #     people = Join(
@@ -463,6 +465,8 @@ class JoinViewSet(viewsets.ModelViewSet):
             people.save()
             count = count + 1
             namename = "name" + str(count)
+            gendername = "gender" + str(count)
+            resername = "reservation" + str(count)
             name = request.data.get(namename)
         thispaper.owner.participate.add(thismeeting)
         return Response("info: listen success", status=status.HTTP_200_OK)
