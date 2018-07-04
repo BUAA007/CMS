@@ -202,12 +202,14 @@ class MeetingViewSet(viewsets.ModelViewSet):
             return HttpResponse(template.render(context, request))
 
 
-    @action(methods=['GET'],detail=False)
+    @action(methods=['POST'],detail=False)
     def osearch(self, request):#根据时间搜索未写
         queryset = Meeting.objects.all()
-        word = request.query_params.get('s', None)
+        word = request.data.get('word')
         if word is not None:
             queryset = Meeting.objects.filter(title__contains = word)
+        else:
+            queryset = Meeting.objects.all()
         serializer = MeetingSerializer(queryset, many = True)
         return Response(serializer.data, status = status.HTTP_200_OK)
 
