@@ -14,7 +14,8 @@
             <span aria-hidden="true">&times;</span>
         </button>
     </div>
-{% else %}
+{% endif %}
+{% if info != null %}
     <div class="sufee-alert alert with-close alert-primary alert-dismissible fade show">
         <span class="badge badge-pill badge-primary">Success</span>
             {{ info }}
