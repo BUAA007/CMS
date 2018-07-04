@@ -48,3 +48,8 @@ class Join(models.Model):
 		on_delete=models.CASCADE,
 		default = "",
 		)
+	meeting = models.ForeignKey(
+		"Meeting.Meeting",
+		on_delete = models.CASCADE,
+		null = True
+		)
