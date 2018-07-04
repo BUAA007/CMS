@@ -276,9 +276,6 @@ class UserViewSet(viewsets.ModelViewSet):
             }
         return HttpResponse(template.render(context, request))
 
-        
-
-
 
 
     @action(methods=['POST'], detail=False)
