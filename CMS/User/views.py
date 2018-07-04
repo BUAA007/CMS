@@ -318,25 +318,6 @@ class UserViewSet(viewsets.ModelViewSet):
                     'message': '修改成功，请等待审核'
                 }
                 return HttpResponse(template.render(context, request))
-                '''
-                try:
-                    #thispaper.save()
-                    # thisuser.participate.add(thismeeting) 暂时还未参加会议，需要审核和注册
-                    template = loader.get_template('judgement.html')
-                    context = {
-                        #'conference': thismeeting,
-                        'message': '修改成功，请等待审核'
-                    }
-                    return HttpResponse(template.render(context, request))
-                except:
-                
-                    template = loader.get_template('judgement.html')
-                    context = {
-                        #'conference': thismeeting,
-                        'message': '失败,填写信息错误'
-                    }
-                    return HttpResponse(template.render(context, request))
-                '''
             else:
                 template = loader.get_template('judgement.html')
                 context = {
