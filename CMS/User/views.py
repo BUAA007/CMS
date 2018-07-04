@@ -315,14 +315,33 @@ class JoinViewSet(viewsets.ModelViewSet):
     serializer_class = JoinSerializer
 
     def create(self, request):
-        user_id=request.session['id']
-        thisuser = User.objects.get(id=user_id)
-        meeting_id=request.data.get("meeting_id")
-        thismeeting=Meeting.objects.get(meeting_id=meeting_id)
+        # user_id=request.session['id']
+        # thisuser = User.objects.get(id=user_id)
+        # meeting_id=request.data.get("meeting_id")
+        # thismeeting=Meeting.objects.get(meeting_id=meeting_id)
         namelist = request.data.get("name")
         genderlist = request.data.get("gender")
         reserlist = request.data.get("reservation")
         receipt = request.FILES['file']
+        type = request.data.get("type")
+        if type == 1:
+            paperid = request.data.get("paper")
+            thispaper = Paper.objects.get(id = paperid)
+            count = 0
+            for name in namelist:
+                people = Join(
+                    name = name,
+                    gender = gender[count],
+                    receipt = receipt,
+                    #content=request.data.get("content"),
+                    reservation = reserlist[count],
+                    types = 1,
+                    paper = thispaper,
+                )
+                people.save()
+                count = count + 1
+            thispaper.owner.participate.add(thispaper.meeting)
+            return Response("info: join success", status=status.HTTP_200_OK)
         count = 0
         for name in namelist:
             people = Join(
@@ -330,10 +349,9 @@ class JoinViewSet(viewsets.ModelViewSet):
                 gender = gender[count],
                 receipt = receipt,
                 #content=request.data.get("content"),
-                user = thisuser,
-                meeting = thismeeting,
+                reservation = reserlist[count],
+                types = 2,
             )
             people.save()
             count = count + 1
-        return Response("info: join success", status=status.HTTP_200_OK)
-
+        return Response("info: listen success", status=status.HTTP_200_OK)
