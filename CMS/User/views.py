@@ -148,6 +148,11 @@ class UserViewSet(viewsets.ModelViewSet):
         password2 = request.data.get("password2")
         email = request.data.get("email")
         tel = request.data.get("tel")
+        try :
+            if User.objects.get(username = username):
+                return HttpResponse(errorInfo("该用户已存在"),content_type="application/json")
+        except:
+            pass
         # if not checkUsername(username):    #必须以字母开头，长度在10位以内
         #    return  HttpResponse(errorInfo("用户名不合法"), content_type="application/json")
         if not checkPassword(password):    #包含大写、小写、符号；长度大于等于8
@@ -276,10 +281,50 @@ class UserViewSet(viewsets.ModelViewSet):
             }
         return HttpResponse(template.render(context, request))
 
-        
-
-
-
+    @action(methods=['POST'], detail=False)
+    def modify(self, request):
+        meeting_id = request.data.get("meeting_id")
+        thismeeting = Meeting.objects.get(meeting_id=meeting_id)
+        try:
+            user_id = request.session['id']
+        except:
+            template = loader.get_template('conference.html')
+            context = {
+                'conference': thismeeting,
+                'message': '失败，请登录'
+            }
+            return HttpResponse(template.render(context, request))
+        user_type = request.session['type']
+        thisuser = User.objects.get(id=user_id)
+        thispaper = Paper.objects.get("paper_id")
+        thispaper.author_1=request.data.get("author_1"),
+        thispaper.author_2=request.data.get("author_2"),
+        thispaper.author_3=request.data.get("author_3"),
+        thispaper.title=request.data.get("title"),
+        thispaper.abstract=request.data.get("abstract"),
+        thispaper.keyword=request.data.get("keyword"),
+        thispaper.content=request.FILES['content'],
+              # content=request.data.get("content"),
+        thispaper.status=-1,
+        thispaper.owner=thisuser,
+        thispaper.meeting=thismeeting,
+        thispaper.explain=request.data.get("explain")
+        try:
+            thispaper.save()
+            # thisuser.participate.add(thismeeting) 暂时还未参加会议，需要审核和注册
+            template = loader.get_template('conference.html')
+            context = {
+                'conference': thismeeting,
+                'message': '成功'
+            }
+            return HttpResponse(template.render(context, request))
+        except:
+            template = loader.get_template('conference.html')
+            context = {
+                'conference': thismeeting,
+                'message': '失败,填写信息错误'
+            }
+        return HttpResponse(template.render(context, request))
 
     @action(methods=['POST'], detail=False)
     def favorite(self, request):
@@ -304,14 +349,24 @@ class UserViewSet(viewsets.ModelViewSet):
 
     @action(methods=['GET'], detail = False)
     def allpaper(self,request):
-        pk = request.query_params.get('pk', None)
-        thisuser = User.objects.get(id=pk)
-        papers = thisuser.paper_set.all()
-        template = loader.get_template('judgement.html')
-        context = {
-            'papers': papers,
-        }
-        return HttpResponse(template.render(context, request))
+        user_id = request.session['id']
+        type = request.session['type']
+        if type == 1:
+            template = loader.get_template('judge.html')
+            context = {
+                # 'conference': thismeeting,
+                'message': '失败，不是个体用户'
+            }
+            return HttpResponse(template.render(context, request))
+        else:
+            thisuser = User.objects.get(id=user_id)
+            # thismeeting = Meeting.objects.get(meeting_id=pk)
+            papers = thisuser.paper_set.all()
+            template = loader.get_template('judge.html')
+            context = {
+                'papers': papers,
+            }
+            return HttpResponse(template.render(context, request))
 
 class JoinViewSet(viewsets.ModelViewSet):
     queryset = Join.objects.all()
