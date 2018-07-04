@@ -261,7 +261,7 @@ class UserViewSet(viewsets.ModelViewSet):
         )
         try:
             thispaper.save()
-            thisuser.participate.add(thismeeting)
+            #thisuser.participate.add(thismeeting) 暂时还未参加会议，需要审核和注册
             template = loader.get_template('conference.html')
             context = {
                 'conference': thismeeting,
@@ -339,3 +339,4 @@ class JoinViewSet(viewsets.ModelViewSet):
             people.save()
             count = count + 1
         return Response("info: join success", status=status.HTTP_200_OK)
+

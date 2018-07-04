@@ -43,4 +43,14 @@ class Paper(models.Model):
 		on_delete=models.CASCADE,
 		default = "",
 		)
+	suggestion=models.CharField(
+		max_length=1028,
+		null=True,
+	)
+	explain=models.CharField(
+		max_length=1028,
+		null=True,
+	)
+
+
 
