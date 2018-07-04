@@ -101,7 +101,7 @@ class MeetingViewSet(viewsets.ModelViewSet):
             #return HttpResponse(meeting_serializer.errors)
         #except:
         #    pass
-        return HttpResponse(str(datetime.strptime(result_notice_date, "%Y-%m-%dT%H:%M")),status=status.HTTP_200_OK)
+        return HttpResponse(errorInfo("填写的日期不合法"),status=status.HTTP_200_OK)
 
     @action(methods=['GET'], detail=False)
     def list2(self, request):
