@@ -159,7 +159,7 @@
         function reject() {
             jQuery(function ($) {
                 $.ajax({
-                    url: '/institution/checkpaper/',
+                    url: '/institution/employee/checkpaper/',
                     type: 'POST',
                     data: {'paper_id': paperId, 'status': -2}, // Request body
                     dataType: 'json',
@@ -173,7 +173,7 @@
         function pass() {
             jQuery(function ($) {
                 $.ajax({
-                    url: '/institution/checkpaper/',
+                    url: '/institution/employee/checkpaper/',
                     type: 'POST',
                     data: {'paper_id': paperId, 'status': 1}, // Request body
                     dataType: 'json',
@@ -186,9 +186,10 @@
 
         function update() {
             var suggestion = document.getElementById('id_suggestion').value;
+            alert(suggestion)
             jQuery(function ($) {
                 $.ajax({
-                    url: '/institution/checkpaper/',
+                    url: '/institution/employee/checkpaper/',
                     type: 'POST',
                     data: {'paper_id': paperId, 'status': 0, 'suggestion': suggestion}, // Request body
                     dataType: 'json',
