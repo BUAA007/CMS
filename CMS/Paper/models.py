@@ -28,13 +28,13 @@ class Paper(models.Model):
 		null = True,
 		)
 	content = models.FileField(
-		upload_to='paper/'
+		upload_to='download/'
 		)
 	status = models.IntegerField(
 		null = False,
 		)
 	owner = models.ForeignKey(
-		User,
+		"User.User",
 		on_delete=models.CASCADE,
 		default = "",
 		)
@@ -51,6 +51,3 @@ class Paper(models.Model):
 		max_length=1028,
 		null=True,
 	)
-
-
-
