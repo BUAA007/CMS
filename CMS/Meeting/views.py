@@ -229,3 +229,15 @@ class MeetingViewSet(viewsets.ModelViewSet):
             }
             return HttpResponse(template.render(context, request))
 
+    @action(methods = ['GET'],detail = False)
+    def alljoin(self, request):
+        pk = request.data.get('pk', None)
+        if pk is not None:
+            thismeeting = Meeting.objects.get(meeting_id = pk)
+            joinmen = thismeeting.join_set.all()
+            template = loader.get_template('judgement.html')
+            context = {
+                'join': joinmen,
+            }
+            return HttpResponse(template.render(context, request))
+        return Response({"errorInfo":"会议无效，服务器错误"}, status=status.HTTP_200_OK)
