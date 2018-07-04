@@ -90,6 +90,7 @@
                                     <li class="li complete">
                                         <div class="timestamp">
                                             <span class="date">{{ conference.ddl_date|date:'Y/m/d' }}</span>
+                                            <span class="date">{{ conference.ddl_date|date:'H:i' }}</span>
                                             <span class="date">截至投稿</span>
                                         </div>
                                         <div class="status"></div>
@@ -97,6 +98,7 @@
                                     <li class="li complete">
                                         <div class="timestamp">
                                             <span class="date">{{ conference.result_notice_date|date:'Y/m/d' }}</span>
+                                            <span class="date">{{ conference.result_notice_date|date:'H:i' }}</span>
                                             <span class="date">录用通知</span>
                                         </div>
                                         <div class="status">
@@ -105,6 +107,7 @@
                                     <li class="li complete">
                                         <div class="timestamp">
                                             <span class="date">{{ conference.regist_attend_date |date:'Y/m/d'}}</span>
+                                            <span class="date">{{ conference.regist_attend_date |date:'H:i'}}</span>
                                             <span class="date">会议注册</span>
                                         </div>
                                         <div class="status">
@@ -113,6 +116,7 @@
                                     <li class="li">
                                         <div class="timestamp">
                                             <span class="date">{{ conference.meeting_date|date:'Y/m/d'}}</span>
+                                            <span class="date">{{ conference.meeting_date|date:'H:i'}}</span>
                                             <span class="date">会议开始</span>
                                         </div>
                                         <div class="status">
@@ -121,6 +125,7 @@
                                     <li class="li">
                                         <div class="timestamp">
                                             <span class="date">{{ conference.meeting_end_date|date:'Y/m/d' }}</span>
+                                            <span class="date">{{ conference.meeting_end_date|date:'H:i' }}</span>
                                             <span class="date">会议结束</span>
                                         </div>
                                         <div class="status">
@@ -128,9 +133,10 @@
                                     </li>
                                 </ul>
                             </div>
+                            
                             <div class="embed-responsive embed-responsive-16by9">
                                 <iframe class="embed-responsive-item"
-                                        src="http://maps.google.com.tw/maps?f=q&hl=zh-TW&geocode=&q=台北市新生南路三段90號&z=16&output=embed&t="
+                                        src="{{ map }}"
                                         allowfullscreen></iframe>
                             </div>
 
@@ -177,7 +183,7 @@
                                 <li class="list-group-item d-flex justify-content-between lh-condensed">
                                     <div>
                                         <h6 class="my-0">组织机构</h6>
-                                        <small class="text-muted">{{ conference.organization }}</small>
+                                        <small class="text-muted">{{ conference.institution.name }}</small>
                                     </div>
                                 </li>
                                 <li class="list-group-item d-flex justify-content-between lh-condensed">

@@ -91,6 +91,7 @@ DATABASES = {
         'HOST': '123.206.65.175',
 
         'PORT': '3306',
+        #'use_legacy_datetime'：True,#我添加了这行
     }
 }
 
@@ -119,13 +120,13 @@ AUTH_PASSWORD_VALIDATORS = [
 
 LANGUAGE_CODE = 'en-us'
 
-TIME_ZONE = 'UTC'
+TIME_ZONE = 'Asia/Shanghai'
 
 USE_I18N = True
 
 USE_L10N = True
 
-USE_TZ = True
+USE_TZ = False
 
 
 # Static files (CSS, JavaScript, Images)
