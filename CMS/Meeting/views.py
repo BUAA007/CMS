@@ -138,7 +138,29 @@ class MeetingViewSet(viewsets.ModelViewSet):
         # thisMeeting=Meeting.objects.get(meeting_id=pk)
         try:
             user_id = request.session['id']
-            # user_id=request.session.get['id']
+            now = timezone.now()
+            if now <= thisMeeting.result_notice_date:
+                thisMeeting.status1 = False
+            else:
+                thisMeeting.status1 = True
+            if now <= thisMeeting.regist_attend_date:
+                thisMeeting.status2 = False
+            else:
+                thisMeeting.status2 = True
+            if now <= thisMeeting.meeting_date:
+                thisMeeting.status3 = False
+            else:
+                thisMeeting.status3 = True
+            if now <= thisMeeting.meeting_end_date:
+                thisMeeting.status4 = False
+            else:
+                thisMeeting.status4 = True
+            if now > thisMeeting.meeting_end_date:
+                thisMeeting.status5 = True
+            else:
+                thisMeeting.status5 = False
+
+            print(thisMeeting.status1,thisMeeting.status2,thisMeeting.status3,thisMeeting.status4,thisMeeting.status5)
             thisuser = User.objects.get(id=user_id)
             # return Response("info: contribute succsss", status=status.HTTP_200_OK)
             try:
@@ -147,19 +169,6 @@ class MeetingViewSet(viewsets.ModelViewSet):
                 isfavorite = False
             else:
                 isfavorite = True
-            now = timezone.now()
-            if now <= thisMeeting.result_notice_date:
-                thisMeeting.status1 = True
-            if now <= thisMeeting.regist_attend_date:
-                thisMeeting.status2 = True
-            if now <= thisMeeting.meeting_date:
-                thisMeeting.status3 = False
-            if now <= thisMeeting.meeting_end_date:
-                thisMeeting.status4 = False
-            else:
-                thisMeeting.status5 = False
-
-            print(thisMeeting.status1)
             template = loader.get_template('conference.html')
             context = {
                 'conference': thisMeeting,
@@ -170,13 +179,23 @@ class MeetingViewSet(viewsets.ModelViewSet):
         except:
             now = timezone.now()
             if now <= thisMeeting.result_notice_date:
+                thisMeeting.status1 = False
+            else:
                 thisMeeting.status1 = True
             if now <= thisMeeting.regist_attend_date:
                 thisMeeting.status2 = False
+            else:
+                thisMeeting.status2 = True
             if now <= thisMeeting.meeting_date:
                 thisMeeting.status3 = False
+            else:
+                thisMeeting.status3 = True
             if now <= thisMeeting.meeting_end_date:
                 thisMeeting.status4 = False
+            else:
+                thisMeeting.status4 = True
+            if now > thisMeeting.meeting_end_date:
+                thisMeeting.status5 = True
             else:
                 thisMeeting.status5 = False
 
