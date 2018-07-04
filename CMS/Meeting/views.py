@@ -220,12 +220,16 @@ class MeetingViewSet(viewsets.ModelViewSet):
         else:
             thisemployee = Employee.objects.get(id=user_id)
             institution=thisemployee.institution
-            thismeeting=institution.meeting_set
+            thismeeting=institution.meeting_set.get().all()
             #thismeeting = Meeting.objects.get(meeting_id=pk)
-            papers = thismeeting.paper_set.all()
+            paperslist=list()
+            for i in thismeeting:
+
+                papers = i.paper_set.all()
+                paperslist+=papers
             template = loader.get_template('judge.html')
             context = {
-                'papers': papers,
+                'papers': paperslist,
             }
             return HttpResponse(template.render(context, request))
 
