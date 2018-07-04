@@ -46,7 +46,6 @@ def download(request):
                                         yield c
                                 else:
                                         break
-        importlib.reload(sys)
         try:
                 url = "/home/ubuntu/CMS/CMS/media/paper/"
                 rootpath = request.path
