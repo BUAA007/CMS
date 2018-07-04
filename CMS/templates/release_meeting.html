@@ -6,30 +6,12 @@
 {% endblock %}
 
 {% block content %}
-     {% if errorInfo != null %}
-        <div class="sufee-alert alert with-close alert-primary alert-dismissible fade show">
-            <span class="badge badge-pill  badge-warning">Fail</span>
-                {{ errorInfo }}
-            <button type="button" class="close" data-dismiss="alert" aria-label="Close">
-                <span aria-hidden="true">&times;</span>
-            </button>
-        </div>
-    {% else %}
-        <div class="sufee-alert alert with-close alert-primary alert-dismissible fade show">
-            <span class="badge badge-pill badge-primary">Success</span>
-                {{ info }}
-            <button type="button" class="close" data-dismiss="alert" aria-label="Close">
-                <span aria-hidden="true">&times;</span>
-            </button>
-        </div>
-    {%  endif %}
     <div class="animated fadeIn">
         <div class="container">
             <div class="col-lg-12 col-lg-offset-4">
                 <div class="card">
-
                     <div class="card-header"><strong>会议信息登记</strong></div>
-                    <form method="POST" action="/meeting/create">
+                    <form method="POST" action="/meeting/">
                     <div class="card-body card-block">
                     <div class="row form-group">
                         <div class="col col-md-3"><label for="text-input" class=" form-control-label">会议标题</label></div>

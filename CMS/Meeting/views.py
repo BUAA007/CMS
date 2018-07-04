@@ -8,7 +8,7 @@ from django.core.exceptions import ObjectDoesNotExist
 from Meeting.models import Meeting
 from Meeting.serializers import MeetingSerializer
 from django.contrib.auth import authenticate, login, logout
-
+from django.shortcuts import get_object_or_404
 from django.http import HttpResponse
 from django.template import loader
 from User.models import * 
@@ -29,6 +29,8 @@ class MeetingViewSet(viewsets.ModelViewSet):
     
     def create(self, request):
         #try:
+        template = loader.get_template('release_meeting.html')
+        context = {}
         if request.session['type'] == '0' or request.session['is_login'] != 'true':
             return Response(errorInfo("succsss"), status=status.HTTP_200_OK)
 
@@ -38,43 +40,43 @@ class MeetingViewSet(viewsets.ModelViewSet):
         #    return Response({"errorInfo":"have not been received"}, status=status.HTTP_200_OK)
         title = request.data.get("title")
         if not title:
-            return HttpResponse(errorInfo("会议标题不能为空"), content_type="application/json")
+            return HttpResponse(template.render(errorInfo("会议标题不能为空"), request))
         about_us = request.data.get("about_us")
         if not about_us:
-            return HttpResponse(errorInfo("联系我们不能为空"), content_type="application/json")
+            return HttpResponse(template.render(errorInfo("联系我们不能为空"), request))
         ddl_date=request.data.get("ddl_date"),
         if not ddl_date:
-            return HttpResponse(errorInfo("请填写截稿日期"), content_type="application/json" )
+            return HttpResponse(template.render(errorInfo("请填写正确截稿日期"), request))
         result_notice_date = request.data.get("result_notice_date"),
         if not result_notice_date:
-            return HttpResponse(errorInfo("请填写论文通知日期"), content_type="application/json" )
+            return HttpResponse(template.render(errorInfo("请填写正确论文通知日期"), request))
         regist_attend_date = request.data.get("regist_attend_date"),
         if not regist_attend_date:
-            return HttpResponse(errorInfo("请填写用户参会注册截止日期"), content_type="application/json" )
+            return HttpResponse(template.render(errorInfo("请填写正确用户参会注册截止日期"), request))
         meeting_date = request.data.get("meeting_date"),
         if not meeting_date:
-            return HttpResponse(errorInfo("请填写会议开始日期"),content_type="application/json" )
+            return HttpResponse(template.render(errorInfo("请填写正确会议开始日期"), request))
         meeting_end_date=request.data.get("meeting_end_date"),
         if not meeting_end_date:
-            return HttpResponse(errorInfo("请填写会议结束日期"),content_type="application/json" )
+            return HttpResponse(template.render(errorInfo("请填写正确会议结束日期"), request))
         receipt = request.data.get("receipt")
         if not receipt:
-            return HttpResponse(errorInfo("请填写用户参会注册所需费用"), content_type="application/json" )
+            return HttpResponse(template.render(errorInfo("请填写正用户参会注册所需费用"), request))
         intro = request.data.get("intro")
         if not intro:
-            return HttpResponse(errorInfo("请填写会议简介"), content_type="application/json" )
+            return HttpResponse(template.render(errorInfo("请填写会议简介"), request))
         essay_request = request.data.get("essay_request")
         if not essay_request:
-            return HttpResponse(errorInfo("请填写征文要求信息"), content_type="application/json" )
+            return HttpResponse(template.render(errorInfo("请填写征文要求信息"), request))
         organization = request.data.get("organization")
         if not organization:
-            return HttpResponse(errorInfo("请填写会议地址"),content_type="application/json" )
+            return HttpResponse(template.render(errorInfo("请填写会议地址"), request))
         schedule = request.data.get("schedule")
         if not schedule:
-            return HttpResponse(errorInfo("请填写会议日程安排"), content_type="application/json" )
+            return HttpResponse(template.render(errorInfo("请填写会议日程安排"), request))
         support = request.data.get("support")
         if not support:
-            return HttpResponse(errorInfo("请填写住宿交通信息"), content_type="application/json" )
+            return HttpResponse(template.render(errorInfo("请填写住宿交通信息"), request))
         #meeting_serializer = MeetingSerializer(data = request.data)
         #return HttpResponse(request.session['username']+" "+str(ddl_date))
         #if meeting_serializer.is_valid():
@@ -94,14 +96,15 @@ class MeetingViewSet(viewsets.ModelViewSet):
                 about_us = about_us,
                 schedule = schedule,
                 institution = thisInstitution,
+                support = support,
                 )
             thisMeeting.save()
-            return HttpResponse({"info":"meeting is created"},status=status.HTTP_200_OK)
+            return HttpResponse(template.render({"info":"会议发布成功"}), request)
         #return HttpResponse("时间不合法")
             #return HttpResponse(meeting_serializer.errors)
         #except:
         #    pass
-        return HttpResponse(str(datetime.strptime(result_notice_date, "%Y-%m-%dT%H:%M")),status=status.HTTP_200_OK)
+        return HttpResponse(template.render(errorInfo("填写的日期不合法"), request))
 
     @action(methods=['GET'], detail=False)
     def list2(self, request):
@@ -122,7 +125,9 @@ class MeetingViewSet(viewsets.ModelViewSet):
 
 
     def retrieve(self ,request,pk=None):
-        thisMeeting=Meeting.objects.get(meeting_id=pk)
+        thisMeeting = Meeting.objects.get(meeting_id=pk)
+        #thisMeeting = get_object_or_404(queryset, pk=pk)
+        #thisMeeting=Meeting.objects.get(meeting_id=pk)
         try:
             user_id=request.session['id']
             #user_id=request.session.get['id']
@@ -138,14 +143,16 @@ class MeetingViewSet(viewsets.ModelViewSet):
             template = loader.get_template('conference.html')
             context = {
                 'conference': thisMeeting,
-                'isfavorite':isfavorite
+                'isfavorite':isfavorite,
+                'map':"http://maps.google.com.tw/maps?f=q&hl=zh-TW&geocode=&q=" + thisMeeting.organization + "&z=16&output=embed&t=",
             }
             return HttpResponse(template.render(context, request))
         except:
             template = loader.get_template('conference.html')
             context = {
                 'conference': thisMeeting,
-                'isfavorite': False
+                'isfavorite': False,
+                'map':"http://maps.google.com.tw/maps?f=q&hl=zh-TW&geocode=&q=" + thisMeeting.organization + "&z=16&output=embed&t=",
             }
             return HttpResponse(template.render(context, request))
 
@@ -196,7 +203,7 @@ class MeetingViewSet(viewsets.ModelViewSet):
 
 
     @action(methods=['GET'],detail=False)
-    def osearch(self, request):
+    def osearch(self, request):#根据时间搜索未写
         queryset = Meeting.objects.all()
         word = request.query_params.get('s', None)
         if word is not None:
@@ -206,12 +213,40 @@ class MeetingViewSet(viewsets.ModelViewSet):
 
     @action(methods=['GET'],detail=False)
     def allpaper(self, request):
-        pk = request.query_params.get('pk', None)
-        thismeeting = Meeting.objects.get(meeting_id=pk)
-        papers = thismeeting.paper_set.all()
-        template = loader.get_template('judge.html')
-        context = {
-            'papers': papers,
-        }
-        return HttpResponse(template.render(context, request))
+        user_id=request.session['id']
+        type=request.session['type']
+        if type==0:
+            template = loader.get_template('judge.html')
+            context = {
+                #'conference': thismeeting,
+                'message': '失败，不是该会议的单位用户'
+            }
+            return HttpResponse(template.render(context, request))
+        else:
+            thisemployee = Employee.objects.get(id=user_id)
+            institution=thisemployee.institution
+            thismeeting=institution.meeting_set.get().all()
+            #thismeeting = Meeting.objects.get(meeting_id=pk)
+            paperslist=list()
+            for i in thismeeting:
 
+                papers = i.paper_set.all()
+                paperslist+=papers
+            template = loader.get_template('judge.html')
+            context = {
+                'papers': paperslist,
+            }
+            return HttpResponse(template.render(context, request))
+
+    @action(methods = ['GET'],detail = False)
+    def alljoin(self, request):
+        pk = request.data.get('pk', None)
+        if pk is not None:
+            thismeeting = Meeting.objects.get(meeting_id = pk)
+            joinmen = thismeeting.join_set.all()
+            template = loader.get_template('judgement.html')
+            context = {
+                'join': joinmen,
+            }
+            return HttpResponse(template.render(context, request))
+        return Response({"errorInfo":"会议无效，服务器错误"}, status=status.HTTP_200_OK)
