@@ -12,6 +12,7 @@ from django.template import loader
 from django.http import HttpResponse
 import re,json
 import hashlib
+from datetime import *
 # Create your views here.
 def checklen(pwd):
 	return len(pwd)>=8
@@ -97,15 +98,20 @@ class InstitutionViewSet(viewsets.ModelViewSet):
 	    password2 = request.data.get("password2")
 	    email = request.data.get("email")
 	    tel = request.data.get("tel")
+	    #return HttpResponse(errorInfo(str(establish_date)), content_type="application/json")
 	    try:
 	        if Institution.objects.get( name = name):
 	            return  HttpResponse(errorInfo("该机构已存在"), content_type="application/json")
-	        if Employee.objects.get(username = username):
+	        if Employee.objects.get( username = username):
 	            return  HttpResponse(errorInfo("用户名已存在"), content_type="application/json")
 	    except:
 	    	pass
 	    if not checkUsername(name):    #必须不为空
 	        return  HttpResponse(errorInfo("机构名不能为空"), content_type="application/json")
+	    if not checkUsername(username):    #必须不为空
+	        return  HttpResponse(errorInfo("用户名不能为空"), content_type="application/json")   
+	    if not establish_date:
+	    	return HttpResponse(errorInfo("请填写完整的机构成立时间"), content_type="application/json")
 	    # if not checkUsername(username):    #必须以字母开头，长度在10位以内
 	    #     return  HttpResponse(errorInfo("用户名不合法"), content_type="application/json")
 	    if not checkPassword(password):    #包含大写、小写、符号；长度大于等于8
@@ -114,6 +120,7 @@ class InstitutionViewSet(viewsets.ModelViewSet):
 	        return  HttpResponse(errorInfo("两次密码不一致"), content_type="application/json")
 	    if  not checkPhonenumber(tel):      #手机号位数为11位；开头为1，第二位为3或4或5或8;
 	        return  HttpResponse(errorInfo("电话号码不合法"), content_type="application/json")   
+	    #return HttpResponse(errorInfo(str(datetime.strptime(establish_date[0], "%Y-%m-%dT%H:%M"))), content_type="application/json")
 	    institution_serializer = InstitutionSerializer(data = request.data)
 	    employee_serializer = EmployeeSerializer(data = request.data)
 	    password = md5(password)
@@ -124,7 +131,7 @@ class InstitutionViewSet(viewsets.ModelViewSet):
 	                corporate_id = corporate_id,
 	                place = place,
 	                legal_person = legal_person,
-	                establish_date = establish_date,
+	                establish_date = datetime.date(datetime.strptime(establish_date, "%Y-%m-%dT%H:%M")),
 	                status="0",
 	                type = type,
 	                )
