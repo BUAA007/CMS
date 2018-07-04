@@ -381,11 +381,11 @@ class JoinViewSet(viewsets.ModelViewSet):
         genderlist = request.data.get("gender")
         reserlist = request.data.get("reservation")
         receipt = request.FILES['file']
-        type = request.data.get("type")
+        type = int(request.data.get("type"))
         if type == 1:
-            paperid = request.data.get("paper")
+            paperid = int(request.data.get("paper"))
             thispaper = Paper.objects.get(id = paperid)
-            thismeeting = Paper.meeting
+            thismeeting = Meeting.objects.get(meeting_id = thispaper.meeting_id)
             count = 0
             for name in namelist:
                 people = Join(
@@ -404,7 +404,10 @@ class JoinViewSet(viewsets.ModelViewSet):
             return Response("info: join success", status=status.HTTP_200_OK)
         count = 0
         for name in namelist:
-            meeting_id = request.data.get("meeting")
+            meetingid = request.data.get("meeting")
+            if meetingid is None:
+                return Response("errorinfo: no meeting", status=status.HTTP_200_OK)
+            meeting_id = int(meetingid)
             thismeeting = Meeting.objects.get(meeting_id = meeting_id)
             people = Join(
                 name = name,
