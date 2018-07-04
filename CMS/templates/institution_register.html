@@ -113,7 +113,7 @@ body {
     <div class="row form-group">
         <div class="col col-md-3"><label class="form-control-label">成立时间</label></div>
         <div class="col-md-9">
-            <input type="datetime-local" class="form-control" id="establish_date" value="2018-06-30">
+            <input type="datetime-local" class="form-control" id="establish_date" required>
         </div>
     </div>
 
@@ -161,9 +161,6 @@ body {
     <button class="btn btn-lg btn-primary btn-block mt-4 mb-2" type="button" onclick="up()">注册</button>
 </form>
 <script type="text/javascript">
-     $('#establish_date').datetimepicker({
-    format: 'yyyy-mm-dd'
-});
      function up(){
          var data = {
             "name" : document.getElementById("name").value,
@@ -186,6 +183,7 @@ body {
             success : function(response) {
                 if(response['errorInfo'] != null){
                     alert(response['errorInfo']);
+                    document.getElementById("establish_date").value = null;
                 }else{
                     window.location.href='/login/';
                 }
