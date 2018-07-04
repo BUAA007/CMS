@@ -49,8 +49,8 @@ def download(request):
         try:
                 url = "/home/ubuntu/CMS/CMS/media/paper/"
                 rootpath = request.path
-                tmp = rootpath.split("paper/")
-                url+=tmp[2]
+                tmp = rootpath.split("/")
+                url+=tmp[-1]
         except:
                 return Response(a, status = status.HTTP_400_BAD_REQUEST)
         if url is not None:
