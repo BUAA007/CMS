@@ -389,33 +389,58 @@ class JoinViewSet(viewsets.ModelViewSet):
     queryset = Join.objects.all()
     serializer_class = JoinSerializer
 
-    def allpaper(self, request):
-        userid = request.session['id']
-        thisuser = User.objects.get(id=userid)
-        # thismeeting = Meeting.objects.get(meeting_id=pk)
-        papers = thisuser.paper_set.all()
-        template = loader.get_template('judgement.html')
-        context = {
-            'papers': papers,
-        }
-        return HttpResponse(template.render(context, request))
-
     def create(self, request):
-        # user_id=request.session['id']
-        # thisuser = User.objects.get(id=user_id)
-        # meeting_id=request.data.get("meeting_id")
-        # thismeeting=Meeting.objects.get(meeting_id=meeting_id)
-
-        # namelist = request.data.get("name")
-        # genderlist = request.data.get("gender")
-        # reserlist = request.data.get("reservation")
-        #userid = request.session['id']
-        receipt = request.FILES['file']
-        type = int(request.data.get("type"))
-        if type == 1:
-            paperid = int(request.data.get("paper"))
-            thispaper = Paper.objects.get(id = paperid)
-            thismeeting = Meeting.objects.get(meeting_id = thispaper.meeting_id)
+        try:
+            receipt = request.FILES['file']
+            type = int(request.data.get("type"))
+            if type == 1:
+                paperid = int(request.data.get("paper"))
+                try:
+                    thispaper = Paper.objects.get(id = paperid)
+                except:
+                    message = "论文错误"
+                    raise RuntimeError()
+                try:
+                    thismeeting = Meeting.objects.get(meeting_id = thispaper.meeting_id)
+                except:
+                    message = "会议错误"
+                    raise RuntimeError()
+                count = 1
+                namename = "name" + str(count)
+                gendername = "gender" + str(count)
+                resername = "reservation" + str(count)
+                name = request.data.get(namename)
+                while name is not None:
+                    gender = request.data.get(gendername)
+                    reservation = request.data.get(resername)
+                    people = Join(
+                        name = name,
+                        gender = gender,
+                        receipt = receipt,
+                        #content=request.data.get("content"),
+                        reservation = reservation,
+                        types = 1,
+                        paper = thispaper,
+                        meeting = thismeeting,
+                    )
+                    try:
+                        people.save()
+                    except:
+                        message = name+"数据错误"
+                        raise RuntimeError()
+                    count = count + 1
+                    namename = "name" + str(count)
+                    gendername = "gender" + str(count)
+                    resername = "reservation" + str(count)
+                    name = request.data.get(namename)
+                thispaper.owner.participate.add(thismeeting)
+                return HttpResponseRedirect('../user/allpaper')
+            meetingid = int(request.data.get("meeting"))
+            try:
+                thismeeting = Meeting.objects.get(meeting_id = meetingid)
+            except:
+                message = "会议错误"
+                raise RuntimeError()
             count = 1
             namename = "name" + str(count)
             gendername = "gender" + str(count)
@@ -430,74 +455,29 @@ class JoinViewSet(viewsets.ModelViewSet):
                     receipt = receipt,
                     #content=request.data.get("content"),
                     reservation = reservation,
-                    types = 1,
-                    paper = thispaper,
+                    types = 2,
                     meeting = thismeeting,
                 )
-                people.save()
+                try:
+                    people.save()
+                except:
+                    message = name+"数据错误"
+                    raise RuntimeError()
                 count = count + 1
                 namename = "name" + str(count)
                 gendername = "gender" + str(count)
                 resername = "reservation" + str(count)
                 name = request.data.get(namename)
-            # for name in namelist:
-            #     people = Join(
-            #         name = name,
-            #         gender = genderlist[count],
-            #         receipt = receipt,
-            #         #content=request.data.get("content"),
-            #         reservation = reserlist[count],
-            #         types = 1,
-            #         paper = thispaper,
-            #         meeting = thismeeting,
-            #     )
-            #     people.save()
-            #     count = count + 1
             thispaper.owner.participate.add(thismeeting)
-            return HttpResponseRedirect('../../user/user/allpaper')
-        meetingid = int(request.data.get("meeting"))
-        thismeeting = Meeting.objects.get(meeting_id = meetingid)
-        count = 1
-        namename = "name" + str(count)
-        gendername = "gender" + str(count)
-        resername = "reservation" + str(count)
-        name = request.data.get(namename)
-        while name is not None:
-            gender = request.data.get(gendername)
-            reservation = request.data.get(resername)
-            people = Join(
-                name = name,
-                gender = gender,
-                receipt = receipt,
-                #content=request.data.get("content"),
-                reservation = reservation,
-                types = 2,
-                meeting = thismeeting,
-            )
-            people.save()
-            count = count + 1
-            namename = "name" + str(count)
-            gendername = "gender" + str(count)
-            resername = "reservation" + str(count)
-            name = request.data.get(namename)
-        thispaper.owner.participate.add(thismeeting)
-        return HttpResponseRedirect('../../user/user/allpaper')
-        # count = 0
-        # for name in namelist:
-        #     meetingid = request.data.get("meeting")
-        #     if meetingid is None:
-        #         return Response("errorinfo: no meeting", status=status.HTTP_200_OK)
-        #     meeting_id = int(meetingid)
-        #     thismeeting = Meeting.objects.get(meeting_id = meeting_id)
-        #     people = Join(
-        #         name = name,
-        #         gender = gender[count],
-        #         receipt = receipt,
-        #         #content=request.data.get("content"),
-        #         reservation = reserlist[count],
-        #         types = 2,
-        #         meeting = thismeeting,
-        #     )
-        #     people.save()
-        #     count = count + 1
-        # return Response("info: listen success", status=status.HTTP_200_OK)
+            return HttpResponseRedirect('../user/allpaper')
+        except:
+            user_id = request.session['id']
+            thisuser = User.objects.get(id=user_id)
+            # thismeeting = Meeting.objects.get(meeting_id=pk)
+            papers = thisuser.paper_set.all()
+            template = loader.get_template('judgement.html')
+            context = {
+                'papers': papers,
+                'message': message
+            }
+            return HttpResponse(template.render(context, request))
