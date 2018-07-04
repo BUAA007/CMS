@@ -87,7 +87,7 @@
                             <p>{{ conference.schedule }}</p>
                             <div>
                                 <ul class="timeline font-weight-normal" id="timeline">
-                                    <li class="li {% if conference.status1 %}
+                                    <li class="li {% if conference.status1 == True %}
                                     complete
                                     {% endif %}">
                                         <div class="timestamp">
@@ -97,7 +97,7 @@
                                         </div>
                                         <div class="status"></div>
                                     </li>
-                                    <li class="li {% if conference.status2 %}
+                                    <li class="li {% if conference.status2 == True %}
                                     complete
                                     {% endif %}">
                                         <div class="timestamp">
@@ -108,7 +108,7 @@
                                         <div class="status">
                                         </div>
                                     </li>
-                                    <li class="li {% if conference.status3 %}
+                                    <li class="li {% if conference.status3 == True %}
                                     complete
                                     {% endif %}">
                                         <div class="timestamp">
@@ -119,7 +119,7 @@
                                         <div class="status">
                                         </div>
                                     </li>
-                                    <li class="li {% if conference.status4 %}
+                                    <li class="li {% if conference.status4 == True %}
                                     complete
                                     {% endif %}">
                                         <div class="timestamp">
@@ -130,7 +130,7 @@
                                         <div class="status">
                                         </div>
                                     </li>
-                                    <li class="li {% if conference.status5 %}
+                                    <li class="li {% if conference.status5 == True %}
                                     complete
                                     {% endif %}">
                                         <div class="timestamp">

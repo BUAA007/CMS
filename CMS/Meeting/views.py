@@ -141,13 +141,25 @@ class MeetingViewSet(viewsets.ModelViewSet):
             # user_id=request.session.get['id']
             thisuser = User.objects.get(id=user_id)
             # return Response("info: contribute succsss", status=status.HTTP_200_OK)
-
             try:
                 favorite = thisuser.favorite.get(meeting_id=thisMeeting.meeting_id)
             except:
                 isfavorite = False
             else:
                 isfavorite = True
+            now = timezone.now()
+            if now <= thisMeeting.result_notice_date:
+                thisMeeting.status1 = True
+            if now <= thisMeeting.regist_attend_date:
+                thisMeeting.status2 = True
+            if now <= thisMeeting.meeting_date:
+                thisMeeting.status3 = False
+            if now <= thisMeeting.meeting_end_date:
+                thisMeeting.status4 = False
+            else:
+                thisMeeting.status5 = False
+
+            print(thisMeeting.status1)
             template = loader.get_template('conference.html')
             context = {
                 'conference': thisMeeting,
@@ -156,6 +168,19 @@ class MeetingViewSet(viewsets.ModelViewSet):
             }
             return HttpResponse(template.render(context, request))
         except:
+            now = timezone.now()
+            if now <= thisMeeting.result_notice_date:
+                thisMeeting.status1 = True
+            if now <= thisMeeting.regist_attend_date:
+                thisMeeting.status2 = False
+            if now <= thisMeeting.meeting_date:
+                thisMeeting.status3 = False
+            if now <= thisMeeting.meeting_end_date:
+                thisMeeting.status4 = False
+            else:
+                thisMeeting.status5 = False
+
+            #print(thisMeeting.status1)
             template = loader.get_template('conference.html')
             context = {
                 'conference': thisMeeting,
@@ -164,61 +189,6 @@ class MeetingViewSet(viewsets.ModelViewSet):
             }
             return HttpResponse(template.render(context, request))
 
-    @action(methods=['GET'], detail=False)
-    def showdetail(self, request):
-        pk = request.query_params.get('pk', None)
-        thisMeeting = Meeting.objects.get(meeting_id=pk)
-        papers = thisMeeting.paper_set.all()
-
-        try:
-            user_id = request.session['id']
-            # user_id=request.session.get['id']
-            # user_id = request.session['id']
-            thisuser = User.objects.get(id=user_id)
-            try:
-                favorite = thisuser.favorite.get(meeting_id=thisMeeting.meeting_id)
-            except:
-                isfavorite = False
-            else:
-                isfavorite = True
-            i = 0
-            paper_list = list()
-            serializer = MeetingSerializer(thisMeeting)
-            paper_list.append(serializer.data)
-            paper_info = {"title": "", "author": ""}
-            for paper in papers:
-                paper_info["title"] = paper.title
-                paper_info["author"] = paper.author_1
-                paper_list.append(paper_info)
-                i = i + 1
-                if i >= 10:
-                    break
-
-            now = timezone.now()
-            if now <= thisMeeting.result_notice_date:
-                thisMeeting.status1= True
-            if now <= thisMeeting.regist_attend_date:
-                thisMeeting.status2 = True
-            if now <= thisMeeting.meeting_date:
-                thisMeeting.status3 = True
-            if now <= thisMeeting.meeting_end_date:
-                thisMeeting.status4 = True
-            else:
-                thisMeeting.status5 = True
-
-            template = loader.get_template('conference.html')
-            context = {
-                'conference': thisMeeting,
-                'isfavorite': isfavorite
-            }
-            return HttpResponse(template.render(context, request))
-        except:
-            template = loader.get_template('conference.html')
-            context = {
-                'conference': thisMeeting,
-                'isfavorite': False,
-            }
-            return HttpResponse(template.render(context, request))
 
     @action(methods=['GET'], detail=False)
     def osearch(self, request):  # 根据时间搜索未写
