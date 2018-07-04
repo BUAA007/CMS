@@ -42,8 +42,8 @@ class Meeting(models.Model):
 		max_length = 128,
 		null = True,
 		)
-	template = models.CharField( 	#论文模板url
-		max_length = 64,
+	template = models.FileField( 	#论文模板url
+		upload_to='meeting/',
 		null = True,
 		)
 	receipt	= models.FloatField(		#pdf或jpg(url)
