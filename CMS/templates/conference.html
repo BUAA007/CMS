@@ -87,7 +87,9 @@
                             <p>{{ conference.schedule }}</p>
                             <div>
                                 <ul class="timeline font-weight-normal" id="timeline">
-                                    <li class="li complete">
+                                    <li class="li {% if conference.status1 == True %}
+                                    complete
+                                    {% endif %}">
                                         <div class="timestamp">
                                             <span class="date">{{ conference.ddl_date|date:'Y/m/d' }}</span>
                                             <span class="date">{{ conference.ddl_date|date:'H:i' }}</span>
@@ -95,7 +97,9 @@
                                         </div>
                                         <div class="status"></div>
                                     </li>
-                                    <li class="li complete">
+                                    <li class="li {% if conference.status2 == True %}
+                                    complete
+                                    {% endif %}">
                                         <div class="timestamp">
                                             <span class="date">{{ conference.result_notice_date|date:'Y/m/d' }}</span>
                                             <span class="date">{{ conference.result_notice_date|date:'H:i' }}</span>
@@ -104,7 +108,9 @@
                                         <div class="status">
                                         </div>
                                     </li>
-                                    <li class="li complete">
+                                    <li class="li {% if conference.status3 == True %}
+                                    complete
+                                    {% endif %}">
                                         <div class="timestamp">
                                             <span class="date">{{ conference.regist_attend_date |date:'Y/m/d'}}</span>
                                             <span class="date">{{ conference.regist_attend_date |date:'H:i'}}</span>
@@ -113,7 +119,9 @@
                                         <div class="status">
                                         </div>
                                     </li>
-                                    <li class="li">
+                                    <li class="li {% if conference.status4 == True %}
+                                    complete
+                                    {% endif %}">
                                         <div class="timestamp">
                                             <span class="date">{{ conference.meeting_date|date:'Y/m/d'}}</span>
                                             <span class="date">{{ conference.meeting_date|date:'H:i'}}</span>
@@ -122,10 +130,12 @@
                                         <div class="status">
                                         </div>
                                     </li>
-                                    <li class="li">
+                                    <li class="li {% if conference.status5 == True %}
+                                    complete
+                                    {% endif %}">
                                         <div class="timestamp">
-                                            <span class="date">{{ conference.meeting_end_date|date:'Y/m/d' }}</span>
-                                            <span class="date">{{ conference.meeting_end_date|date:'H:i' }}</span>
+                                            <span class="date">{{ conference.meeting_end_date | date:'Y/m/d' }}</span>
+                                            <span class="date">{{ conference.meeting_end_date | date:'H:i' }}</span>
                                             <span class="date">会议结束</span>
                                         </div>
                                         <div class="status">
@@ -140,6 +150,7 @@
                                         allowfullscreen></iframe>
                             </div>
 
+                            {% if request.session.is_login == 'true' %}
                             <hr class="my-4">
                             <div>
                                 <div class="col-3" data-toggle="modal" data-target="#postPaper">
@@ -174,6 +185,7 @@
                                     </a>
                                 </div>
                             </div>
+                            {% endif %}
                         </div>
                         <div class="col-lg-3">
                             <h4 class="d-flex justify-content-between align-items-center mb-3">

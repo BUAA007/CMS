@@ -11,32 +11,34 @@ from django.contrib.auth import authenticate, login, logout
 from django.shortcuts import get_object_or_404
 from django.http import HttpResponse
 from django.template import loader
-from User.models import * 
+from User.models import *
 from Institution.models import Employee
-import datetime
-from datetime import *
+from django.utils import timezone
+from datetime import datetime,date
+
 
 def checkNull(msg):
     return msg
 
+
 def errorInfo(msg):
-    return {"errorInfo":str(msg)}
+    return {"errorInfo": str(msg)}
+
 
 class MeetingViewSet(viewsets.ModelViewSet):
     queryset = Meeting.objects.all()
     serializer_class = MeetingSerializer
 
-    
     def create(self, request):
-        #try:
+        # try:
         template = loader.get_template('release_meeting.html')
         context = {}
         if request.session['type'] == '0' or request.session['is_login'] != 'true':
             return Response(errorInfo("succsss"), status=status.HTTP_200_OK)
 
-        thisEmployee = Employee.objects.get( username = request.session['username'])
-        thisInstitution= thisEmployee.institution
-        #if thisinstitution.status!="1":
+        thisEmployee = Employee.objects.get(username=request.session['username'])
+        thisInstitution = thisEmployee.institution
+        # if thisinstitution.status!="1":
         #    return Response({"errorInfo":"have not been received"}, status=status.HTTP_200_OK)
         title = request.data.get("title")
         if not title:
@@ -44,7 +46,7 @@ class MeetingViewSet(viewsets.ModelViewSet):
         about_us = request.data.get("about_us")
         if not about_us:
             return HttpResponse(template.render(errorInfo("联系我们不能为空"), request))
-        ddl_date=request.data.get("ddl_date"),
+        ddl_date = request.data.get("ddl_date"),
         if not ddl_date:
             return HttpResponse(template.render(errorInfo("请填写正确截稿日期"), request))
         result_notice_date = request.data.get("result_notice_date"),
@@ -56,7 +58,7 @@ class MeetingViewSet(viewsets.ModelViewSet):
         meeting_date = request.data.get("meeting_date"),
         if not meeting_date:
             return HttpResponse(template.render(errorInfo("请填写正确会议开始日期"), request))
-        meeting_end_date=request.data.get("meeting_end_date"),
+        meeting_end_date = request.data.get("meeting_end_date"),
         if not meeting_end_date:
             return HttpResponse(template.render(errorInfo("请填写正确会议结束日期"), request))
         receipt = request.data.get("receipt")
@@ -77,178 +79,171 @@ class MeetingViewSet(viewsets.ModelViewSet):
         support = request.data.get("support")
         if not support:
             return HttpResponse(template.render(errorInfo("请填写住宿交通信息"), request))
-        #meeting_serializer = MeetingSerializer(data = request.data)
-        #return HttpResponse(request.session['username']+" "+str(ddl_date))
-        #if meeting_serializer.is_valid():
-        if (ddl_date<=result_notice_date) and (result_notice_date<=regist_attend_date) and (regist_attend_date<=meeting_date) and (meeting_date<=meeting_end_date):
-            #return HttpResponse(request.session['username'])
+        # meeting_serializer = MeetingSerializer(data = request.data)
+        # return HttpResponse(request.session['username']+" "+str(ddl_date))
+        # if meeting_serializer.is_valid():
+        if (ddl_date <= result_notice_date) and (result_notice_date <= regist_attend_date) and (
+                regist_attend_date <= meeting_date) and (meeting_date <= meeting_end_date):
+            # return HttpResponse(request.session['username'])
             thisMeeting = Meeting(
-                title = title,
-                organization = organization,
-                ddl_date = datetime.strptime(ddl_date[0], "%Y-%m-%dT%H:%M"),
-                result_notice_date = datetime.strptime(result_notice_date[0], "%Y-%m-%dT%H:%M"),
-                regist_attend_date = datetime.strptime(regist_attend_date[0], "%Y-%m-%dT%H:%M"),
-                meeting_date = datetime.strptime(meeting_date[0], "%Y-%m-%dT%H:%M"),
+                title=title,
+                organization=organization,
+                ddl_date=datetime.strptime(ddl_date[0], "%Y-%m-%dT%H:%M"),
+                result_notice_date=datetime.strptime(result_notice_date[0], "%Y-%m-%dT%H:%M"),
+                regist_attend_date=datetime.strptime(regist_attend_date[0], "%Y-%m-%dT%H:%M"),
+                meeting_date=datetime.strptime(meeting_date[0], "%Y-%m-%dT%H:%M"),
                 meeting_end_date=datetime.strptime(meeting_end_date[0], "%Y-%m-%dT%H:%M"),
-                receipt = receipt,
-                intro = intro,
-                essay_request = essay_request,
-                about_us = about_us,
-                schedule = schedule,
-                institution = thisInstitution,
-                support = support,
-                )
+                receipt=receipt,
+                intro=intro,
+                essay_request=essay_request,
+                about_us=about_us,
+                schedule=schedule,
+                institution=thisInstitution,
+                support=support,
+            )
             thisMeeting.save()
-            return HttpResponse(template.render({"info":"会议发布成功"}), request)
-        #return HttpResponse("时间不合法")
-            #return HttpResponse(meeting_serializer.errors)
-        #except:
+            return HttpResponse(template.render({"info": "会议发布成功"}), request)
+        # return HttpResponse("时间不合法")
+        # return HttpResponse(meeting_serializer.errors)
+        # except:
         #    pass
         return HttpResponse(template.render(errorInfo("填写的日期不合法"), request))
 
     @action(methods=['GET'], detail=False)
     def list2(self, request):
-        queryset = Meeting.objects.all().order_by('-meeting_id') 
+        queryset = Meeting.objects.all().order_by('-meeting_id')
         template = loader.get_template('conference_list.html')
-        # def check_time(conference):
-        #     now_time = datetime.datetime.now()
-        #     if now_time > conference.meeting_end_date:
-        #         conference.status = '已结束'
-        #     elif now_time < conference.meeting_date:
-        #         conference.status = '未开始'
-        #     else:
-        #         conference.status = '正在进行'
-        # list(map(check_time, queryset))
+        def check_time(conference):
+            now = timezone.now()
+            if now <= conference.ddl_date:
+                conference.status = "投稿中"
+            elif now <= conference.result_notice_date:
+                conference.status = "已截稿"
+            elif now <= conference.regist_attend_date:
+                conference.status = "注册中"
+            elif now <= conference.meeting_date:
+                conference.status = "截止注册"
+            elif now <= conference.meeting_end_date:
+                conference.status = "会议中"
+            else:
+                conference.status = "会议完成"
+
+        list(map(check_time, queryset))
         context = {'conference_list': queryset}
         return HttpResponse(template.render(context, request))
 
-
-
-    def retrieve(self ,request,pk=None):
+    def retrieve(self, request, pk=None):
         thisMeeting = Meeting.objects.get(meeting_id=pk)
-        #thisMeeting = get_object_or_404(queryset, pk=pk)
-        #thisMeeting=Meeting.objects.get(meeting_id=pk)
+        # thisMeeting = get_object_or_404(queryset, pk=pk)
+        # thisMeeting=Meeting.objects.get(meeting_id=pk)
         try:
-            user_id=request.session['id']
-            #user_id=request.session.get['id']
-            thisuser=User.objects.get(id=user_id)
-            #return Response("info: contribute succsss", status=status.HTTP_200_OK)
+            user_id = request.session['id']
+            now = timezone.now()
+            thisMeeting.status1 = False
+            thisMeeting.status2 = False
+            thisMeeting.status3 = False
+            thisMeeting.status4 = False
+            thisMeeting.status5 = False
 
+            if now >= thisMeeting.ddl_date:
+                thisMeeting.status1 = True
+            if now >= thisMeeting.result_notice_date:
+                thisMeeting.status2 = True
+            if now >= thisMeeting.regist_attend_date:
+                thisMeeting.status3 = True
+            if now >= thisMeeting.meeting_date:
+                thisMeeting.status4 = True
+            if now >= thisMeeting.meeting_end_date:
+                thisMeeting.status5 = True
+            print(thisMeeting.status1,thisMeeting.status2,thisMeeting.status3,thisMeeting.status4,thisMeeting.status5)
+            thisuser = User.objects.get(id=user_id)
+            # return Response("info: contribute succsss", status=status.HTTP_200_OK)
             try:
-                favorite=thisuser.favorite.get(meeting_id=thisMeeting.meeting_id)
+                favorite = thisuser.favorite.get(meeting_id=thisMeeting.meeting_id)
             except:
                 isfavorite = False
-            else :
-                isfavorite =True
+            else:
+                isfavorite = True
             template = loader.get_template('conference.html')
             context = {
                 'conference': thisMeeting,
-                'isfavorite':isfavorite,
-                'map':"http://maps.google.com.tw/maps?f=q&hl=zh-TW&geocode=&q=" + thisMeeting.organization + "&z=16&output=embed&t=",
+                'isfavorite': isfavorite,
+                'map': "http://maps.google.com.tw/maps?f=q&hl=zh-TW&geocode=&q=" + thisMeeting.organization + "&z=16&output=embed&t=",
             }
             return HttpResponse(template.render(context, request))
         except:
+            now = timezone.now()
+            thisMeeting.status1 = False
+            thisMeeting.status2 = False
+            thisMeeting.status3 = False
+            thisMeeting.status4 = False
+            thisMeeting.status5 = False
+
+            if now>=thisMeeting.ddl_date:
+                thisMeeting.status1=True
+            if now>=thisMeeting.result_notice_date:
+                thisMeeting.status2=True
+            if now >= thisMeeting.regist_attend_date:
+                thisMeeting.status3 = True
+            if now>=thisMeeting.meeting_date:
+                thisMeeting.status4=True
+            if now>=thisMeeting.meeting_end_date:
+                thisMeeting.status5=True
+            print(thisMeeting.status1, thisMeeting.status2, thisMeeting.status3, thisMeeting.status4,thisMeeting.status5)
+            #print(thisMeeting.status1)
             template = loader.get_template('conference.html')
             context = {
                 'conference': thisMeeting,
                 'isfavorite': False,
-                'map':"http://maps.google.com.tw/maps?f=q&hl=zh-TW&geocode=&q=" + thisMeeting.organization + "&z=16&output=embed&t=",
+                'map': "http://maps.google.com.tw/maps?f=q&hl=zh-TW&geocode=&q=" + thisMeeting.organization + "&z=16&output=embed&t=",
             }
             return HttpResponse(template.render(context, request))
-
 
 
     @action(methods=['GET'], detail=False)
-    def showdetail(self, request):
-        pk = request.query_params.get('pk',None)
-        thisMeeting=Meeting.objects.get(meeting_id=pk)
-        papers=thisMeeting.paper_set.all()
-
-        try:
-            user_id=request.session['id']
-            #user_id=request.session.get['id']
-            #user_id = request.session['id']
-            thisuser=User.objects.get(id=user_id)
-            try:
-                favorite=thisuser.favorite.get(meeting_id=thisMeeting.meeting_id)
-            except:
-                isfavorite = False
-            else :
-                isfavorite =True
-            i=0
-            paper_list=list()
-            serializer = MeetingSerializer(thisMeeting)
-            paper_list.append(serializer.data)
-            paper_info={"title":"","author":""}
-            for paper in papers:
-                paper_info["title"]=paper.title
-                paper_info["author"]=paper.author_1
-                paper_list.append(paper_info)
-                i=i+1
-                if i>=10:
-                    break
-            template = loader.get_template('conference.html')
-            context = {
-                'conference': thisMeeting,
-                'isfavorite':isfavorite
-            }
-            return HttpResponse(template.render(context, request))
-        except:
-            template = loader.get_template('conference.html')
-            context = {
-                'conference': thisMeeting,
-                'isfavorite': False,
-            }
-            return HttpResponse(template.render(context, request))
-
-
-    @action(methods=['POST'],detail=False)
-    def osearch(self, request):#根据时间搜索未写
+    def osearch(self, request):  # 根据时间搜索未写
         queryset = Meeting.objects.all()
-        word = request.data.get('word')
+        word = request.query_params.get('s', None)
         if word is not None:
-            queryset = Meeting.objects.filter(title__contains = word)
-        else:
-            queryset = Meeting.objects.all()
-        serializer = MeetingSerializer(queryset, many = True)
-        return Response(serializer.data, status = status.HTTP_200_OK)
+            queryset = Meeting.objects.filter(title__contains=word)
+        serializer = MeetingSerializer(queryset, many=True)
+        return Response(serializer.data, status=status.HTTP_200_OK)
 
-    @action(methods=['GET'],detail=False)
+    @action(methods=['GET'], detail=False)
     def allpaper(self, request):
-        user_id=request.session['id']
-        type=request.session['type']
-        if type==0:
+        user_id = request.session['id']
+        type = request.session['type']
+        if type == 0:
             template = loader.get_template('judge.html')
             context = {
-                #'conference': thismeeting,
+                # 'conference': thismeeting,
                 'message': '失败，不是该会议的单位用户'
             }
             return HttpResponse(template.render(context, request))
         else:
             thisemployee = Employee.objects.get(id=user_id)
-            institution=thisemployee.institution
-            thismeeting=institution.meeting_set.all()
-            #thismeeting = Meeting.objects.get(meeting_id=pk)
-            paperslist=list()
+            institution = thisemployee.institution
+            thismeeting = institution.meeting_set.all()
+            # thismeeting = Meeting.objects.get(meeting_id=pk)
+            paperslist = list()
             for i in thismeeting:
-
                 papers = i.paper_set.all()
-                paperslist+=papers
+                paperslist += papers
             template = loader.get_template('judge.html')
             context = {
                 'papers': paperslist,
             }
             return HttpResponse(template.render(context, request))
 
-    @action(methods = ['GET'],detail = False)
+    @action(methods=['GET'], detail=False)
     def alljoin(self, request):
         pk = request.data.get('pk', None)
         if pk is not None:
-            thismeeting = Meeting.objects.get(meeting_id = pk)
+            thismeeting = Meeting.objects.get(meeting_id=pk)
             joinmen = thismeeting.join_set.all()
             template = loader.get_template('judgement.html')
             context = {
                 'join': joinmen,
             }
             return HttpResponse(template.render(context, request))
-        return Response({"errorInfo":"会议无效，服务器错误"}, status=status.HTTP_200_OK)
+        return Response({"errorInfo": "会议无效，服务器错误"}, status=status.HTTP_200_OK)
