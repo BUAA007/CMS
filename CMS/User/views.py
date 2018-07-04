@@ -285,7 +285,7 @@ class UserViewSet(viewsets.ModelViewSet):
     def modify(self, request):
         paper_id = request.data.get("paper_id")
         thispaper=Paper.objects.get(id=paper_id)
-
+        print(request.data)
         #thismeeting = Meeting.objects.get(meeting_id=meeting_id)
         try:
             user_id = request.session['id']
@@ -297,22 +297,30 @@ class UserViewSet(viewsets.ModelViewSet):
             }
             return HttpResponse(template.render(context, request))
         else:
-            if(thispaper.status==0 or thispaper.status== -1 ):
-                thisuser = User.objects.get(id=user_id)
-                thispaper = Paper.objects.get("paper_id")
-                thispaper.author_1=request.data.get("author_1"),
-                thispaper.author_2=request.data.get("author_2"),
-                thispaper.author_3=request.data.get("author_3"),
-                thispaper.title=request.data.get("title"),
-                thispaper.abstract=request.data.get("abstract"),
-                thispaper.keyword=request.data.get("keyword"),
-                thispaper.content=request.FILES['content'],
+            if thispaper.status==0 or thispaper.status== -1 :
+                #thisuser = User.objects.get(id=user_id)
+                thispaper.author_1=request.data.get("author_1")
+                print(request.data)
+                thispaper.author_2=request.data.get("author_2")
+                thispaper.author_3=request.data.get("author_3")
+                thispaper.title=request.data.get("title")
+                thispaper.abstract=request.data.get("abstract")
+                thispaper.keyword=request.data.get("keyword")
                       # content=request.data.get("content"),
-                thispaper.status=-1,
-                thispaper.owner=thisuser,
+                thispaper.status="-1"
+                thispaper.suggeestion=""
                 thispaper.explain=request.data.get("explain")
+                thispaper.save()
+                thispaper.content = request.FILES['content']
+                template = loader.get_template('judgement.html')
+                context = {
+                    # 'conference': thismeeting,
+                    'message': '修改成功，请等待审核'
+                }
+                return HttpResponse(template.render(context, request))
+                '''
                 try:
-                    thispaper.save()
+                    #thispaper.save()
                     # thisuser.participate.add(thismeeting) 暂时还未参加会议，需要审核和注册
                     template = loader.get_template('judgement.html')
                     context = {
@@ -321,12 +329,14 @@ class UserViewSet(viewsets.ModelViewSet):
                     }
                     return HttpResponse(template.render(context, request))
                 except:
+                
                     template = loader.get_template('judgement.html')
                     context = {
                         #'conference': thismeeting,
                         'message': '失败,填写信息错误'
                     }
                     return HttpResponse(template.render(context, request))
+                '''
             else:
                 template = loader.get_template('judgement.html')
                 context = {
