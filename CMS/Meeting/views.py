@@ -193,6 +193,21 @@ class MeetingViewSet(viewsets.ModelViewSet):
                 i = i + 1
                 if i >= 10:
                     break
+
+            now = timezone.now()
+            if now <= thisMeeting.ddl_date:
+                thisMeeting.status1 = True
+            if now <= thisMeeting.result_notice_date:
+                thisMeeting.status2= True
+            if now <= thisMeeting.regist_attend_date:
+                thisMeeting.status3 = True
+            if now <= thisMeeting.meeting_date:
+                thisMeeting.status4 = True
+            if now <= thisMeeting.meeting_end_date:
+                thisMeeting.status5 = True
+            else:
+                thisMeeting.status6 = True
+
             template = loader.get_template('conference.html')
             context = {
                 'conference': thisMeeting,
