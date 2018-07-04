@@ -32,4 +32,5 @@ urlpatterns = [
     path('institution_register/',views.institution_register),
     path('personal_info/', views.personal_info),
     path('logout/',views.logout),
+    path('release/', views.release)
 ]

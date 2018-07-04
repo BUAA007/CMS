@@ -14,12 +14,11 @@
     <link rel="shortcut icon" href="{% static 'images/favicon.ico' %}">
 
     <link rel="stylesheet" href="{% static 'assets/css/normalize.css' %}">
-    <link rel="stylesheet" href="{% static 'assets/css/bootstrap.min.css' %}">
-    <link rel="stylesheet" href="{% static 'assets/css/font-awesome.min.css' %}">
+    <link rel="stylesheet" href="https://cdn.bootcss.com/bootstrap/4.1.0/css/bootstrap.min.css">
+    <link rel="stylesheet" href="https://cdn.bootcss.com/font-awesome/4.7.0/css/font-awesome.min.css">
     <link rel="stylesheet" href="{% static 'assets/css/themify-icons.css' %}">
     <link rel="stylesheet" href="{% static 'assets/css/flag-icon.min.css' %}">
     <link rel="stylesheet" href="{% static 'assets/css/cs-skin-elastic.css' %}">
-    <!-- <link rel="stylesheet" href="assets/css/bootstrap-select.less"> -->
     <link rel="stylesheet" href="{% static 'assets/scss/style.css' %}">
     <link href="{% static 'assets/css/lib/vector-map/jqvmap.min.css' %}" rel="stylesheet">
 
@@ -29,107 +28,126 @@
 
 </head>
 <body>
-    <script src="{% static 'assets/js/vendor/jquery-2.1.4.min.js' %}"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.3/umd/popper.min.js"></script>
-    <script src="http://ajax.googleapis.com/ajax/libs/jquery/1.8.0/jquery.min.js"></script>
-    <script src="{% static 'assets/js/plugins.js' %}"></script>
-    <script src="{% static 'assets/js/main.js' %}"></script>
+<script src="https://cdn.bootcss.com/jquery/3.2.1/jquery.min.js"></script>
 
+<!-- popper.min.js 用于弹窗、提示、下拉菜单 -->
+<script src="https://cdn.bootcss.com/popper.js/1.12.5/umd/popper.min.js"></script>
 
-    <script src="{% static 'assets/js/lib/chart-js/Chart.bundle.js' %}"></script>
-    <script src="{% static 'assets/js/dashboard.js' %}"></script>
-    <script src="{% static 'assets/js/widgets.js' %}"></script>
-    <script src="{% static 'assets/js/lib/vector-map/jquery.vmap.js' %}"></script>
-    <script src="{% static 'assets/js/lib/vector-map/jquery.vmap.min.js' %}"></script>
-    <script src="{% static 'assets/js/lib/vector-map/jquery.vmap.sampledata.js' %}"></script>
-    <script src="{% static 'assets/js/lib/vector-map/country/jquery.vmap.world.js' %}"></script>
-        <!-- Left Panel -->
-    <aside id="left-panel" class="left-panel">
-        <nav class="navbar navbar-expand-sm navbar-default">
-            <div class="panel-body text-center">
-                <div class="bk-avatar">
-                    <p></p>
-                    {% if request.session.is_login == 'true'%}
-                        <img width="30%" height="30%" class="user-avatar rounded-circle" src="{% static 'images/admin.jpg' %}" alt="User Avatar">
-                    {% else %}
-                        <img width="30%" height="30%" class="user-avatar rounded-circle" src="{% static 'images/offline.jpg' %}" alt="User Avatar">
-                    {% endif %}
-                </div>
-                <div class="bk-padding-top-10">
-                    <i class="fa fa-circle text-success"></i>
-                    <a href="#">
-                        {% if request.session.is_login == 'true'%}
-                            {{ request.session.username }}
-                        {% else %}
-                            匿名用户
-                        {% endif %}
-                    </a>
-                </div>
+<!-- 最新的 Bootstrap4 核心 JavaScript 文件 -->
+<script src="https://cdn.bootcss.com/bootstrap/4.1.0/js/bootstrap.min.js"></script>
+
+<script src="{% static 'assets/js/plugins.js' %}"></script>
+<script src="{% static 'assets/js/main.js' %}"></script>
+<!-- Left Panel -->
+<aside id="left-panel" class="left-panel">
+    <nav class="navbar navbar-expand-sm navbar-default">
+        <div class="panel-body text-center">
+            <div class="bk-avatar">
+                <p></p>
+                {% if request.session.is_login == 'true' %}
+                    <img width="30%" height="30%" class="user-avatar rounded-circle"
+                         src="{% static 'images/admin.jpg' %}" alt="User Avatar">
+                {% else %}
+                    <img width="30%" height="30%" class="user-avatar rounded-circle"
+                         src="{% static 'images/offline.jpg' %}" alt="User Avatar">
+                {% endif %}
             </div>
+            <div class="bk-padding-top-10">
+                <i class="fa fa-circle text-success"></i>
+                <a href="#">
+                    {% if request.session.is_login == 'true' %}
+                        {{ request.session.username }}
+                    {% else %}
+                        匿名用户
+                    {% endif %}
+                </a>
+            </div>
+        </div>
 
-            <div id="main-menu" class="main-menu collapse navbar-collapse">
-                <ul class="nav navbar-nav">
-                    <li class="active">
-                        <a href="#"> <i class="menu-icon fa fa-twitter"></i>主页 </a>
-                    </li>
-                    <h3 class="menu-title"></h3><!-- /.menu-title -->
+        <div id="main-menu" class="main-menu collapse navbar-collapse">
+            <ul class="nav navbar-nav">
+                <li class="active">
+                    <a href="/base"> <i class="menu-icon fa fa-twitter"></i>主页 </a>
+                </li>
+                <h3 class="menu-title"></h3><!-- /.menu-title -->
+                {% if request.session.type == '1' %}
                     <li class="menu-item-has-children dropdown">
-                        <a href="#" class="dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"> <i class="menu-icon fa fa-comments"></i>会议</a>
+                        <a href="#" class="dropdown-toggle" data-toggle="dropdown" aria-haspopup="true"
+                           aria-expanded="false"> <i class="menu-icon fa fa-comments"></i>会议</a>
                         <ul class="sub-menu children dropdown-menu">
                             <li><i class="menu-icon fa fa-list-ul"></i><a href="/meeting/list2">会议列表</a></li>
-                            <li><i class="menu-icon fa fa-bullhorn"></i><a href="ui-badges.html">发布会议</a></li>
+                            <li><i class="menu-icon fa fa-bullhorn"></i><a href="/release">发布会议</a></li>
                             <li><i class="menu-icon fa fa-wrench"></i><a href="ui-tabs.html">管理会议</a></li>
                             <li><i class="menu-icon fa fa-user-plus"></i><a href="ui-tabs.html">配置账号</a></li>
                         </ul>
                     </li>
                     <h3 class="menu-title"></h3><!-- /.menu-title -->
                     <li class="menu-item-has-children dropdown">
-                        <a href="#" class="dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"> <i class="menu-icon fa fa-gavel"></i>评审</a>
+                        <a href="#" class="dropdown-toggle" data-toggle="dropdown" aria-haspopup="true"
+                           aria-expanded="false"> <i class="menu-icon fa fa-gavel"></i>评审</a>
                         <ul class="sub-menu children dropdown-menu">
                             <li><i class="fa fa-book"></i><a href="/meeting/allpaper/?pk=1">审核论文</a></li>
                         </ul>
                     </li>
-                    <h3 class="menu-title"></h3><!-- /.menu-title -->
+                {% else %}
                     <li class="menu-item-has-children dropdown">
-                        <a href="#" class="dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"> <i class="menu-icon fa fa-user"></i>个人信息</a>
+                        <a href="#" class="dropdown-toggle" data-toggle="dropdown" aria-haspopup="true"
+                           aria-expanded="false"> <i class="menu-icon fa fa-comments"></i>会议</a>
                         <ul class="sub-menu children dropdown-menu">
-                            <li><i class="menu-icon fa fa-user-circle"></i><a href="/personal_info/">个人主页</a></li>
-                            <li><i class="menu-icon fa fa-paper-plane"></i><a href="/user/allpaper/?pk=1">评审结果</a></li>
+                            <li><i class="menu-icon fa fa-list-ul"></i><a href="/meeting/list2">会议列表</a></li>
                         </ul>
                     </li>
-                </ul>
-            </div><!-- /.navbar-collapse -->
-        </nav>
-    </aside><!-- /#left-panel -->
+                    <!-- /.menu-title -->
+                {% endif %}
 
-    <!-- Left Panel -->
+                {% if request.session.type == '0' %}
+                    <h3 class="menu-title"></h3>
+                    <li class="menu-item-has-children dropdown">
+                        <a href="#" class="dropdown-toggle" data-toggle="dropdown" aria-haspopup="true"
+                           aria-expanded="false"> <i class="menu-icon fa fa-user"></i>个人信息</a>
+                        <ul class="sub-menu children dropdown-menu">
+                            <li><i class="menu-icon fa fa-user-circle"></i><a href="/personal_info/">个人主页</a></li>
+                            <li><i class="menu-icon fa fa-paper-plane"></i><a href="/user/user/allpaper/?pk=1">评审结果</a>
+                            </li>
 
-    <!-- Right Panel -->
+                        </ul>
+                    </li>
+                {% endif %}
+            </ul>
+        </div><!-- /.navbar-collapse -->
+    </nav>
+</aside><!-- /#left-panel -->
 
-    <div id="right-panel" class="right-panel">
+<!-- Left Panel -->
 
-        <!-- Header-->
-        <header id="header" class="header">
+<!-- Right Panel -->
 
-            <div class="header-menu">
+<div id="right-panel" class="right-panel">
 
-                <div class="col-sm-7">
-                    <a id="menuToggle" class="menutoggle pull-left"><i class="fa fa fa-tasks"></i></a>
-                    <div class="header-left">
-                        <button class="search-trigger"><i class="fa fa-search"></i></button>
-                        <div class="form-inline">
-                            <form class="search-form">
-                                <input class="form-control mr-sm-2" type="text" placeholder="Search ..." aria-label="Search">
-                                <button class="search-close" type="submit"><i class="fa fa-close"></i></button>
-                            </form>
-                        </div>
+    <!-- Header-->
+    <header id="header" class="header">
 
-                        <div class="dropdown for-notification">
-                          <button class="btn btn-secondary dropdown-toggle" type="button" id="notification" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+        <div class="header-menu">
+
+            <div class="col-sm-7">
+                <a id="menuToggle" class="menutoggle pull-left"><i class="fa fa fa-tasks"></i></a>
+                <div class="header-left">
+                    <button class="search-trigger"><i class="fa fa-search"></i></button>
+                    <div class="form-inline">
+                        <form class="search-form">
+                            <input class="form-control mr-sm-2" type="text" placeholder="Search ..."
+                                   aria-label="Search">
+                            <button class="search-close" type="submit"><i class="fa fa-close"></i></button>
+                        </form>
+                    </div>
+
+                    <div class="dropdown for-notification">
+                        <button class="btn btn-secondary dropdown-toggle" type="button" id="notification"
+                                data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                             <i class="fa fa-bell"></i>
                             <span class="count bg-danger">5</span>
-                          </button>
-                          <div class="dropdown-menu" aria-labelledby="notification">
+                        </button>
+                        <div class="dropdown-menu" aria-labelledby="notification">
                             <p class="red">You have 3 Notification</p>
                             <a class="dropdown-item media bg-flat-color-1" href="#">
                                 <i class="fa fa-check"></i>
@@ -143,20 +161,21 @@
                                 <i class="fa fa-warning"></i>
                                 <p>Server #3 overloaded.</p>
                             </a>
-                          </div>
                         </div>
+                    </div>
 
-                        <div class="dropdown for-message">
-                          <button class="btn btn-secondary dropdown-toggle" type="button"
+                    <div class="dropdown for-message">
+                        <button class="btn btn-secondary dropdown-toggle" type="button"
                                 id="message"
                                 data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                             <i class="ti-email"></i>
                             <span class="count bg-primary">9</span>
-                          </button>
-                          <div class="dropdown-menu" aria-labelledby="message">
+                        </button>
+                        <div class="dropdown-menu" aria-labelledby="message">
                             <p class="red">You have 4 Mails</p>
                             <a class="dropdown-item media bg-flat-color-1" href="#">
-                                <span class="photo media-left"><img alt="avatar" src="{% static 'images/avatar/1.jpg' %}"></span>
+                                <span class="photo media-left"><img alt="avatar"
+                                                                    src="{% static 'images/avatar/1.jpg' %}"></span>
                                 <span class="message media-body">
                                     <span class="name float-left">Jonathan Smith</span>
                                     <span class="time float-right">Just now</span>
@@ -164,7 +183,8 @@
                                 </span>
                             </a>
                             <a class="dropdown-item media bg-flat-color-4" href="#">
-                                <span class="photo media-left"><img alt="avatar" src="{% static 'images/avatar/2.jpg' %}"></span>
+                                <span class="photo media-left"><img alt="avatar"
+                                                                    src="{% static 'images/avatar/2.jpg' %}"></span>
                                 <span class="message media-body">
                                     <span class="name float-left">Jack Sanders</span>
                                     <span class="time float-right">5 minutes ago</span>
@@ -172,7 +192,8 @@
                                 </span>
                             </a>
                             <a class="dropdown-item media bg-flat-color-5" href="#">
-                                <span class="photo media-left"><img alt="avatar" src="{% static 'images/avatar/3.jpg' %}"></span>
+                                <span class="photo media-left"><img alt="avatar"
+                                                                    src="{% static 'images/avatar/3.jpg' %}"></span>
                                 <span class="message media-body">
                                     <span class="name float-left">Cheryl Wheeler</span>
                                     <span class="time float-right">10 minutes ago</span>
@@ -180,142 +201,135 @@
                                 </span>
                             </a>
                             <a class="dropdown-item media bg-flat-color-3" href="#">
-                                <span class="photo media-left"><img alt="avatar" src="{% static 'images/avatar/4.jpg' %}"></span>
+                                <span class="photo media-left"><img alt="avatar"
+                                                                    src="{% static 'images/avatar/4.jpg' %}"></span>
                                 <span class="message media-body">
                                     <span class="name float-left">Rachel Santos</span>
                                     <span class="time float-right">15 minutes ago</span>
                                         <p>Lorem ipsum dolor sit amet, consectetur</p>
                                 </span>
                             </a>
-                          </div>
                         </div>
                     </div>
                 </div>
-
-                <div class="col-sm-5">
-                    <div class="user-area dropdown float-right">
-                        <a href="#" class="dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                            {% if  request.session.is_login == 'true' %}
-                                <img class="user-avatar rounded-circle" src="{% static 'images/admin.jpg' %}" alt="User Avatar">
-                            {% else %}
-                                <img class="user-avatar rounded-circle" src="{% static 'images/offline.jpg' %}" alt="User Avatar">
-                            {% endif %}
-                        </a>
-{#                <div class="dropdown-menu">#}
-{#                    <ul class="list-unstyled">#}
-{#                        <li class="dropdown-menu-header bk-bg-white bk-margin-top-15">#}
-{#                            <p></p>#}
-{#                            <p></p>#}
-{#                            <p></p>#}
-{#                            <p></p>#}
-{#                            <p></p>#}
-{#                            <a href="/"><i class="fa fa-power-off"></i>退出登录</a>#}
-{#                        </li>#}
-{#                    </ul>#}
-{#                </div>#}
-                        <div class="user-menu dropdown-menu">
-{#                                <a class="nav-link" href="#"><i class="fa fa- user"></i>My Profile</a>#}
-{##}
-{#                                <a class="nav-link" href="#"><i class="fa fa- user"></i>Notifications <span class="count">13</span></a>#}
-{##}
-{#                                <a class="nav-link" href="#"><i class="fa fa -cog"></i>Settings</a>#}
-                            <li class="dropdown-menu-header bk-bg-white bk-margin-top-15"></li>
-                            {% if  request.session.is_login == 'true' %}
-                                <a class="nav-link"  href="javascript:void(0)"  onclick="logout()"><i class="fa fa-power-off" ></i>登出</a>
-                            {% else %}
-                                <a class="nav-link"  href="/login/"><i class="fa fa-power-off" ></i>登陆</a>
-                            {% endif %}
-                        </div>
-                    </div>
-
-{#                    <div class="language-select dropdown" id="language-select">#}
-{#                        <a class="dropdown-toggle" href="#" data-toggle="dropdown"  id="language" aria-haspopup="true" aria-expanded="true">#}
-{#                            <i class="flag-icon flag-icon-us"></i>#}
-{#                        </a>#}
-{#                        <div class="dropdown-menu" aria-labelledby="language" >#}
-{#                            <div class="dropdown-item">#}
-{#                                <span class="flag-icon flag-icon-fr"></span>#}
-{#                            </div>#}
-{#                            <div class="dropdown-item">#}
-{#                                <i class="flag-icon flag-icon-es"></i>#}
-{#                            </div>#}
-{#                            <div class="dropdown-item">#}
-{#                                <i class="flag-icon flag-icon-us"></i>#}
-{#                            </div>#}
-{#                            <div class="dropdown-item">#}
-{#                                <i class="flag-icon flag-icon-it"></i>#}
-{#                            </div>#}
-{#                        </div>#}
-{#                    </div>#}
-
-                </div>
             </div>
 
-        </header><!-- /header -->
-        <!-- Header-->
-
-        <div class="breadcrumbs">
-            <div class="col-sm-4">
-                <div class="page-header float-left">
-                    <div class="page-title">
-                        <h1><em>在线会议管理系统</em></h1>
-                    </div>
-                </div>
-            </div>
-            <div class="col-sm-8">
-                <div class="page-header float-right">
-                    <div class="page-title">
-                        <ol class="breadcrumb text-right">
-                            <li class="active"><em>CMS</em></li>
-                        </ol>
+            <div class="col-sm-5">
+                <div class="user-area dropdown float-right">
+                    <a href="#" class="dropdown-toggle" data-toggle="dropdown" aria-haspopup="true"
+                       aria-expanded="false">
+                        {% if  request.session.is_login == 'true' %}
+                            <img class="user-avatar rounded-circle" src="{% static 'images/admin.jpg' %}"
+                                 alt="User Avatar">
+                        {% else %}
+                            <img class="user-avatar rounded-circle" src="{% static 'images/offline.jpg' %}"
+                                 alt="User Avatar">
+                        {% endif %}
+                    </a>
+                    <div class="user-menu dropdown-menu">
+                        <li class="dropdown-menu-header bk-bg-white bk-margin-top-15"></li>
+                        {% if  request.session.is_login == 'true' %}
+                            <a class="nav-link" href="javascript:void(0)" onclick="logout()"><i
+                                    class="fa fa-power-off"></i>登出</a>
+                        {% else %}
+                            <a class="nav-link" href="/login/"><i class="fa fa-power-off"></i>登陆</a>
+                        {% endif %}
                     </div>
                 </div>
             </div>
         </div>
 
-        <div class="content mt-3">
-            {% block content %}
-            {% endblock %}
-        </div> <!-- .content -->
-    </div><!-- /#right-panel -->
+    </header><!-- /header -->
+    <!-- Header-->
 
-    <!-- Right Panel -->
-    <script>
-        ( function ( $ ) {
-            "use strict";
+    <div class="breadcrumbs">
+        <div class="col-sm-4">
+            <div class="page-header float-left">
+                <div class="page-title">
+                    <h1><em>在线会议管理系统</em></h1>
+                </div>
+            </div>
+        </div>
+        <div class="col-sm-8">
+            <div class="page-header float-right">
+                <div class="page-title">
+                    <ol class="breadcrumb text-right">
+                        <li class="active"><em>CMS</em></li>
+                    </ol>
+                </div>
+            </div>
+        </div>
+    </div>
 
-            jQuery( '#vmap' ).vectorMap( {
-                map: 'world_en',
-                backgroundColor: null,
-                color: '#ffffff',
-                hoverOpacity: 0.7,
-                selectedColor: '#1de9b6',
-                enableZoom: true,
-                showTooltip: true,
-                values: sample_data,
-                scaleColors: [ '#1de9b6', '#03a9f5' ],
-                normalizeFunction: 'polynomial'
-            } );
-        } )( jQuery );
+    <div class="content mt-3">
+        {% block content %}
+        {% endblock %}
+    </div> <!-- .content -->
+</div><!-- /#right-panel -->
+{% if message %}
+<div class="modal fade" id="id_errors" tabindex="-1" role="dialog"
+     aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="exampleModalCenterTitle">提示</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body" id="info">
+                {{ message }}
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">关闭</button>
+            </div>
+        </div>
+    </div>
+</div>
+<script>
+    jQuery(function ($) {
+        $('#id_errors').modal('show')
+    });
+</script>
+{% endif %}
+<!-- Right Panel -->
+<script>
+    (function ($) {
+        "use strict";
 
-        function logout(){
-            $.ajax({
-                url : "/logout/",
-                type : 'GET',
-                dataType : 'json',
-                success : function(response) {
-                if(response['errorInfo'] != null){
+        jQuery('#vmap').vectorMap({
+            map: 'world_en',
+            backgroundColor: null,
+            color: '#ffffff',
+            hoverOpacity: 0.7,
+            selectedColor: '#1de9b6',
+            enableZoom: true,
+            showTooltip: true,
+            values: sample_data,
+            scaleColors: ['#1de9b6', '#03a9f5'],
+            normalizeFunction: 'polynomial'
+        });
+    })(jQuery);
+
+    function logout() {
+       $.ajax({
+            url: "/logout/",
+            type: 'GET',
+            dataType : 'json',
+            success: function (response) {
+                if (response['errorInfo'] != null) {
                     alert(response['errorInfo']);
-                }else{
+                } else {
                     alert(response['info']);
-                    window.location.href='/base/';
+                    window.location.href = '/base/';
                 }
-
             }
-            })
-        }
 
-    </script>
+    })
+    }
+</script>
+
+</script>
 
 </body>
 </html>
