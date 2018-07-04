@@ -8,7 +8,7 @@ from django.core.exceptions import ObjectDoesNotExist
 from Meeting.models import Meeting
 from Meeting.serializers import MeetingSerializer
 from django.contrib.auth import authenticate, login, logout
-
+from django.shortcuts import get_object_or_404
 from django.http import HttpResponse
 from django.template import loader
 from User.models import * 
@@ -122,7 +122,9 @@ class MeetingViewSet(viewsets.ModelViewSet):
 
 
     def retrieve(self ,request,pk=None):
-        thisMeeting=Meeting.objects.get(meeting_id=pk)
+        thisMeeting = Meeting.objects.get(meeting_id=pk)
+        #thisMeeting = get_object_or_404(queryset, pk=pk)
+        #thisMeeting=Meeting.objects.get(meeting_id=pk)
         try:
             user_id=request.session['id']
             #user_id=request.session.get['id']
@@ -196,7 +198,7 @@ class MeetingViewSet(viewsets.ModelViewSet):
 
 
     @action(methods=['GET'],detail=False)
-    def osearch(self, request):
+    def osearch(self, request):#根据时间搜索未写
         queryset = Meeting.objects.all()
         word = request.query_params.get('s', None)
         if word is not None:
@@ -206,12 +208,36 @@ class MeetingViewSet(viewsets.ModelViewSet):
 
     @action(methods=['GET'],detail=False)
     def allpaper(self, request):
-        pk = request.query_params.get('pk', None)
-        thismeeting = Meeting.objects.get(meeting_id=pk)
-        papers = thismeeting.paper_set.all()
-        template = loader.get_template('judge.html')
-        context = {
-            'papers': papers,
-        }
-        return HttpResponse(template.render(context, request))
+        user_id=request.session['id']
+        type=request.session['type']
+        if type==0:
+            template = loader.get_template('judge.html')
+            context = {
+                #'conference': thismeeting,
+                'message': '失败，不是该会议的单位用户'
+            }
+            return HttpResponse(template.render(context, request))
+        else:
+            thisemployee = Employee.objects.get(id=user_id)
+            institution=thisemployee.institution
+            thismeeting=institution.meeting_set
+            #thismeeting = Meeting.objects.get(meeting_id=pk)
+            papers = thismeeting.paper_set.all()
+            template = loader.get_template('judge.html')
+            context = {
+                'papers': papers,
+            }
+            return HttpResponse(template.render(context, request))
 
+    @action(methods = ['GET'],detail = False)
+    def alljoin(self, request):
+        pk = request.data.get('pk', None)
+        if pk is not None:
+            thismeeting = Meeting.objects.get(meeting_id = pk)
+            joinmen = thismeeting.join_set.all()
+            template = loader.get_template('judgement.html')
+            context = {
+                'join': joinmen,
+            }
+            return HttpResponse(template.render(context, request))
+        return Response({"errorInfo":"会议无效，服务器错误"}, status=status.HTTP_200_OK)
