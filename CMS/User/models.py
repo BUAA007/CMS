@@ -34,9 +34,6 @@ class Join(models.Model):
 	reservation = models.CharField(
 		max_length = 8,
 		)
-	type=models.IntField(
-		null=True,
-	)
 	meeting = models.ManyToManyField(Meeting)
 	user = models.ManyToManyField(User)
 

@@ -47,5 +47,10 @@ class Paper(models.Model):
 		max_length=1028,
 		null=True,
 	)
+	explain=models.CharField(
+		max_length=1028,
+		null=True,
+	)
+
 
 
