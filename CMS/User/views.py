@@ -283,48 +283,57 @@ class UserViewSet(viewsets.ModelViewSet):
 
     @action(methods=['POST'], detail=False)
     def modify(self, request):
-        meeting_id = request.data.get("meeting_id")
-        thismeeting = Meeting.objects.get(meeting_id=meeting_id)
+        paper_id = request.data.get("paper_id")
+        thispaper=Paper.objects.get(id=paper_id)
+
+        #thismeeting = Meeting.objects.get(meeting_id=meeting_id)
         try:
             user_id = request.session['id']
         except:
-            template = loader.get_template('conference.html')
+            template = loader.get_template('judgement.html')
             context = {
-                'conference': thismeeting,
+                #'conference': thismeeting,
                 'message': '失败，请登录'
             }
             return HttpResponse(template.render(context, request))
-        user_type = request.session['type']
-        thisuser = User.objects.get(id=user_id)
-        thispaper = Paper.objects.get("paper_id")
-        thispaper.author_1=request.data.get("author_1"),
-        thispaper.author_2=request.data.get("author_2"),
-        thispaper.author_3=request.data.get("author_3"),
-        thispaper.title=request.data.get("title"),
-        thispaper.abstract=request.data.get("abstract"),
-        thispaper.keyword=request.data.get("keyword"),
-        thispaper.content=request.FILES['content'],
-              # content=request.data.get("content"),
-        thispaper.status=-1,
-        thispaper.owner=thisuser,
-        thispaper.meeting=thismeeting,
-        thispaper.explain=request.data.get("explain")
-        try:
-            thispaper.save()
-            # thisuser.participate.add(thismeeting) 暂时还未参加会议，需要审核和注册
-            template = loader.get_template('conference.html')
-            context = {
-                'conference': thismeeting,
-                'message': '成功'
-            }
-            return HttpResponse(template.render(context, request))
-        except:
-            template = loader.get_template('conference.html')
-            context = {
-                'conference': thismeeting,
-                'message': '失败,填写信息错误'
-            }
-        return HttpResponse(template.render(context, request))
+        else:
+            if(thispaper.status==0 or thispaper.status== -1 ):
+                thisuser = User.objects.get(id=user_id)
+                thispaper = Paper.objects.get("paper_id")
+                thispaper.author_1=request.data.get("author_1"),
+                thispaper.author_2=request.data.get("author_2"),
+                thispaper.author_3=request.data.get("author_3"),
+                thispaper.title=request.data.get("title"),
+                thispaper.abstract=request.data.get("abstract"),
+                thispaper.keyword=request.data.get("keyword"),
+                thispaper.content=request.FILES['content'],
+                      # content=request.data.get("content"),
+                thispaper.status=-1,
+                thispaper.owner=thisuser,
+                thispaper.explain=request.data.get("explain")
+                try:
+                    thispaper.save()
+                    # thisuser.participate.add(thismeeting) 暂时还未参加会议，需要审核和注册
+                    template = loader.get_template('judgement.html')
+                    context = {
+                        #'conference': thismeeting,
+                        'message': '修改成功，请等待审核'
+                    }
+                    return HttpResponse(template.render(context, request))
+                except:
+                    template = loader.get_template('judgement.html')
+                    context = {
+                        #'conference': thismeeting,
+                        'message': '失败,填写信息错误'
+                    }
+                    return HttpResponse(template.render(context, request))
+            else:
+                template = loader.get_template('judgement.html')
+                context = {
+                    # 'conference': thismeeting,
+                    'message': '失败,该论文不可修改'
+                }
+                return HttpResponse(template.render(context, request))
 
     @action(methods=['POST'], detail=False)
     def favorite(self, request):
