@@ -347,7 +347,7 @@ class UserViewSet(viewsets.ModelViewSet):
         user_id = request.session['id']
         type = request.session['type']
         if type == 1:
-            template = loader.get_template('judge.html')
+            template = loader.get_template('judgement.html')
             context = {
                 # 'conference': thismeeting,
                 'message': '失败，不是个体用户'
@@ -357,7 +357,7 @@ class UserViewSet(viewsets.ModelViewSet):
             thisuser = User.objects.get(id=user_id)
             # thismeeting = Meeting.objects.get(meeting_id=pk)
             papers = thisuser.paper_set.all()
-            template = loader.get_template('judge.html')
+            template = loader.get_template('judgement.html')
             context = {
                 'papers': papers,
             }

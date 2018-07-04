@@ -220,7 +220,7 @@ class MeetingViewSet(viewsets.ModelViewSet):
         else:
             thisemployee = Employee.objects.get(id=user_id)
             institution=thisemployee.institution
-            thismeeting=institution.meeting_set.get().all()
+            thismeeting=institution.meeting_set.all()
             #thismeeting = Meeting.objects.get(meeting_id=pk)
             paperslist=list()
             for i in thismeeting:
