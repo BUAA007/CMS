@@ -95,11 +95,6 @@
             success : function(response) {
                 if(response['errorInfo'] != null){
                     alert(response['errorInfo']);
-                    document.getElementById("username").value = null
-                    document.getElementById("password").value = null
-                    document.getElementById("password2").value = null
-                    document.getElementById("email").value = null
-                    document.getElementById("tel").value = null
                 }else{
                     window.location.href='/login/';
                 }
