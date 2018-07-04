@@ -1,5 +1,6 @@
 from django.db import models
 from Meeting.models import *
+from Paper.models import *
 
 # Create your models here.
 class User(models.Model):
@@ -34,10 +35,12 @@ class Join(models.Model):
 	reservation = models.CharField(
 		max_length = 8,
 		)
-	type=models.IntField(
+	type=models.IntegerField(
 		null=True,
-	)
-	meeting = models.ManyToManyField(Meeting)
-	user = models.ManyToManyField(User)
-
-
+		default = 1,
+		)
+	paper = models.ForeignKey(
+		Paper,
+		on_delete=models.CASCADE,
+		default = "",
+		)
