@@ -58,7 +58,7 @@
         <script src="https://cdnjs.cloudflare.com/ajax/libs/vue/1.0.26/vue.min.js"></script>
     </head>
 
-    <body background="{% static 'images/gxm.jpg' %}">
+    <body background="{% static 'images/login_register.jpg' %}">
         <form class="flatbox">
             <div class="gslogen mb-4"><em>CMS</em></div>
             <h1 class="h3 mb-3 font-weight-normal">登录</h1>
@@ -119,6 +119,7 @@
             "username": document.getElementById("username").value,
             "password": document.getElementById("password").value
         }
+
         $.ajax({
             url: url,
             type: 'POST',
@@ -134,8 +135,9 @@
                 }
 
             }
-        })
+        });
     }
+
 
 
     </script>
