@@ -8,7 +8,7 @@ from Paper.serializers import *
 from User.models import *
 from User.serializers import *
 from django.template import loader
-from django.http import HttpResponse
+from django.http import HttpResponse, HttpResponseRedirect
 import re, json
 import collections
 import hashlib
@@ -389,6 +389,17 @@ class JoinViewSet(viewsets.ModelViewSet):
     queryset = Join.objects.all()
     serializer_class = JoinSerializer
 
+    def allpaper(self, request):
+        userid = request.session['id']
+        thisuser = User.objects.get(id=userid)
+        # thismeeting = Meeting.objects.get(meeting_id=pk)
+        papers = thisuser.paper_set.all()
+        template = loader.get_template('judgement.html')
+        context = {
+            'papers': papers,
+        }
+        return HttpResponse(template.render(context, request))
+
     def create(self, request):
         # user_id=request.session['id']
         # thisuser = User.objects.get(id=user_id)
@@ -398,6 +409,7 @@ class JoinViewSet(viewsets.ModelViewSet):
         # namelist = request.data.get("name")
         # genderlist = request.data.get("gender")
         # reserlist = request.data.get("reservation")
+        #userid = request.session['id']
         receipt = request.FILES['file']
         type = int(request.data.get("type"))
         if type == 1:
@@ -442,7 +454,7 @@ class JoinViewSet(viewsets.ModelViewSet):
             #     people.save()
             #     count = count + 1
             thispaper.owner.participate.add(thismeeting)
-            return Response("info: join success", status=status.HTTP_200_OK)
+            return HttpResponseRedirect('../../user/user/allpaper')
         meetingid = int(request.data.get("meeting"))
         thismeeting = Meeting.objects.get(meeting_id = meetingid)
         count = 1
@@ -469,7 +481,7 @@ class JoinViewSet(viewsets.ModelViewSet):
             resername = "reservation" + str(count)
             name = request.data.get(namename)
         thispaper.owner.participate.add(thismeeting)
-        return Response("info: listen success", status=status.HTTP_200_OK)
+        return HttpResponseRedirect('../../user/user/allpaper')
         # count = 0
         # for name in namelist:
         #     meetingid = request.data.get("meeting")
