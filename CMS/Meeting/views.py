@@ -191,7 +191,7 @@ class MeetingViewSet(viewsets.ModelViewSet):
             context = {
                 'conference': thisMeeting,
                 'isfavorite': isfavorite,
-                'map': "http://maps.google.com.tw/maps?f=q&hl=zh-TW&geocode=&q=" + thisMeeting.organization + "&z=16&output=embed&t=",
+                'map': "http://maps.google.com.tw/maps?f=q&amp;hl=zh-TW&amp;geocode=&q=" + thisMeeting.organization + "&z=16&output=embed&t=",
             }
             return HttpResponse(template.render(context, request))
         except:
@@ -218,7 +218,7 @@ class MeetingViewSet(viewsets.ModelViewSet):
             context = {
                 'conference': thisMeeting,
                 'isfavorite': False,
-                'map': "http://maps.google.com.tw/maps?f=q&hl=zh-TW&geocode=&q=" + thisMeeting.organization + "&z=16&output=embed&t=",
+                'map': "http://maps.google.com.tw/maps?f=q&amp;hl=zh-TW&amp;geocode=&q=" + thisMeeting.organization + "&z=16&output=embed&t=",
             }
             return HttpResponse(template.render(context, request))
 
