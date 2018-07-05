@@ -12,7 +12,7 @@ from django.http import HttpResponse, HttpResponseRedirect
 import re, json
 import collections
 import hashlib
-PAGE_MAX = 10
+PAGE_MAX = 9
 
 # Create your views here.
 

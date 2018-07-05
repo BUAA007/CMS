@@ -15,7 +15,7 @@ from User.models import *
 from Institution.models import Employee
 from django.utils import timezone
 from datetime import datetime,date
-PAGE_MAX = 10
+PAGE_MAX = 9
 
 def checkNull(msg):
     return msg
