@@ -212,17 +212,17 @@ class EmployeeViewSet(viewsets.ModelViewSet):
        password = md5(password)
        try:
            thisEmployee = Employee.objects.get(username=request.session['username'])
+           thisInstitution=thisEmployee.institution
            otherEmployee = Employee(
                username = username,
                password = password,
-               #institution = thisInstitution.institution,
+               institution = thisInstitution,
                )
            otherEmployee.save()
            return HttpResponse(info("success"), content_type="application/json")
-       except:
-           pass
+
+
            #return render(request,'login.html',status = status.HTTP_201_CREATED)
-       return  HttpResponse(errorInfo("未知原因失败，请稍后再试"), content_type="application/json")
 
    @action(methods=['POST'], detail=False)
    def checkpaper(self, request):
