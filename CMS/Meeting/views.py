@@ -310,6 +310,7 @@ class MeetingViewSet(viewsets.ModelViewSet):
             return HttpResponse(template.render(context, request))
         return Response({"errorInfo": "会议无效，服务器错误"}, status=status.HTTP_200_OK)
 
+    @action(methods=['POST'], detail=False)
     def excel_export(self, request):
         """
         导出excel表格
