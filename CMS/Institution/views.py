@@ -190,11 +190,10 @@ class EmployeeViewSet(viewsets.ModelViewSet):
    def registerother(self, request):
        if not request.session['is_login']:
           return  HttpResponse(errorInfo("请登入后操作"), content_type="application/json")
+
        username = request.data.get("username")
        password = request.data.get("password")
        password2 = request.data.get("password2")
-       email = request.data.get("email")
-       tel = request.data.get("tel")
        try:
           if not Employee.objects.get(username = username):
               return  HttpResponse(errorInfo("用户名已存在"), content_type="application/json")
@@ -206,17 +205,14 @@ class EmployeeViewSet(viewsets.ModelViewSet):
           return  HttpResponse(errorInfo("密码不合法"), content_type="application/json")
        if not password == password2:
           return  HttpResponse(errorInfo("确认密码不一致"), content_type="application/json")
-       if not checkPhonenumber(tel):      #手机号位数为11位；开头为1，第二位为3或4或5或8;
-          return  HttpResponse(errorInfo("电话号码不合法"), content_type="application/json")
+
        password = md5(password)
        try:
            thisEmployee = Employee.objects.get(username=request.session['username'])
            otherEmployee = Employee(
                username = username,
                password = password,
-               email = email,
-               tel = tel,
-               institution = thisInstitution.institution,
+               #institution = thisInstitution.institution,
                )
            otherEmployee.save()
            return HttpResponse(info("success"), content_type="application/json")
@@ -240,3 +236,18 @@ class EmployeeViewSet(viewsets.ModelViewSet):
             thispaper.save()
         return Response("成功 ", status=status.HTTP_200_OK)
 
+   @action(methods=['POST'], detail=False)
+   def allemployee(self,request):
+       try:
+           thisemployee_id=request.session["id"]
+       except:
+           print()
+       else:
+            thisemployee=Employee.objects.get(id=thisemployee_id)
+            thisinstitution=thisemployee.institution
+            allemployee= thisinstitution.employee_set.all()
+            template = loader.get_template('institution.html')
+            context = {
+                'employees': allemployee,
+            }
+            return HttpResponse(template.render(context, request))

@@ -9,13 +9,16 @@ from Meeting.models import Meeting
 from Meeting.serializers import MeetingSerializer
 from django.contrib.auth import authenticate, login, logout
 from django.shortcuts import get_object_or_404
-from django.http import HttpResponse
+from django.http import HttpResponse, StreamingHttpResponse
 from django.template import loader
 from User.models import *
 from Institution.models import Employee
 from django.utils import timezone
 from datetime import datetime,date
-PAGE_MAX = 10
+from xlwt import *
+import os
+
+PAGE_MAX = 9
 
 def checkNull(msg):
     return msg
@@ -216,7 +219,7 @@ class MeetingViewSet(viewsets.ModelViewSet):
             return HttpResponse(template.render(context, request))
 
 
-    @action(methods=['GET'], detail=False)
+    @action(methods=['POST'], detail=False)
     def search(self, request):  # 根据时间搜索未写
         queryset = Meeting.objects.all()
         word = request.data.get('search', None)
@@ -294,7 +297,7 @@ class MeetingViewSet(viewsets.ModelViewSet):
 
             return HttpResponse(template.render(context, request))
 
-    @action(methods=['GET'], detail=False)
+    @action(methods=['POST'], detail=False)
     def alljoin(self, request):
         pk = request.data.get('pk', None)
         if pk is not None:
@@ -306,6 +309,65 @@ class MeetingViewSet(viewsets.ModelViewSet):
             }
             return HttpResponse(template.render(context, request))
         return Response({"errorInfo": "会议无效，服务器错误"}, status=status.HTTP_200_OK)
+
+    @action(methods=['POST'], detail=False)
+    def excel_export(self, request):
+        """
+        导出excel表格
+        """
+        meeting = int(request.data.get("meeting"))
+        thismeeting = Meeting.objects.get(meeting_id = meeting)
+        url = "excel/"+thismeeting.title+".xls"
+        list_obj = thismeeting.paper_set.all()
+        if list_obj:
+            # 创建工作薄 投稿编号、作者、题目、单位、摘要等内容
+            ws = Workbook(encoding='utf-8')
+            w = ws.add_sheet(u"投稿信息")
+            w.write(0, 0, u"投稿编号")
+            w.write(0, 1, u"第一作者")
+            w.write(0, 2, u"题目")
+            w.write(0, 3, u"摘要")
+            w.write(0, 4, u"关键字")
+            # 写入数据
+            excel_row = 1
+            for obj in list_obj:
+                data_id = obj.id
+                data_author = obj.author_1
+                data_title = obj.title
+                data_abstract = obj.abstract
+                dada_keyword = obj.keyword
+                w.write(excel_row, 0, data_id)
+                w.write(excel_row, 1, data_author)
+                w.write(excel_row, 2, data_title)
+                w.write(excel_row, 3, data_abstract)
+                w.write(excel_row, 4, dada_keyword)
+                excel_row += 1
+            # 检测文件是够存在
+            # 方框中代码是保存本地文件使用，如不需要请删除该代码
+            ###########################
+            exist_file = os.path.exists(url)
+            if exist_file:
+                os.remove(url)
+            ws.save(url)
+            ############################
+        else:
+            a = collections.OrderedDict({"errorInfo":"服务器出错，请稍后重试。"})
+            return Response(a, status = status.HTTP_400_BAD_REQUEST)
+        def file_iterator(file_name, chunk_size=512):
+            with open(file_name, "rb") as f:
+                while True:
+                    c = f.read(chunk_size)
+                    if c:
+                        yield c
+                    else:
+                        break
+        if url is not None:
+            response = StreamingHttpResponse(file_iterator(url))
+            response['Content-Type'] = 'application/octet-stream'
+            response['Content-Disposition'] = 'attachment;filename="{0}"'.format(tmp[-1])
+            return response
+        a = collections.OrderedDict({"errorInfo":"服务器出错，请稍后重试。"})
+        return Response(a, status = status.HTTP_400_BAD_REQUEST)
 
 def get_pages(total_page, cur_page):
     pages = [i + 1 for i in range(total_page)]
