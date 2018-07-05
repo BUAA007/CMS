@@ -417,8 +417,8 @@ class UserViewSet(viewsets.ModelViewSet):
         else:
             user_id=request.session['id']
             thisuser=User.objects.get(id=user_id)
-            allfavorite=thisuser.meeting.all()
-            template = loader.get_template('conferencelist.html')
+            allfavorite=thisuser.meeting.all().order_by('-meeting_id')
+            template = loader.get_template('conference_list.html')
             context = {
                 'conference': allfavorite,
             }
