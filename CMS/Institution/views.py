@@ -220,9 +220,7 @@ class EmployeeViewSet(viewsets.ModelViewSet):
                )
            otherEmployee.save()
            return HttpResponse(info("success"), content_type="application/json")
-
-
-           #return render(request,'login.html',status = status.HTTP_201_CREATED)
+       
 
    @action(methods=['POST'], detail=False)
    def checkpaper(self, request):
