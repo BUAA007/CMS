@@ -12,6 +12,9 @@ from django.http import HttpResponse, HttpResponseRedirect
 import re, json
 import collections
 import hashlib
+import sys
+sys.path.append('../')
+from Admin import cmsem
 PAGE_MAX = 9
 
 # Create your views here.
@@ -254,11 +257,13 @@ class UserViewSet(viewsets.ModelViewSet):
                 'conference': thismeeting,
                 'message': '失败，请登录'
             }
-            return HttpResponse(template.render(context, request))
-        user_type = request.session['type']
-        thisuser = User.objects.get(id=user_id)
+            url = "../../../meeting/" + str(thismeeting.meeting_id)
+            return HttpResponseRedirect(url)
+        if timezone.now()<=thismeeting.ddl_date:
+            user_type = request.session['type']
+            thisuser = User.objects.get(id=user_id)
 
-        thispaper = Paper(author_1=request.data.get("author_1"),
+            thispaper = Paper(author_1=request.data.get("author_1"),
                           author_2=request.data.get("author_2"),
                           author_3=request.data.get("author_3"),
                           title=request.data.get("title"),
@@ -270,23 +275,33 @@ class UserViewSet(viewsets.ModelViewSet):
                           owner=thisuser,
                           meeting=thismeeting,
                           )
-        try:
-            thispaper.save()
+            try:
+                thispaper.save()
             # thisuser.participate.add(thismeeting) 暂时还未参加会议，需要审核和注册
+                template = loader.get_template('conference.html')
+                context = {
+                    'conference': thismeeting,
+                    'message': '成功'
+                }
+                url = "../../../meeting/" + str(thismeeting.meeting_id)
+                return HttpResponseRedirect(url)
+            except:
+                template = loader.get_template('conference.html')
+                context = {
+                    'conference': thismeeting,
+                    'message': '失败,填写信息错误'
+                }
+                url = "../../../meeting/" + str(thismeeting.meeting_id)
+                return HttpResponseRedirect(url)
+        else:
             template = loader.get_template('conference.html')
             context = {
                 'conference': thismeeting,
-                'message': '成功'
+                'message': '已超过投稿时间，无法投稿'
             }
-            return HttpResponse(template.render(context, request))
-        except:
-            template = loader.get_template('conference.html')
-            context = {
-                'conference': thismeeting,
-                'message': '失败,填写信息错误'
-            }
-        return HttpResponse(template.render(context, request))
-
+            url="../../../meeting/"+str(thismeeting.meeting_id)
+            return HttpResponseRedirect(url)
+            #return HttpResponse(template.render(context, request))
     @action(methods=['POST'], detail=False)
     def modify(self, request):
         try:
@@ -297,7 +312,9 @@ class UserViewSet(viewsets.ModelViewSet):
                 # 'conference': thismeeting,
                 'message': '失败，请登录'
             }
-            return HttpResponse(template.render(context, request))
+            url="../allpaper"
+            return HttpResponseRedirect(url)
+
         else:
             try:
                 paper_id = request.data.get("paper_id")
@@ -310,32 +327,48 @@ class UserViewSet(viewsets.ModelViewSet):
                     'papers': papers,
                     'message': '失败,填写论文编号错误'
                 }
-                return HttpResponse(template.render(context, request))
-            else:
-                if thispaper.status == 0 or thispaper.status == -1:
-                    # thisuser = User.objects.get(id=user_id)
-                    thispaper.author_1 = request.data.get("author_1")
-                    print(request.data)
-                    thispaper.author_2 = request.data.get("author_2")
-                    thispaper.author_3 = request.data.get("author_3")
-                    thispaper.title = request.data.get("title")
-                    thispaper.abstract = request.data.get("abstract")
-                    thispaper.keyword = request.data.get("keyword")
-                    thispaper.status = "-1"
-                    thispaper.suggestion = "无"
-                    thispaper.explain = request.data.get("explain")
-                    thispaper.save()
+                url = "../allpaper"
+                return HttpResponseRedirect(url)
 
-                    thispaper.content = request.FILES['content']
-                    thispaper.save()
-                    thisuser = User.objects.get(id=user_id)
-                    papers = thisuser.paper_set.all()
-                    template = loader.get_template('judgement.html')
-                    context = {
-                        'papers': papers,
-                        'message': '修改成功，请等待审核'
-                    }
-                    return HttpResponse(template.render(context, request))
+            else:
+                if timezone.now()<=thispaper.meeting.result_notice_date:
+                    if thispaper.status == 0 or thispaper.status == -1:
+                    # thisuser = User.objects.get(id=user_id)
+                        thispaper.author_1 = request.data.get("author_1")
+                        print(request.data)
+                        thispaper.author_2 = request.data.get("author_2")
+                        thispaper.author_3 = request.data.get("author_3")
+                        thispaper.title = request.data.get("title")
+                        thispaper.abstract = request.data.get("abstract")
+                        thispaper.keyword = request.data.get("keyword")
+                        thispaper.status = "-1"
+                        thispaper.suggestion = "无"
+                        thispaper.explain = request.data.get("explain")
+                        thispaper.save()
+
+                        thispaper.content = request.FILES['content']
+                        thispaper.save()
+                        thisuser = User.objects.get(id=user_id)
+                        papers = thisuser.paper_set.all()
+                        template = loader.get_template('judgement.html')
+                        context = {
+                            'papers': papers,
+                            'message': '修改成功，请等待审核'
+                        }
+                        url = "../allpaper"
+                        return HttpResponseRedirect(url)
+
+                    else:
+                        thisuser = User.objects.get(id=user_id)
+                        # thismeeting = Meeting.objects.get(meeting_id=pk)
+                        papers = thisuser.paper_set.all()
+                        template = loader.get_template('judgement.html')
+                        context = {
+                            'papers': papers,
+                            'message': '失败,该论文不可修改'
+                        }
+                        url = "../allpaper"
+                        return HttpResponseRedirect(url)
 
                 else:
                     thisuser = User.objects.get(id=user_id)
@@ -344,9 +377,11 @@ class UserViewSet(viewsets.ModelViewSet):
                     template = loader.get_template('judgement.html')
                     context = {
                         'papers': papers,
-                        'message': '失败,该论文不可修改'
+                        'message': '失败,已超过修改稿截止日期'
                     }
-                    return HttpResponse(template.render(context, request))
+                    url = "../allpaper"
+                    return HttpResponseRedirect(url)
+
 
     @action(methods=['POST'], detail=False)
     def favorite(self, request):
@@ -368,6 +403,40 @@ class UserViewSet(viewsets.ModelViewSet):
                 thisuser.save()
         finally:
             return Response({"info": "成功"}, status=status.HTTP_200_OK)
+
+    @action(methods=['GET'], detail=False)
+    def allfavorite(self, request):
+        try:
+            page = int(request.GET['page'])
+        except (KeyError, ValueError):
+            page = 1
+        user_id = request.session['id']
+        user_type=request.session["type"]
+        if user_type=="1":
+            return Response("请登录个人用户查看")
+        else:
+            user_id=request.session['id']
+            thisuser=User.objects.get(id=user_id)
+            allfavorite=thisuser.User_set.all()
+            template = loader.get_template('conference.html')
+            context = {
+                'conference': allfavorite,
+            }
+            if not len(allfavorite):
+                total_page = 1
+            else:
+                total_page = (len(allfavorite) - 1) // PAGE_MAX + 1
+            pages, pre_page, next_page = get_pages(total_page, page)
+            papers = allfavorite[PAGE_MAX * (page - 1): PAGE_MAX * page]
+
+            context['conference'] = allfavorite
+            context['page'] = page
+            context['pages'] = pages
+            context['pre_page'] = pre_page
+            context['next_page'] = next_page
+            return HttpResponse(template.render(context, request))
+
+
 
     @action(methods=['GET'], detail=False)
     def allpaper(self, request):
@@ -445,6 +514,9 @@ class JoinViewSet(viewsets.ModelViewSet):
                 except:
                     message = "会议错误"
                     raise RuntimeError()
+                if timezone.now()>thismeeting.regist_attend_date:
+                    message = "注册时间已过"
+                    raise RuntimeError()
                 count = 1
                 namename = "name" + str(count)
                 gendername = "gender" + str(count)
@@ -480,6 +552,9 @@ class JoinViewSet(viewsets.ModelViewSet):
                 thismeeting = Meeting.objects.get(meeting_id=meetingid)
             except:
                 message = "会议错误"
+                raise RuntimeError()
+            if timezone.now()>thismeeting.regist_attend_date:
+                message = "注册时间已过"
                 raise RuntimeError()
             count = 1
             namename = "name" + str(count)

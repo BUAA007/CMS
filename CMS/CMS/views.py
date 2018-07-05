@@ -2,11 +2,11 @@ from django.shortcuts import render
 from django.http import StreamingHttpResponse
 from django.http import HttpResponse
 from django.shortcuts import render
+from rest_framework import status
+from rest_framework.response import Response
 from Institution.models import *
 from User.models import *
-from rest_framework import status
 import re, json, collections
-
 
 def base(request):
     return render(request, 'base.html')
@@ -58,7 +58,8 @@ def download(request):
         tmp = rootpath.split("/")
         url += tmp[-1]
     except:
-        return HttpResponse(a, status=status.HTTP_400_BAD_REQUEST)
+        a = collections.OrderedDict({"errorInfo":"服务器出错，请稍后重试。"})
+        return Response(a, status = status.HTTP_400_BAD_REQUEST)
     if url is not None:
         response = StreamingHttpResponse(file_iterator(url))
         response['Content-Type'] = 'application/octet-stream'
