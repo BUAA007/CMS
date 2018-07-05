@@ -226,17 +226,18 @@ class EmployeeViewSet(viewsets.ModelViewSet):
        return  HttpResponse(errorInfo("未知原因失败，请稍后再试"), content_type="application/json")
 
 
-   @action(methods=['POST'], detail=False)#添加发邮件功能，需要传paper_id,管理员下载论文有
-   def checkpaper(self, request):
-      paper_id=request.data.get('paper_id')
-      thispaper=Paper.objects.get(id=paper_id)
-      thisstatus=request.data.get("status")
-      if thisstatus == 0:
-         thispaper.status=thisstatus
-         suggestion=request.data.get("suggestion")
-         thispaper.suggestion=suggestion
-         thispaper.save()
-      else:
-         thispaper.status = thisstatus
-         thispaper.save()
-      return Response("成功 ", status=status.HTTP_200_OK)
+	@action(methods=['POST'], detail=False)#添加发邮件功能，需要传paper_id,管理员下载论文有
+	def checkpaper(self, request):
+		paper_id=request.data.get('paper_id')
+		thispaper=Paper.objects.get(id=paper_id)
+		thisstatus=request.data.get("status")
+		if thisstatus == "0":
+			thispaper.status=thisstatus
+			suggestion=request.data.get("suggestion")
+			thispaper.suggestion=suggestion
+			thispaper.save()
+		else:
+			thispaper.status = thisstatus
+			thispaper.save()
+		return Response("成功 ", status=status.HTTP_200_OK)
+
