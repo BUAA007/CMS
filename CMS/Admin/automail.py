@@ -23,13 +23,16 @@ if __name__ == "__main__":
 	to_list = ["572260394@qq.com", "540670802@qq.com", "490072639@qq.com"]
 	to_list2 = ["572260394@qq.com", "540670802@qq.com", "490072639@qq.com"]
 	me="CMS团队"+"<"+mail_user+"@"+mail_postfix+">"
-	msg['From'] = me
 	allmeeting = Meeting.objects.all()
 	time = datetime.now()
 	sub = "收藏会议提示"
 	content = "您收藏的会议即将截稿"
 	sub2 = "收藏会议提示"
 	content2 = "您收藏的会议即将停止注册"
+	msg = MIMEText(content,_subtype='plain')
+	msg['From'] = me
+
+
 	for meeting in allmeeting:
 		if (meeting.ddl_date - time).days == 1 or (meeting.ddl_date - time).days == 0:
 			for user in meeting.User_set.all():
@@ -37,6 +40,8 @@ if __name__ == "__main__":
 		if (meeting.regist_attend_date - time).days == 1 or (meeting.regist_attend_date - time).days == 0:
 			for user in meeting.User_set.all():
 				to_list2.append(user.email)
+
+
 	server = smtplib.SMTP()
 	server.connect(mail_host)                            #连接服务器
 	server.login(mail_user,mail_pass)
@@ -49,4 +54,6 @@ if __name__ == "__main__":
 	msg['Subject'] = sub2
 	msg['To'] = ";".join(to_list2)                #将收件人列表以‘；’分隔
 	server.sendmail(me, to_list2, msg.as_string())
+
+	
 	server.close()
