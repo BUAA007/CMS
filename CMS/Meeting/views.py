@@ -86,6 +86,9 @@ class MeetingViewSet(viewsets.ModelViewSet):
         support = request.data.get("support")
         if not support:
             return HttpResponse(template.render(errorInfo("请填写住宿交通信息"), request))
+        file = request.FILES['template']
+        if not file:
+            return HttpResponse(template.render(errorInfo("请提交论文模板"), request))
         # meeting_serializer = MeetingSerializer(data = request.data)
         # return HttpResponse(request.session['username']+" "+str(ddl_date))
         # if meeting_serializer.is_valid():
@@ -100,6 +103,7 @@ class MeetingViewSet(viewsets.ModelViewSet):
                 regist_attend_date=datetime.strptime(regist_attend_date[0], "%Y-%m-%dT%H:%M"),
                 meeting_date=datetime.strptime(meeting_date[0], "%Y-%m-%dT%H:%M"),
                 meeting_end_date=datetime.strptime(meeting_end_date[0], "%Y-%m-%dT%H:%M"),
+                template=file,
                 receipt=receipt,
                 intro=intro,
                 essay_request=essay_request,
@@ -451,6 +455,10 @@ class MeetingViewSet(viewsets.ModelViewSet):
         support = request.data.get("support")
         if not support:
 	        return HttpResponse(template.render(errorInfo("请填写住宿交通信息"), request))
+        file = request.FILES['template']
+        print(file)
+        if not file:
+            return Response(template.render(errorInfo("请提交论文模板"), request))
         # meeting_serializer = MeetingSerializer(data = request.data)
         # return HttpResponse(request.session['username']+" "+str(ddl_date))
         # if meeting_serializer.is_valid():
@@ -474,6 +482,7 @@ class MeetingViewSet(viewsets.ModelViewSet):
                 schedule=schedule,
                 institution=thisInstitution,
                 support=support,
+                template = file,
             )
             thisMeeting.save()
             #thisMeeting.support = support,
