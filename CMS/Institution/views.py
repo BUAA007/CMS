@@ -236,7 +236,7 @@ class EmployeeViewSet(viewsets.ModelViewSet):
             thispaper.save()
         return Response("成功 ", status=status.HTTP_200_OK)
 
-   @action(methods=['POST'], detail=False)
+   @action(methods=['GET'], detail=False)
    def allemployee(self,request):
        try:
            thisemployee_id=request.session["id"]
