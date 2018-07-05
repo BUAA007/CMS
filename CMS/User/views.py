@@ -500,6 +500,9 @@ class JoinViewSet(viewsets.ModelViewSet):
                 except:
                     message = "会议错误"
                     raise RuntimeError()
+                if timezone.now()>thismeeting.regist_attend_date:
+                    message = "注册时间已过"
+                    raise RuntimeError()
                 count = 1
                 namename = "name" + str(count)
                 gendername = "gender" + str(count)
@@ -535,6 +538,9 @@ class JoinViewSet(viewsets.ModelViewSet):
                 thismeeting = Meeting.objects.get(meeting_id=meetingid)
             except:
                 message = "会议错误"
+                raise RuntimeError()
+            if timezone.now()>thismeeting.regist_attend_date:
+                message = "注册时间已过"
                 raise RuntimeError()
             count = 1
             namename = "name" + str(count)
