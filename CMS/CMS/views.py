@@ -47,7 +47,7 @@ def download(request):
                                 else:
                                         break
         try:
-                url = "/home/ubuntu/CMS/CMS/media/paper/"
+                url = "/home/ubuntu/CMS/CMS/media/download/"
                 rootpath = request.path
                 tmp = rootpath.split("/")
                 url+=tmp[-1]
@@ -56,7 +56,7 @@ def download(request):
         if url is not None:
                 response = StreamingHttpResponse(file_iterator(url))
                 response['Content-Type'] = 'application/octet-stream'
-                response['Content-Disposition'] = 'attachment;filename="{0}"'.format(tmp[2])
+                response['Content-Disposition'] = 'attachment;filename="{0}"'.format(tmp[-1])
                 return response
         a = collections.OrderedDict({"errorInfo":"服务器出错，请稍后重试。"})
         return Response(a, status = status.HTTP_400_BAD_REQUEST)

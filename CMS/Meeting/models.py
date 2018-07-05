@@ -43,7 +43,7 @@ class Meeting(models.Model):
 		null = True,
 		)
 	template = models.FileField( 	#论文模板url
-		upload_to='meeting/',
+		upload_to='download/',
 		null = True,
 		)
 	receipt	= models.FloatField(		#pdf或jpg(url)

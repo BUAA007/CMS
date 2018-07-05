@@ -19,7 +19,6 @@ from django.conf.urls import url
 from . import views
 
 urlpatterns = [
-    url(r'paper/paper/.*',views.download),
     path('admin/', admin.site.urls),
     path('institution/',include('Institution.urls')),
     path('meeting/', include('Meeting.urls')),
@@ -32,5 +31,6 @@ urlpatterns = [
     path('institution_register/',views.institution_register),
     path('personal_info/', views.personal_info),
     path('logout/',views.logout),
-    path('release/', views.release)
+    path('release/', views.release),
+    url(r'.*/download/.*',views.download),
 ]
