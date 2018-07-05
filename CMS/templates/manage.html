@@ -6,108 +6,108 @@
 {% endblock %}
 
 {% block content %}
-{% if errorInfo != null %}
-    <div class="sufee-alert alert with-close alert-primary alert-dismissible fade show">
+
+    <div class="sufee-alert alert with-close alert-primary alert-dismissible fade show" style="display: none" id="showError">
         <span class="badge badge-pill  badge-warning">Fail</span>
-            {{ errorInfo }}
+        <label id="errorInfo"></label>
         <button type="button" class="close" data-dismiss="alert" aria-label="Close">
             <span aria-hidden="true">&times;</span>
         </button>
     </div>
-{% endif %}
-{% if info != null %}
-    <div class="sufee-alert alert with-close alert-primary alert-dismissible fade show">
+
+
+    <div class="sufee-alert alert with-close alert-primary alert-dismissible fade show" style="display: none" id="showInfo">
         <span class="badge badge-pill badge-primary">Success</span>
-            {{ info }}，已发送邮件通知
+        <label id="info"></label>
         <button type="button" class="close" data-dismiss="alert" aria-label="Close">
             <span aria-hidden="true">&times;</span>
         </button>
     </div>
-{%  endif %}
+
 
     <div class="animated fadeIn">
         <div class="container">
             <div class="col-lg-12 col-lg-offset-4">
                 <div class="card">
                     <div class="card-header"><strong>管理会议信息</strong></div>
-                    <form method="post" action="/meeting/updateMeeting/" enctype="multipart/form-data">
-                    <input type="text" value="{{ conference.meeting_id }}" style="display: none" name="id">
+                    <form>
+                    <input type="text" value="{{ conference.meeting_id }}" style="display: none" name="id" id="id">
                     <div class="card-body card-block">
                     <div class="row form-group">
                         <div class="col col-md-3"><label for="text-input" class=" form-control-label">会议标题</label></div>
                         <div class="col-12 col-md-9">
-                            <input type="text" name="title" placeholder="填写会议标题" class="form-control" value="{{ conference.title }}"></div>
+                            <input type="text" id="title" placeholder="填写会议标题" class="form-control" value="{{ conference.title }}"></div>
                     </div>
                     <div class="row form-group">
                         <div class="col col-md-3"><label for="text-input" class=" form-control-label">联系我们</label></div>
-                        <div class="col-12 col-md-9"><input name="about_us" placeholder="填写联系方式" class="form-control" value="{{ conference.about_us }}"></div>
+                        <div class="col-12 col-md-9"><input id="about_us" placeholder="填写联系方式" class="form-control" value="{{ conference.about_us }}"></div>
                     </div>
                     <div class="row form-group">
                         <div class="col col-md-3"><label for="text-input" class=" form-control-label">截稿日期</label></div>
                         <div class="col-md-9">
-                            <input type="datetime-local" class="form-control" id="date1" name="ddl_date" value="{{ ddl_date }}" {% if conference.status1 == '1' %} readonly {% endif %}>
+                            <input type="datetime-local" class="form-control" id="ddl_date" value="{{ ddl_date }}" {% if conference.status1 == '1' %} readonly {% endif %}>
                         </div>
                     </div>
                     <div class="row form-group">
                         <div class="col col-md-3"><label for="text-input" class=" form-control-label">录用通知日期</label>
                         </div>
                         <div class="col-md-9">
-                            <input type="datetime-local" class="form-control" id="date2" name="result_notice_date" value="{{ result_notice_date }}" {% if conference.status2 == '1'%} readonly{% endif %}>
+                            <input type="datetime-local" class="form-control" id="result_notice_date" value="{{ result_notice_date }}" {% if conference.status2 == '1'%} readonly{% endif %}>
                         </div>
                     </div>
                     <div class="row form-group">
                         <div class="col col-md-3"><label for="text-input" class=" form-control-label">注册日期</label></div>
                         <div class="col-md-9">
-                            <input type="datetime-local" class="form-control" id="date3" name="regist_attend_date" value="{{ regist_attend_date }}" {% if conference.status3 == '1' %} readonly {% endif %}>
+                            <input type="datetime-local" class="form-control" id="regist_attend_date" value="{{ regist_attend_date }}" {% if conference.status3 == '1' %} readonly {% endif %}>
                         </div>
                     </div>
                     <div class="row form-group">
                         <div class="col col-md-3"><label for="text-input" class=" form-control-label">会议日期</label></div>
                         <div class="col-md-9">
-                            <input type="datetime-local" class="form-control" id="date4" name="meeting_date" value="{{ meeting_date }}" {% if conference.status4 == '1'%} readonly {% endif %}>
+                            <input type="datetime-local" class="form-control" id="meeting_date" value="{{ meeting_date }}" {% if conference.status4 == '1'%} readonly {% endif %}>
                         </div>
                     </div>
                     <div class="row form-group">
                         <div class="col col-md-3"><label for="text-input" class=" form-control-label">会议结束日期</label></div>
                         <div class="input-group date form_datetime col-md-9">
-                            <input type="datetime-local" class="form-control" id="date5" name="meeting_end_date" value="{{ meeting_end_date }}" {% if conference.status5 == '1' %} readonly {% endif %}>
+                            <input type="datetime-local" class="form-control" id="meeting_end_date" value="{{ meeting_end_date }}" {% if conference.status5 == '1' %} readonly {% endif %}>
                         </div>
                     </div>
                     <div class="row form-group">
                         <div class="col col-md-3"><label for="text-input" class=" form-control-label">注册费用</label></div>
-                        <div class="col-12 col-md-9"><input type="text" readonly name="receipt" placeholder="填写注册费用，单位（元）" class="form-control" value="{{ conference.receipt }}"></div>
+                        <div class="col-12 col-md-9"><input type="text" readonly id="receipt" placeholder="填写注册费用，单位（元）" class="form-control" value="{{ conference.receipt }}"></div>
                     </div>
                     <div class="row form-group">
                         <div class="col col-md-3"><label for="textarea-input" class=" form-control-label">会议简介</label>
                         </div>
-                        <div class="col-12 col-md-9"><textarea name="intro" rows="9" placeholder="填写会议简介" class="form-control">{{ conference.intro }}</textarea>
+                        <div class="col-12 col-md-9"><textarea id="intro" rows="9" placeholder="填写会议简介" class="form-control">{{ conference.intro }}</textarea>
                         </div>
                     </div>
                     <div class="row form-group">
                         <div class="col col-md-3"><label for="textarea-input" class=" form-control-label">征文信息</label>
                         </div>
-                        <div class="col-12 col-md-9"><textarea name="essay_request" rows="9"
+                        <div class="col-12 col-md-9"><textarea id="essay_request" rows="9"
                                                                placeholder="填写征文信息" class="form-control">{{ conference.essay_request}}</textarea>
                         </div>
                     </div>
                     <div class="row form-group">
                         <div class="col col-md-3"><label for="textarea-input"
                                                          class=" form-control-label">住宿交通信息</label></div>
-                        <div class="col-12 col-md-9"><textarea name="support" rows="9"
+                        <div class="col-12 col-md-9"><textarea id="support" rows="9"
                                                                placeholder="填写住宿交通信息"
                                                                class="form-control">{{ conference.support }}</textarea></div>
                     </div>
                     <div class="row form-group">
                         <div class="col col-md-3"><label for="textarea-input"
                                                          class=" form-control-label">地点</label></div>
-                        <div class="col-12 col-md-9"><textarea name="organization" rows="2"
+                        <div class="col-12 col-md-9"><textarea id="organization" rows="2"
                                                                placeholder="填写会议地点(例如北京市海淀区北京航空航天大学南门)"
                                                                class="form-control" >{{ conference.organization }}</textarea></div>
                     </div>
                     <div class="row form-group">
                         <div class="col col-md-3"><label for="textarea-input" class=" form-control-label">日程安排</label>
                         </div>
-                        <div class="col-12 col-md-9"><textarea name="schedule" rows="9"
+                        <div class="col-12 col-md-9"><textarea id="schedule" rows="9"
                                                                placeholder="填写日程安排" class="form-control">{{ conference.schedule }}</textarea>
                         </div>
                     </div>
@@ -116,7 +116,7 @@
                     <button type="button" class="btn btn-warning btn-sm">
                         <i class="fa fa-dot-circle-o"> </i>更改论文模板
                     </button>
-                    <button type="submit" class="btn btn-primary btn-sm">
+                    <button type="button" class="btn btn-primary btn-sm" onclick="up()">
                         <i class="fa fa-dot-circle-o"></i> 提交
                     </button>
                 </div>
@@ -131,5 +131,68 @@
 
 </div>
 
+<script type="text/javascript">
+        function up(){
 
+            var id = document.getElementById("id").value
+            var title = document.getElementById("title").value
+            var about_us = document.getElementById("about_us").value
+            var ddl_date = document.getElementById("ddl_date").value
+            var result_notice_date = document.getElementById("result_notice_date").value
+            var regist_attend_date = document.getElementById("regist_attend_date").value
+            var meeting_date = document.getElementById("meeting_date").value
+            var meeting_end_date = document.getElementById("meeting_end_date").value
+            var receipt = document.getElementById("receipt").value
+            var intro = document.getElementById("intro").value
+
+            var essay_request = document.getElementById("essay_request").value
+            var support = document.getElementById("support").value
+            var organization = document.getElementById("organization").value
+            var schedule = document.getElementById("schedule").value
+            var data = {
+                "id" : id,
+                "title" : title,
+                "about_us" : about_us,
+                "ddl_date" : ddl_date,
+                "result_notice_date" : result_notice_date,
+                "regist_attend_date" : regist_attend_date,
+                "meeting_date" : meeting_date,
+                "meeting_end_date" : meeting_end_date,
+                "receipt" : receipt,
+                "intro" : intro,
+                "essay_request" : essay_request,
+                "support" : support,
+                "organization" : organization,
+                "schedule" : schedule,
+
+            }
+
+            jQuery(function ($) {
+                     $.ajax({
+                         url: '/meeting/updateMeeting/',
+                         type: 'POST',
+                         data: data,
+                         dataType: 'json',
+                         success: function (response) {
+                             if (response['errorInfo'] != null){
+                                 $('html,body').animate({scrollTop:0}, 'fast')
+                                 document.getElementById("showError").style.display = ""
+                                 document.getElementById("errorInfo").innerText = response['errorInfo']
+
+                             } else {
+                                 $('html,body').animate({scrollTop:0}, 'fast')
+                                 document.getElementById("showInfo").style.display = ""
+                                 document.getElementById("info").innerText = response['info']
+                             }
+                         }
+                     });
+                 });
+
+
+
+
+
+        }
+
+</script>
 {% endblock %}
