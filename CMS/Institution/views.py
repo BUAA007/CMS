@@ -188,8 +188,8 @@ class EmployeeViewSet(viewsets.ModelViewSet):
 
    @action(methods = ['POST'],detail = False)
    def registerother(self, request):
-       if not request.session['is_login']:
-          return  HttpResponse(errorInfo("请登入后操作"), content_type="application/json")
+       if request.session['type']!="1":
+          return  HttpResponse(errorInfo("请登录单位用户操作"), content_type="application/json")
 
        username = request.data.get("username")
        password = request.data.get("password")
@@ -236,7 +236,7 @@ class EmployeeViewSet(viewsets.ModelViewSet):
             thispaper.save()
         return Response("成功 ", status=status.HTTP_200_OK)
 
-   @action(methods=['POST'], detail=False)
+   @action(methods=['GET'], detail=False)
    def allemployee(self,request):
        try:
            thisemployee_id=request.session["id"]
