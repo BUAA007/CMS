@@ -22,10 +22,11 @@
                             <label for="text1">
                                 <a href="#" onclick="update()">
                                     <i class="fa fa-edit"></i>
-                                待修改
+                                    待修改
                                 </a>
                             </label>
-                            <textarea rows="3" class="form-control" id="id_suggestion" placeholder="请输入修改意见..."></textarea>
+                            <textarea rows="3" class="form-control" id="id_suggestion"
+                                      placeholder="请输入修改意见..."></textarea>
                         </div>
                     </div>
                     <p></p>
@@ -66,6 +67,7 @@
                                 <thead>
                                 <tr>
                                     <th>#</th>
+                                    <th>会议</th>
                                     <th>作者</th>
                                     <th>论文</th>
                                     <th>状态</th>
@@ -75,41 +77,42 @@
                                 {% for paper in papers %}
                                     <tr>
                                         <td onclick="showOptions({{ paper.id }})">{{ forloop.counter }}</td>
+                                        <td onclick="showOptions({{ paper.id }})">{{ paper.meeting.title }}</td>
                                         <td onclick="showOptions({{ paper.id }})">{{ paper.owner.username }}</td>
                                         <td><a href="{{ paper.content }}">{{ paper.title }}</a></td>
                                         {% if paper.status == -1 %}
                                             <td>
-                                                <a tabindex="0" onclick="showAdvise({{ forloop.counter }})" href="#"
+                                                <a tabindex="0" onclick="showAdvise({{ paper.id }})" href="#"
                                                    class="text-dark font-weight-bold"
                                                    role="button" data-toggle="popover"
-                                                   data-trigger="focus" title="修改说明" id="advise{{ forloop.counter }}"
+                                                   data-trigger="focus" title="修改说明" id="advise{{ paper.id }}"
                                                    data-content="{{ paper.explain }}">
                                                     未审核</a>
                                             </td>
                                         {% elif paper.status == 0 %}
                                             <td>
-                                                <a tabindex="0" onclick="showAdvise({{ forloop.counter }})" href="#"
+                                                <a tabindex="0" onclick="showAdvise({{ paper.id }})" href="#"
                                                    class="text-info font-weight-bold"
                                                    role="button" data-toggle="popover"
-                                                   data-trigger="focus" title="修改说明" id="advise{{ forloop.counter }}"
+                                                   data-trigger="focus" title="修改说明" id="advise{{ paper.id }}"
                                                    data-content="{{ paper.explain }}">
                                                     待修改</a>
                                             </td>
                                         {% elif paper.status == -2 %}
                                             <td>
-                                                <a tabindex="0" onclick="showAdvise({{ forloop.counter }})" href="#"
+                                                <a tabindex="0" onclick="showAdvise({{ paper.id }})" href="#"
                                                    class="text-danger font-weight-bold"
                                                    role="button" data-toggle="popover"
-                                                   data-trigger="focus" title="修改说明" id="advise{{ forloop.counter }}"
+                                                   data-trigger="focus" title="修改说明" id="advise{{ paper.id }}"
                                                    data-content="{{ paper.explain }}">
                                                     未通过</a>
                                             </td>
                                         {% else %}
                                             <td>
-                                                <a tabindex="0" onclick="showAdvise({{ forloop.counter }})" href="#"
+                                                <a tabindex="0" onclick="showAdvise({{ paper.id }})" href="#"
                                                    class="text-success font-weight-bold"
                                                    role="button" data-toggle="popover"
-                                                   data-trigger="focus" title="修改说明" id="advise{{ forloop.counter }}"
+                                                   data-trigger="focus" title="修改说明" id="advise{{ paper.id }}"
                                                    data-content="{{ paper.explain }}">
                                                     已通过</a>
                                             </td>
@@ -119,18 +122,20 @@
                                 </tbody>
                             </table>
                         </div>
-                        <nav aria-label="...">
+                        <nav aria-label="Page navigation">
                             <ul class="pagination">
-                                <li class="page-item disabled">
-                                    <a class="page-link" href="#" tabindex="-1">Previous</a>
-                                </li>
-                                <li class="page-item"><a class="page-link" href="#">1</a></li>
-                                <li class="page-item active">
-                                    <a class="page-link" href="#">2 <span class="sr-only">(current)</span></a>
-                                </li>
-                                <li class="page-item"><a class="page-link" href="#">3</a></li>
                                 <li class="page-item">
-                                    <a class="page-link" href="#">Next</a>
+                                    <a class="page-link" href="?page={{ pre_page }}" aria-label="Previous">
+                                        <span aria-hidden="true">&laquo;</span>
+                                    </a>
+                                </li>
+                                {% for page in pages %}
+                                    <li class="page-item"><a class="page-link" href="?page={{ page }}">{{ page }}</a></li>
+                                {% endfor %}
+                                <li class="page-item">
+                                    <a class="page-link" href="?page={{ next_page }}" aria-label="Next">
+                                        <span aria-hidden="true">&raquo;</span>
+                                    </a>
                                 </li>
                             </ul>
                         </nav>
@@ -140,7 +145,7 @@
         </div>
     </div>
     <script>
-    var paperId = 0;
+        var paperId = 0;
 
         function showAdvise(id) {
             jQuery(function ($) {
@@ -164,7 +169,12 @@
                     data: {'paper_id': paperId, 'status': -2}, // Request body
                     dataType: 'json',
                     success: function (response) {
-                        alert('reject')
+                        var a = document.getElementById('advise' + paperId);
+                        a.innerText = '未通过';
+                        a.setAttribute('class', 'text-danger font-weight-bold')
+                        jQuery(function ($) {
+                            $('#options').modal('hide')
+                        });
                     },
                 });
             });
@@ -178,7 +188,12 @@
                     data: {'paper_id': paperId, 'status': 1}, // Request body
                     dataType: 'json',
                     success: function (response) {
-                        alert('pass')
+                        var a = document.getElementById('advise' + paperId);
+                        a.innerText = '已通过';
+                        a.setAttribute('class', 'text-success font-weight-bold')
+                        jQuery(function ($) {
+                            $('#options').modal('hide')
+                        });
                     },
                 });
             });
@@ -186,7 +201,6 @@
 
         function update() {
             var suggestion = document.getElementById('id_suggestion').value;
-            alert(suggestion)
             jQuery(function ($) {
                 $.ajax({
                     url: '/institution/employee/checkpaper/',
@@ -194,7 +208,12 @@
                     data: {'paper_id': paperId, 'status': 0, 'suggestion': suggestion}, // Request body
                     dataType: 'json',
                     success: function (response) {
-                        alert('update')
+                        var a = document.getElementById('advise' + paperId);
+                        a.innerText = '待修改';
+                        a.setAttribute('class', 'text-info font-weight-bold')
+                        jQuery(function ($) {
+                            $('#options').modal('hide')
+                        });
                     },
                 });
             });

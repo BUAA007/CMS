@@ -12,6 +12,9 @@ from django.template import loader
 from django.http import HttpResponse
 import re,json
 import hashlib
+import sys
+PAGE_MAX = 9
+from Admin import cmsem
 from datetime import *
 # Create your views here.
 def checklen(pwd):
@@ -188,13 +191,12 @@ class EmployeeViewSet(viewsets.ModelViewSet):
 
    @action(methods = ['POST'],detail = False)
    def registerother(self, request):
-       if not request.session['is_login']:
-          return  HttpResponse(errorInfo("请登入后操作"), content_type="application/json")
+       if request.session['type']!="1":
+          return  HttpResponse(errorInfo("请登录单位用户操作"), content_type="application/json")
+
        username = request.data.get("username")
        password = request.data.get("password")
        password2 = request.data.get("password2")
-       email = request.data.get("email")
-       tel = request.data.get("tel")
        try:
           if not Employee.objects.get(username = username):
               return  HttpResponse(errorInfo("用户名已存在"), content_type="application/json")
@@ -206,17 +208,14 @@ class EmployeeViewSet(viewsets.ModelViewSet):
           return  HttpResponse(errorInfo("密码不合法"), content_type="application/json")
        if not password == password2:
           return  HttpResponse(errorInfo("确认密码不一致"), content_type="application/json")
-       if not checkPhonenumber(tel):      #手机号位数为11位；开头为1，第二位为3或4或5或8;
-          return  HttpResponse(errorInfo("电话号码不合法"), content_type="application/json")
+
        password = md5(password)
        try:
            thisEmployee = Employee.objects.get(username=request.session['username'])
            otherEmployee = Employee(
                username = username,
                password = password,
-               email = email,
-               tel = tel,
-               institution = thisInstitution.institution,
+               #institution = thisInstitution.institution,
                )
            otherEmployee.save()
            return HttpResponse(info("success"), content_type="application/json")
@@ -225,18 +224,72 @@ class EmployeeViewSet(viewsets.ModelViewSet):
            #return render(request,'login.html',status = status.HTTP_201_CREATED)
        return  HttpResponse(errorInfo("未知原因失败，请稍后再试"), content_type="application/json")
 
-
-   @action(methods=['POST'], detail=False)#添加发邮件功能，需要传paper_id,管理员下载论文有
+   @action(methods=['POST'], detail=False)
    def checkpaper(self, request):
-      paper_id=request.data.get('paper_id')
-      thispaper=Paper.objects.get(id=paper_id)
-      thisstatus=request.data.get("status")
-      if thisstatus == 0:
-         thispaper.status=thisstatus
-         suggestion=request.data.get("suggestion")
-         thispaper.suggestion=suggestion
-         thispaper.save()
-      else:
-         thispaper.status = thisstatus
-         thispaper.save()
-      return Response("成功 ", status=status.HTTP_200_OK)
+        paper_id=request.data.get('paper_id')
+        thispaper=Paper.objects.get(id=paper_id)
+        thisstatus=request.data.get("status")
+        if thisstatus == "0":
+            thispaper.status=thisstatus
+            suggestion=request.data.get("suggestion")
+            thispaper.suggestion=suggestion
+            thispaper.save()
+            sys.path.append('../')
+            cmsem.send_mail("572260394@qq.com", "论文审核结果", "您的论文已经被审核完成，请及时登陆查看")
+        else:
+            thispaper.status = thisstatus
+            thispaper.save()
+            sys.path.append('../')
+            cmsem.send_mail("572260394@qq.com", "论文审核结果", "您的论文已经被审核完成，请及时登陆查看")
+        return Response("成功 ", status=status.HTTP_200_OK)
+
+   @action(methods=['GET'], detail=False)
+   def allemployee(self,request):
+       try:
+           page = int(request.GET['page'])
+       except (KeyError, ValueError):
+           page = 1
+       try:
+           thisemployee_id=request.session["id"]
+       except:
+           print()
+       else:
+            thisemployee=Employee.objects.get(id=thisemployee_id)
+            thisinstitution=thisemployee.institution
+            allemployee= thisinstitution.employee_set.all()
+            template = loader.get_template('institution.html')
+            context = {
+                'employees': allemployee,
+                'institution':thisinstitution,
+            }
+            if not len(allemployee):
+                total_page = 1
+            else:
+                total_page = (len(allemployee) - 1) // PAGE_MAX + 1
+            pages, pre_page, next_page = get_pages(total_page, page)
+            allemployee = allemployee[PAGE_MAX * (page - 1): PAGE_MAX * page]
+
+            context['employees'] = allemployee
+            context['page'] = page
+            context['pages'] = pages
+            context['pre_page'] = pre_page
+            context['next_page'] = next_page
+            return HttpResponse(template.render(context, request))
+
+def get_pages(total_page, cur_page):
+    pages = [i + 1 for i in range(total_page)]
+    if cur_page > 1:
+        pre_page = cur_page - 1
+    else:
+        pre_page = 1
+    if cur_page < total_page:
+        next_page = cur_page + 1
+    else:
+        next_page = total_page
+    if cur_page <= 2:
+        pages = pages[:5]
+    elif total_page - cur_page <= 2:
+        pages = pages[-5:]
+    else:
+        pages = filter(lambda x: abs(x - cur_page) <= 2, pages)
+    return pages, pre_page, next_page

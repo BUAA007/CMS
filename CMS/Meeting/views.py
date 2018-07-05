@@ -12,12 +12,17 @@ from django.shortcuts import get_object_or_404
 from django.http import HttpResponse
 from django.template import loader
 from User.models import *
-from Institution.models import *
+from Institution.models import Employee
 from django.utils import timezone
 from datetime import datetime,date
+from xlwt import *
+import os
+import collections
+import sys
+sys.path.append('../')
+from Admin import cmsem
 
-
-
+PAGE_MAX = 9
 
 def checkNull(msg):
     return msg
@@ -103,7 +108,6 @@ class MeetingViewSet(viewsets.ModelViewSet):
                 institution=thisInstitution,
                 support=support,
             )
-
             thisMeeting.save()
             return HttpResponse(template.render({"info": "会议发布成功"}), request)
         # return HttpResponse("时间不合法")
@@ -114,6 +118,10 @@ class MeetingViewSet(viewsets.ModelViewSet):
 
     @action(methods=['GET'], detail=False)
     def list2(self, request):
+        try:
+            page = int(request.GET['page'])
+        except (KeyError, ValueError):
+            page = 1
         queryset = Meeting.objects.all().order_by('-meeting_id')
         template = loader.get_template('conference_list.html')
         def check_time(conference):
@@ -133,6 +141,18 @@ class MeetingViewSet(viewsets.ModelViewSet):
 
         list(map(check_time, queryset))
         context = {'conference_list': queryset}
+        if not len(queryset):
+            total_page = 1
+        else:
+            total_page = (len(queryset) - 1) // PAGE_MAX + 1
+        pages, pre_page, next_page = get_pages(total_page, page)
+        queryset = queryset[PAGE_MAX * (page - 1): PAGE_MAX * page]
+
+        context['conference_list'] = queryset
+        context['page'] = page
+        context['pages'] = pages
+        context['pre_page'] = pre_page
+        context['next_page'] = next_page
         return HttpResponse(template.render(context, request))
 
     def retrieve(self, request, pk=None):
@@ -203,20 +223,50 @@ class MeetingViewSet(viewsets.ModelViewSet):
             return HttpResponse(template.render(context, request))
 
 
-    @action(methods=['GET'], detail=False)
-    def osearch(self, request):  # 根据时间搜索未写
+    @action(methods=['POST'], detail=False)
+    def search(self, request):  # 根据时间搜索未写
         queryset = Meeting.objects.all()
-        word = request.query_params.get('s', None)
+        word = request.data.get('search', None)
+        time1 = request.data.get('time1',None)
+        time2 = request.data.get('time2',None)
+        conditions = {}
         if word is not None:
-            queryset = Meeting.objects.filter(title__contains=word)
-        serializer = MeetingSerializer(queryset, many=True)
-        return Response(serializer.data, status=status.HTTP_200_OK)
+            conditions['title__contains'] = word
+        if time1 is not None:
+            conditions['meeting_date__gte'] = time1
+        if time2 is not None:
+            conditions['meeting_date__lte'] = time2
+        result = queryset.filter(**conditions)
+        template = loader.get_template('conference_list.html')
+        def check_time(conference):
+            now = timezone.now()
+            if now <= conference.ddl_date:
+                conference.status = "投稿中"
+            elif now <= conference.result_notice_date:
+                conference.status = "已截稿"
+            elif now <= conference.regist_attend_date:
+                conference.status = "注册中"
+            elif now <= conference.meeting_date:
+                conference.status = "截止注册"
+            elif now <= conference.meeting_end_date:
+                conference.status = "会议中"
+            else:
+                conference.status = "会议完成"
+
+        list(map(check_time, queryset))
+        context = {'conference_list': queryset}
+        return HttpResponse(template.render(context, request))
+
 
     @action(methods=['GET'], detail=False)
     def allpaper(self, request):
+        try:
+            page = int(request.GET['page'])
+        except (KeyError, ValueError):
+            page = 1
         user_id = request.session['id']
         type = request.session['type']
-        if type == 0:
+        if type == "0":
             template = loader.get_template('judge.html')
             context = {
                 # 'conference': thismeeting,
@@ -236,9 +286,22 @@ class MeetingViewSet(viewsets.ModelViewSet):
             context = {
                 'papers': paperslist,
             }
+            if not len(paperslist):
+                total_page = 1
+            else:
+                total_page = (len(paperslist) - 1) // PAGE_MAX + 1
+            pages, pre_page, next_page = get_pages(total_page, page)
+            paperslist = paperslist[PAGE_MAX * (page - 1): PAGE_MAX * page]
+
+            context['papers'] = paperslist
+            context['page'] = page
+            context['pages'] = pages
+            context['pre_page'] = pre_page
+            context['next_page'] = next_page
+
             return HttpResponse(template.render(context, request))
 
-    @action(methods=['GET'], detail=False)
+    @action(methods=['POST'], detail=False)
     def alljoin(self, request):
         pk = request.data.get('pk', None)
         if pk is not None:
@@ -419,3 +482,97 @@ class MeetingViewSet(viewsets.ModelViewSet):
         # except:
         #    pass
         return HttpResponse(template.render(errorInfo("填写的日期不合法"), request))
+
+    @action(methods=['POST'], detail=False)
+    def excel_export(self, request):
+        """
+        导出excel表格
+        """
+        meeting = int(request.data.get("meeting"))
+        thismeeting = Meeting.objects.get(meeting_id = meeting)
+        url = "excel/"+thismeeting.title+".xls"
+        list_obj = thismeeting.paper_set.all()
+        if list_obj:
+            # 创建工作薄 投稿编号、作者、题目、单位、摘要等内容
+            ws = Workbook(encoding='utf-8')
+            w = ws.add_sheet(u"投稿信息")
+            w.write(0, 0, u"投稿编号")
+            w.write(0, 1, u"第一作者")
+            w.write(0, 2, u"题目")
+            w.write(0, 3, u"摘要")
+            w.write(0, 4, u"关键字")
+            # 写入数据
+            excel_row = 1
+            for obj in list_obj:
+                data_id = obj.id
+                data_author = obj.author_1
+                data_title = obj.title
+                data_abstract = obj.abstract
+                dada_keyword = obj.keyword
+                w.write(excel_row, 0, data_id)
+                w.write(excel_row, 1, data_author)
+                w.write(excel_row, 2, data_title)
+                w.write(excel_row, 3, data_abstract)
+                w.write(excel_row, 4, dada_keyword)
+                excel_row += 1
+            # 检测文件是够存在
+            # 方框中代码是保存本地文件使用，如不需要请删除该代码
+            ###########################
+            exist_file = os.path.exists(url)
+            if exist_file:
+                os.remove(url)
+            ws.save(url)
+            ############################
+        else:
+            a = collections.OrderedDict({"errorInfo":"服务器出错，请稍后重试。"})
+            return Response(a, status = status.HTTP_400_BAD_REQUEST)
+        def file_iterator(file_name, chunk_size=512):
+            with open(file_name, "rb") as f:
+                while True:
+                    c = f.read(chunk_size)
+                    if c:
+                        yield c
+                    else:
+                        break
+        if url is not None:
+            response = StreamingHttpResponse(file_iterator(url))
+            response['Content-Type'] = 'application/octet-stream'
+            response['Content-Disposition'] = 'attachment;filename="{0}"'.format(tmp[-1])
+            return response
+        a = collections.OrderedDict({"errorInfo":"服务器出错，请稍后重试。"})
+        return Response(a, status = status.HTTP_400_BAD_REQUEST)
+
+def get_pages(total_page, cur_page):
+    pages = [i + 1 for i in range(total_page)]
+    if cur_page > 1:
+        pre_page = cur_page - 1
+    else:
+        pre_page = 1
+    if cur_page < total_page:
+        next_page = cur_page + 1
+    else:
+        next_page = total_page
+    if cur_page <= 2:
+        pages = pages[:5]
+    elif total_page - cur_page <= 2:
+        pages = pages[-5:]
+    else:
+        pages = filter(lambda x: abs(x - cur_page) <= 2, pages)
+    return pages, pre_page, next_page
+def get_pages(total_page, cur_page):
+    pages = [i + 1 for i in range(total_page)]
+    if cur_page > 1:
+        pre_page = cur_page - 1
+    else:
+        pre_page = 1
+    if cur_page < total_page:
+        next_page = cur_page + 1
+    else:
+        next_page = total_page
+    if cur_page <= 2:
+        pages = pages[:5]
+    elif total_page - cur_page <= 2:
+        pages = pages[-5:]
+    else:
+        pages = filter(lambda x: abs(x - cur_page) <= 2, pages)
+    return pages, pre_page, next_page
