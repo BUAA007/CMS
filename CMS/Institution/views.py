@@ -213,10 +213,12 @@ class EmployeeViewSet(viewsets.ModelViewSet):
        try:
            thisEmployee = Employee.objects.get(id=request.session['id'])
            thisInstitution = thisEmployee.institution
+           thisEmployee = Employee.objects.get(username=request.session['username'])
+           thisInstitution=thisEmployee.institution
            otherEmployee = Employee(
                username = username,
                password = password,
-               institution = thisInstitution
+               institution = thisInstitution,
                )
            otherEmployee.save()
            return HttpResponse(info("success"), content_type="application/json")

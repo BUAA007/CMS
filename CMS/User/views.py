@@ -417,8 +417,27 @@ class UserViewSet(viewsets.ModelViewSet):
         else:
             user_id=request.session['id']
             thisuser=User.objects.get(id=user_id)
+            #print(thisuser.name)
             allfavorite=thisuser.favorite.all().order_by('-meeting_id')
+            #print(allfavorite)
             template = loader.get_template('conference_list.html')
+
+            def check_time(conference):
+                now = timezone.now()
+                if now <= conference.ddl_date:
+                    conference.status = "投稿中"
+                elif now <= conference.result_notice_date:
+                    conference.status = "已截稿"
+                elif now <= conference.regist_attend_date:
+                    conference.status = "注册中"
+                elif now <= conference.meeting_date:
+                    conference.status = "截止注册"
+                elif now <= conference.meeting_end_date:
+                    conference.status = "会议中"
+                else:
+                    conference.status = "会议完成"
+
+            list(map(check_time, allfavorite))
             context = {
                 'conference_list': allfavorite,
             }
