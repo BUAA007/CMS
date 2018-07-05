@@ -260,6 +260,7 @@ class EmployeeViewSet(viewsets.ModelViewSet):
             template = loader.get_template('institution.html')
             context = {
                 'employees': allemployee,
+                'institution':thisinstitution,
             }
             if not len(allemployee):
                 total_page = 1

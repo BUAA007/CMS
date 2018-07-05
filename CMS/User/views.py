@@ -257,7 +257,8 @@ class UserViewSet(viewsets.ModelViewSet):
                 'conference': thismeeting,
                 'message': '失败，请登录'
             }
-            return HttpResponse(template.render(context, request))
+            url = "../../../meeting/" + str(thismeeting.meeting_id)
+            return HttpResponseRedirect(url)
         if timezone.now()<=thismeeting.ddl_date:
             user_type = request.session['type']
             thisuser = User.objects.get(id=user_id)
@@ -282,20 +283,25 @@ class UserViewSet(viewsets.ModelViewSet):
                     'conference': thismeeting,
                     'message': '成功'
                 }
-                return HttpResponse(template.render(context, request))
+                url = "../../../meeting/" + str(thismeeting.meeting_id)
+                return HttpResponseRedirect(url)
             except:
                 template = loader.get_template('conference.html')
                 context = {
                     'conference': thismeeting,
                     'message': '失败,填写信息错误'
                 }
-            return HttpResponse(template.render(context, request))
+                url = "../../../meeting/" + str(thismeeting.meeting_id)
+                return HttpResponseRedirect(url)
         else:
             template = loader.get_template('conference.html')
             context = {
+                'conference': thismeeting,
                 'message': '已超过投稿时间，无法投稿'
             }
-        return HttpResponse(template.render(context, request))
+            url="../../../meeting/"+str(thismeeting.meeting_id)
+            return HttpResponseRedirect(url)
+            #return HttpResponse(template.render(context, request))
     @action(methods=['POST'], detail=False)
     def modify(self, request):
         try:
@@ -306,7 +312,9 @@ class UserViewSet(viewsets.ModelViewSet):
                 # 'conference': thismeeting,
                 'message': '失败，请登录'
             }
-            return HttpResponse(template.render(context, request))
+            url="../allpaper"
+            return HttpResponseRedirect(url)
+
         else:
             try:
                 paper_id = request.data.get("paper_id")
@@ -319,7 +327,9 @@ class UserViewSet(viewsets.ModelViewSet):
                     'papers': papers,
                     'message': '失败,填写论文编号错误'
                 }
-                return HttpResponse(template.render(context, request))
+                url = "../allpaper"
+                return HttpResponseRedirect(url)
+
             else:
                 if timezone.now()<=thispaper.meeting.result_notice_date:
                     if thispaper.status == 0 or thispaper.status == -1:
@@ -345,7 +355,8 @@ class UserViewSet(viewsets.ModelViewSet):
                             'papers': papers,
                             'message': '修改成功，请等待审核'
                         }
-                        return HttpResponse(template.render(context, request))
+                        url = "../allpaper"
+                        return HttpResponseRedirect(url)
 
                     else:
                         thisuser = User.objects.get(id=user_id)
@@ -356,7 +367,9 @@ class UserViewSet(viewsets.ModelViewSet):
                             'papers': papers,
                             'message': '失败,该论文不可修改'
                         }
-                        return HttpResponse(template.render(context, request))
+                        url = "../allpaper"
+                        return HttpResponseRedirect(url)
+
                 else:
                     thisuser = User.objects.get(id=user_id)
                     # thismeeting = Meeting.objects.get(meeting_id=pk)
@@ -366,7 +379,8 @@ class UserViewSet(viewsets.ModelViewSet):
                         'papers': papers,
                         'message': '失败,已超过修改稿截止日期'
                     }
-                    return HttpResponse(template.render(context, request))
+                    url = "../allpaper"
+                    return HttpResponseRedirect(url)
 
 
     @action(methods=['POST'], detail=False)
