@@ -481,13 +481,16 @@ class MeetingViewSet(viewsets.ModelViewSet):
             #thisMeeting.save()
             emailTitle = "CMS系统提示，会议信息发生修改"
             emailContent = "会议id为"+thisMeeting.meeting_id+"的会议信息发生修改，请查看"+"http://127.0.0.1:8000/meeting/"+thisMeeting.meeting_id+"/"
-            userSet = thisMeeting.User_set.all()
+            userSet = thisMeeting.User_set.all()            
             AttendeeSet = thisMeeting.Attendee_set.all()
+            emailList = []
+            emailList.append()
             for user in userSet:
-                cmsem.send_mail(user.email, emailTitle, emailContent)
+                emailList.append(user.email)
             for user in AttendeeSet:
-                cmsem.send_mail(user.email, emailTitle, emailContent)
-            return HttpResponse({"info":"success"}, content_type="application/json")
+                emailList.append(user.email)
+            cmsem.send_mail(emailList, emailTitle, emailContent)
+            return HttpResponse(template.render({"info":"success"},request))
             # return HttpResponse("时间不合法")
         # return HttpResponse(meeting_serializer.errors)
         # except:
