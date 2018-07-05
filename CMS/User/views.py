@@ -12,7 +12,7 @@ from django.http import HttpResponse, HttpResponseRedirect
 import re, json
 import collections
 import hashlib
-
+PAGE_MAX = 10
 
 # Create your views here.
 
@@ -371,9 +371,13 @@ class UserViewSet(viewsets.ModelViewSet):
 
     @action(methods=['GET'], detail=False)
     def allpaper(self, request):
+        try:
+            page = int(request.GET['page'])
+        except (KeyError, ValueError):
+            page = 1
         user_id = request.session['id']
         type = request.session['type']
-        if type == 1:
+        if type == "1":
             template = loader.get_template('judgement.html')
             context = {
                 # 'conference': thismeeting,
@@ -388,7 +392,37 @@ class UserViewSet(viewsets.ModelViewSet):
             context = {
                 'papers': papers,
             }
+            if not len(papers):
+                total_page = 1
+            else:
+                total_page = (len(papers) - 1) // PAGE_MAX + 1
+            pages, pre_page, next_page = get_pages(total_page, page)
+            papers = papers[PAGE_MAX * (page - 1): PAGE_MAX * page]
+
+            context['papers'] = papers
+            context['page'] = page
+            context['pages'] = pages
+            context['pre_page'] = pre_page
+            context['next_page'] = next_page
             return HttpResponse(template.render(context, request))
+
+def get_pages(total_page, cur_page):
+    pages = [i + 1 for i in range(total_page)]
+    if cur_page > 1:
+        pre_page = cur_page - 1
+    else:
+        pre_page = 1
+    if cur_page < total_page:
+        next_page = cur_page + 1
+    else:
+        next_page = total_page
+    if cur_page <= 2:
+        pages = pages[:5]
+    elif total_page - cur_page <= 2:
+        pages = pages[-5:]
+    else:
+        pages = filter(lambda x: abs(x - cur_page) <= 2, pages)
+    return pages, pre_page, next_page
 
 
 class JoinViewSet(viewsets.ModelViewSet):

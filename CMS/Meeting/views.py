@@ -18,6 +18,7 @@ from datetime import datetime,date
 from xlwt import *
 import os
 
+PAGE_MAX = 10
 
 def checkNull(msg):
     return msg
@@ -113,6 +114,10 @@ class MeetingViewSet(viewsets.ModelViewSet):
 
     @action(methods=['GET'], detail=False)
     def list2(self, request):
+        try:
+            page = int(request.GET['page'])
+        except (KeyError, ValueError):
+            page = 1
         queryset = Meeting.objects.all().order_by('-meeting_id')
         template = loader.get_template('conference_list.html')
         def check_time(conference):
@@ -132,6 +137,18 @@ class MeetingViewSet(viewsets.ModelViewSet):
 
         list(map(check_time, queryset))
         context = {'conference_list': queryset}
+        if not len(queryset):
+            total_page = 1
+        else:
+            total_page = (len(queryset) - 1) // PAGE_MAX + 1
+        pages, pre_page, next_page = get_pages(total_page, page)
+        queryset = queryset[PAGE_MAX * (page - 1): PAGE_MAX * page]
+
+        context['conference_list'] = queryset
+        context['page'] = page
+        context['pages'] = pages
+        context['pre_page'] = pre_page
+        context['next_page'] = next_page
         return HttpResponse(template.render(context, request))
 
     def retrieve(self, request, pk=None):
@@ -202,7 +219,7 @@ class MeetingViewSet(viewsets.ModelViewSet):
             return HttpResponse(template.render(context, request))
 
 
-    @action(methods=['GET'], detail=False)
+    @action(methods=['POST'], detail=False)
     def search(self, request):  # 根据时间搜索未写
         queryset = Meeting.objects.all()
         word = request.data.get('search', None)
@@ -239,9 +256,13 @@ class MeetingViewSet(viewsets.ModelViewSet):
 
     @action(methods=['GET'], detail=False)
     def allpaper(self, request):
+        try:
+            page = int(request.GET['page'])
+        except (KeyError, ValueError):
+            page = 1
         user_id = request.session['id']
         type = request.session['type']
-        if type == 0:
+        if type == "0":
             template = loader.get_template('judge.html')
             context = {
                 # 'conference': thismeeting,
@@ -261,9 +282,22 @@ class MeetingViewSet(viewsets.ModelViewSet):
             context = {
                 'papers': paperslist,
             }
+            if not len(paperslist):
+                total_page = 1
+            else:
+                total_page = (len(paperslist) - 1) // PAGE_MAX + 1
+            pages, pre_page, next_page = get_pages(total_page, page)
+            paperslist = paperslist[PAGE_MAX * (page - 1): PAGE_MAX * page]
+
+            context['papers'] = paperslist
+            context['page'] = page
+            context['pages'] = pages
+            context['pre_page'] = pre_page
+            context['next_page'] = next_page
+
             return HttpResponse(template.render(context, request))
 
-    @action(methods=['GET'], detail=False)
+    @action(methods=['POST'], detail=False)
     def alljoin(self, request):
         pk = request.data.get('pk', None)
         if pk is not None:
@@ -333,3 +367,38 @@ class MeetingViewSet(viewsets.ModelViewSet):
             return response
         a = collections.OrderedDict({"errorInfo":"服务器出错，请稍后重试。"})
         return Response(a, status = status.HTTP_400_BAD_REQUEST)
+
+def get_pages(total_page, cur_page):
+    pages = [i + 1 for i in range(total_page)]
+    if cur_page > 1:
+        pre_page = cur_page - 1
+    else:
+        pre_page = 1
+    if cur_page < total_page:
+        next_page = cur_page + 1
+    else:
+        next_page = total_page
+    if cur_page <= 2:
+        pages = pages[:5]
+    elif total_page - cur_page <= 2:
+        pages = pages[-5:]
+    else:
+        pages = filter(lambda x: abs(x - cur_page) <= 2, pages)
+    return pages, pre_page, next_page
+def get_pages(total_page, cur_page):
+    pages = [i + 1 for i in range(total_page)]
+    if cur_page > 1:
+        pre_page = cur_page - 1
+    else:
+        pre_page = 1
+    if cur_page < total_page:
+        next_page = cur_page + 1
+    else:
+        next_page = total_page
+    if cur_page <= 2:
+        pages = pages[:5]
+    elif total_page - cur_page <= 2:
+        pages = pages[-5:]
+    else:
+        pages = filter(lambda x: abs(x - cur_page) <= 2, pages)
+    return pages, pre_page, next_page
