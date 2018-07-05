@@ -28,9 +28,23 @@
     <div class="animated fadeIn">
         <div class="container">
             <div class="col-lg-12 col-lg-offset-4">
-                <div class="card">
-                    <div class="card-header"><strong>管理会议信息</strong></div>
-                    <form>
+                <div class="card" class="row">
+                  <form method="post" action="/meeting/updateTemplate/">
+                             <div class="card-header">
+                                 <div class="col-3"><strong>管理会议信息</strong></div>
+                                 <div align="right">
+                                    <div>
+                                     <label for="file" class="btn btn-warning btn-sm">更改论文模板</label>
+                                     <input id="file" type="file" style="display:none" name="file">
+                                    </div>
+                                    <div class="2">
+                                     <button type="submit" class="btn btn-warning btn-sm">提交</button>
+                                    </div>
+                                  </div>
+                             </div>
+                     </form>
+
+                    <form enctype="multipart/form-data">
                     <input type="text" value="{{ conference.meeting_id }}" style="display: none" name="id" id="id">
                     <div class="card-body card-block">
                     <div class="row form-group">
@@ -111,19 +125,18 @@
                                                                placeholder="填写日程安排" class="form-control">{{ conference.schedule }}</textarea>
                         </div>
                     </div>
-                    <label for="file" class="btn btn-warning btn-sm">更改论文模板</label>
-                    <input id="file"type="file"style="display:none">
+                        <button type="button" class="btn btn-primary btn-sm" onclick="up()"><i class="fa fa-dot-circle-o"></i> 提交</button>
                 </div>
                 <div class="card-footer">
 
 
 
-                    <button type="button" class="btn btn-primary btn-sm" onclick="up()">
-                        <i class="fa fa-dot-circle-o"></i> 提交
-                    </button>
+
+
                 </div>
-                    </form>
-            </div>
+                </form>
+
+                </div>
 
         </div>
 
@@ -135,6 +148,7 @@
 
 <script type="text/javascript">
         function up(){
+
 
             var id = document.getElementById("id").value
             var title = document.getElementById("title").value
@@ -151,44 +165,65 @@
             var support = document.getElementById("support").value
             var organization = document.getElementById("organization").value
             var schedule = document.getElementById("schedule").value
-            var data = {
-                "id" : id,
-                "title" : title,
-                "about_us" : about_us,
-                "ddl_date" : ddl_date,
-                "result_notice_date" : result_notice_date,
-                "regist_attend_date" : regist_attend_date,
-                "meeting_date" : meeting_date,
-                "meeting_end_date" : meeting_end_date,
-                "receipt" : receipt,
-                "intro" : intro,
-                "essay_request" : essay_request,
-                "support" : support,
-                "organization" : organization,
-                "schedule" : schedule,
 
-            }
+
+
 
             jQuery(function ($) {
-                     $.ajax({
-                         url: '/meeting/updateMeeting/',
-                         type: 'POST',
-                         data: data,
-                         dataType: 'json',
-                         success: function (response) {
-                             if (response['errorInfo'] != null){
-                                 $('html,body').animate({scrollTop:0}, 'fast')
-                                 document.getElementById("showError").style.display = ""
-                                 document.getElementById("errorInfo").innerText = response['errorInfo']
 
-                             } else {
-                                 $('html,body').animate({scrollTop:0}, 'fast')
-                                 document.getElementById("showInfo").style.display = ""
-                                 document.getElementById("info").innerText = response['info']
-                             }
-                         }
-                     });
-                 });
+                data = {
+                    "id" : id,
+                    "title" : title,
+                    "about_us" : about_us,
+                    "ddl_date" : ddl_date,
+                    "result_notice_date" : result_notice_date,
+                    "regist_attend_date" : regist_attend_date,
+                    "meeting_date" : meeting_date,
+                    "meeting_end_date" : meeting_end_date,
+                    "receipt" : receipt,
+                    "intro" : intro,
+                    "essay_request" : essay_request,
+                    "support" : support,
+                    "organization" : organization,
+                    "schedule" : schedule,
+                }
+
+
+
+
+                {#form_data.append("file", file)#}
+                {#form_data.append("id", id)#}
+                {#form_data.append("about_us", about_us)#}
+                {#form_data.append("ddl_date", file)#}
+                {#form_data.append("file", file)#}
+                {#form_data.append("file", file)#}
+                {#form_data.append("file", file)#}
+                {#form_data.append("file", file)#}
+                {#form_data.append("file", file)#}
+                {#form_data.append("file", file)#}
+                {#form_data.append("file", file)#}
+                {#form_data.append("file", file)#}
+                {#form_data.append("file", file)#}
+                {#form_data.append("file", file)#}
+                $.ajax({
+                    url: '/meeting/updateMeeting/',
+                    type: 'POST',
+                    data: data,
+                    dataType: 'json',
+                    success: function (response) {
+                        if (response['errorInfo'] != null) {
+                            $('html,body').animate({scrollTop: 0}, 'fast')
+                            document.getElementById("showError").style.display = ""
+                            document.getElementById("errorInfo").innerText = response['errorInfo']
+
+                        } else {
+                            $('html,body').animate({scrollTop: 0}, 'fast')
+                            document.getElementById("showInfo").style.display = ""
+                            document.getElementById("info").innerText = response['info']
+                        }
+                    }
+                });
+            });
 
 
 
