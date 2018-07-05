@@ -109,7 +109,7 @@ class MeetingViewSet(viewsets.ModelViewSet):
                 support=support,
             )
             thisMeeting.save()
-            return HttpResponse(template.render({"info": "会议发布成功"}), request)
+            return HttpResponse(info("success"), content_type="application/json")
         # return HttpResponse("时间不合法")
         # return HttpResponse(meeting_serializer.errors)
         # except:
@@ -191,7 +191,7 @@ class MeetingViewSet(viewsets.ModelViewSet):
             context = {
                 'conference': thisMeeting,
                 'isfavorite': isfavorite,
-                'map': "http://maps.google.com.tw/maps?f=q&hl=zh-TW&geocode=&q=" + thisMeeting.organization + "&z=16&output=embed&t=",
+                'map': "http://maps.google.com.tw/maps?f=q&amp;hl=zh-TW&amp;geocode=&q=" + thisMeeting.organization + "&z=16&output=embed&t=",
             }
             return HttpResponse(template.render(context, request))
         except:
@@ -218,7 +218,7 @@ class MeetingViewSet(viewsets.ModelViewSet):
             context = {
                 'conference': thisMeeting,
                 'isfavorite': False,
-                'map': "http://maps.google.com.tw/maps?f=q&hl=zh-TW&geocode=&q=" + thisMeeting.organization + "&z=16&output=embed&t=",
+                'map': "http://maps.google.com.tw/maps?f=q&amp;hl=zh-TW&amp;geocode=&q=" + thisMeeting.organization + "&z=16&output=embed&t=",
             }
             return HttpResponse(template.render(context, request))
 
@@ -402,6 +402,7 @@ class MeetingViewSet(viewsets.ModelViewSet):
     @action(methods=['POST'], detail=False)
     def updateMeeting(self, request):
         # try:
+        template = loader.get_template('manage.html')
         if request.session['type'] == '0' or request.session['is_login'] != 'true':
 	        return render(request, "base.html")
 
@@ -454,30 +455,40 @@ class MeetingViewSet(viewsets.ModelViewSet):
         # return HttpResponse(request.session['username']+" "+str(ddl_date))
         # if meeting_serializer.is_valid():
         if (ddl_date <= result_notice_date) and (result_notice_date <= regist_attend_date) and (
-		        regist_attend_date <= meeting_date) and (meeting_date <= meeting_end_date):
-	        # return HttpResponse(request.session['username'])
-			thisMeeting.meeting_id = request.data.get("id")
-			thisMeeting.title = title
-			thisMeeting.organization = organization,
-			print(ddl_date)
-			thisMeeting.ddl_date = datetime.strptime(ddl_date[0], "%Y-%m-%dT%H:%M"),
-			thisMeeting.result_notice_date = datetime.strptime(result_notice_date[0], "%Y-%m-%dT%H:%M"),
-			thisMeeting.regist_attend_date = datetime.strptime(regist_attend_date[0], "%Y-%m-%dT%H:%M"),
-			thisMeeting.meeting_date = datetime.strptime(meeting_date[0], "%Y-%m-%dT%H:%M"),
-			thisMeeting.meeting_end_date = datetime.strptime(meeting_end_date[0], "%Y-%m-%dT%H:%M"),
-			thisMeeting.receipt = receipt,
-			thisMeeting.intro = intro,
-			thisMeeting.essay_request = essay_request,
-			thisMeeting.about_us = about_us,
-			thisMeeting.schedule = schedule
-
-			thisMeeting.institution = thisInstitution
-			thisMeeting.support = support,
-			# thisMeeting.save(update_fields=['tel'])
-			thisMeeting.save()
-
-			return HttpResponse(template.render({"info": "会议发布成功"}), request)
-			# return HttpResponse("时间不合法")
+                regist_attend_date <= meeting_date) and (meeting_date <= meeting_end_date):
+            # return HttpResponse(request.session['username'])
+            #thisMeeting.meeting_id = request.data.get("id")
+            thisMeeting = Meeting(
+                meeting_id = request.data.get("id"),
+                title=title,
+                organization=organization,
+                ddl_date=datetime.strptime(ddl_date[0], "%Y-%m-%dT%H:%M"),
+                result_notice_date=datetime.strptime(result_notice_date[0], "%Y-%m-%dT%H:%M"),
+                regist_attend_date=datetime.strptime(regist_attend_date[0], "%Y-%m-%dT%H:%M"),
+                meeting_date=datetime.strptime(meeting_date[0], "%Y-%m-%dT%H:%M"),
+                meeting_end_date=datetime.strptime(meeting_end_date[0], "%Y-%m-%dT%H:%M"),
+                receipt=receipt,
+                intro=intro,
+                essay_request=essay_request,
+                about_us=about_us,
+                schedule=schedule,
+                institution=thisInstitution,
+                support=support,
+            )
+            thisMeeting.save()
+            #thisMeeting.support = support,
+            # thisMeeting.save(update_fields=['tel'])
+            #thisMeeting.save()
+            emailTitle = "CMS系统提示，会议信息发生修改"
+            emailContent = "会议id为"+thisMeeting.meeting_id+"的会议信息发生修改，请查看"+"http://127.0.0.1:8000/meeting/"+thisMeeting.meeting_id+"/"
+            userSet = thisMeeting.User_set.all()
+            AttendeeSet = thisMeeting.Attendee_set.all()
+            for user in userSet:
+                cmsem.send_mail(user.email, emailTitle, emailContent)
+            for user in AttendeeSet:
+                cmsem.send_mail(user.email, emailTitle, emailContent)
+            return HttpResponse({"info":"success"}, content_type="application/json")
+            # return HttpResponse("时间不合法")
         # return HttpResponse(meeting_serializer.errors)
         # except:
         #    pass
