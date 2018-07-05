@@ -370,6 +370,40 @@ class UserViewSet(viewsets.ModelViewSet):
             return Response({"info": "成功"}, status=status.HTTP_200_OK)
 
     @action(methods=['GET'], detail=False)
+    def allfavorite(self, request):
+        try:
+            page = int(request.GET['page'])
+        except (KeyError, ValueError):
+            page = 1
+        user_id = request.session['id']
+        user_type=request.session["type"]
+        if user_type=="1":
+            return Response("请登录个人用户查看")
+        else:
+            user_id=request.session['id']
+            thisuser=User.objects.get(id=user_id)
+            allfavorite=thisuser.User_set.all()
+            template = loader.get_template('conference.html')
+            context = {
+                'conference': allfavorite,
+            }
+            if not len(allfavorite):
+                total_page = 1
+            else:
+                total_page = (len(allfavorite) - 1) // PAGE_MAX + 1
+            pages, pre_page, next_page = get_pages(total_page, page)
+            papers = allfavorite[PAGE_MAX * (page - 1): PAGE_MAX * page]
+
+            context['conference'] = allfavorite
+            context['page'] = page
+            context['pages'] = pages
+            context['pre_page'] = pre_page
+            context['next_page'] = next_page
+            return HttpResponse(template.render(context, request))
+
+
+
+    @action(methods=['GET'], detail=False)
     def allpaper(self, request):
         try:
             page = int(request.GET['page'])

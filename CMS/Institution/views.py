@@ -12,6 +12,9 @@ from django.template import loader
 from django.http import HttpResponse
 import re,json
 import hashlib
+import sys
+PAGE_MAX = 9
+from Admin import cmsem
 from datetime import *
 # Create your views here.
 def checklen(pwd):
@@ -231,13 +234,21 @@ class EmployeeViewSet(viewsets.ModelViewSet):
             suggestion=request.data.get("suggestion")
             thispaper.suggestion=suggestion
             thispaper.save()
+            sys.path.append('../')
+            cmsem.send_mail("572260394@qq.com", "论文审核结果", "您的论文已经被审核完成，请及时登陆查看")
         else:
             thispaper.status = thisstatus
             thispaper.save()
+            sys.path.append('../')
+            cmsem.send_mail("572260394@qq.com", "论文审核结果", "您的论文已经被审核完成，请及时登陆查看")
         return Response("成功 ", status=status.HTTP_200_OK)
 
    @action(methods=['GET'], detail=False)
    def allemployee(self,request):
+       try:
+           page = int(request.GET['page'])
+       except (KeyError, ValueError):
+           page = 1
        try:
            thisemployee_id=request.session["id"]
        except:
@@ -250,4 +261,34 @@ class EmployeeViewSet(viewsets.ModelViewSet):
             context = {
                 'employees': allemployee,
             }
+            if not len(allemployee):
+                total_page = 1
+            else:
+                total_page = (len(allemployee) - 1) // PAGE_MAX + 1
+            pages, pre_page, next_page = get_pages(total_page, page)
+            allemployee = allemployee[PAGE_MAX * (page - 1): PAGE_MAX * page]
+
+            context['employees'] = allemployee
+            context['page'] = page
+            context['pages'] = pages
+            context['pre_page'] = pre_page
+            context['next_page'] = next_page
             return HttpResponse(template.render(context, request))
+
+def get_pages(total_page, cur_page):
+    pages = [i + 1 for i in range(total_page)]
+    if cur_page > 1:
+        pre_page = cur_page - 1
+    else:
+        pre_page = 1
+    if cur_page < total_page:
+        next_page = cur_page + 1
+    else:
+        next_page = total_page
+    if cur_page <= 2:
+        pages = pages[:5]
+    elif total_page - cur_page <= 2:
+        pages = pages[-5:]
+    else:
+        pages = filter(lambda x: abs(x - cur_page) <= 2, pages)
+    return pages, pre_page, next_page
