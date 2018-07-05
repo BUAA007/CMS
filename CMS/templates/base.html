@@ -77,7 +77,9 @@
                         <ul class="sub-menu children dropdown-menu">
                             <li><i class="menu-icon fa fa-list-ul"></i><a href="/meeting/list2">会议列表</a></li>
                             <li><i class="menu-icon fa fa-bullhorn"></i><a href="/release">发布会议</a></li>
-                            <li><i class="menu-icon fa fa-wrench"></i><a href="ui-tabs.html">管理会议</a></li>
+                            <li><i class="menu-icon fa fa-wrench"></i><a href="/meeting/manageList">管理会议</a></li>
+
+
                             <li><i class="menu-icon fa fa-user-plus"></i><a href="/institution/employee/allemployee">配置账号</a></li>
                         </ul>
                     </li>
@@ -95,6 +97,7 @@
                            aria-expanded="false"> <i class="menu-icon fa fa-comments"></i>会议</a>
                         <ul class="sub-menu children dropdown-menu">
                             <li><i class="menu-icon fa fa-list-ul"></i><a href="/meeting/list2">会议列表</a></li>
+                            <li><i class="menu-icon fa fa-heart"></i><a href="/user/user/allfavorite">收藏列表</a></li>
                         </ul>
                     </li>
                     <!-- /.menu-title -->
@@ -197,7 +200,6 @@
         {% endblock %}
     </div> <!-- .content -->
 </div><!-- /#right-panel -->
-{% if message %}
     <div class="modal fade" id="id_errors" tabindex="-1" role="dialog"
          aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
         <div class="modal-dialog modal-dialog-centered" role="document">
@@ -217,6 +219,8 @@
             </div>
         </div>
     </div>
+{% if message %}
+
     <script>
         jQuery(function ($) {
             $('#id_errors').modal('show')

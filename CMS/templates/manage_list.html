@@ -1,0 +1,64 @@
+{% extends 'base.html' %}
+{% load staticfiles %}
+
+{% block title %}
+    test
+{% endblock %}
+
+{% block content %}
+    <div class="animated fadeIn">
+        <div class="row">
+
+            <div class="col-md-12">
+                <div class="card">
+                    <div class="card-header">
+                        <strong class="card-title">您发布的单位会议</strong>
+                    </div>
+                    <div class="card-body">
+                        <div>
+                            <table id="bootstrap-data-table" class="table table-striped table-bordered">
+                                <thead>
+                                <tr>
+                                    <th>#</th>
+                                    <th>标题</th>
+                                    <th>简介</th>
+                                    <th>状态</th>
+                                    <th>收藏数</th>
+                                </tr>
+                                </thead>
+                                <tbody>
+                                {% for each in manage_list %}
+                                    <tr>
+                                        <td>{{ forloop.counter }}</td>
+                                        <td class="text-truncate"><a href="/meeting/manage/?pk={{ each.manage.meeting_id }}">{{ each.manage.title }}</a></td>
+                                        <td>{{ each.manage.intro }}</td>
+                                        <td>{{ each.manage.status }}</td>
+                                        <td>{{ each.count }}</td>
+                                    </tr>
+                                {% endfor %}
+                                </tbody>
+                            </table>
+                        </div>
+                        <nav aria-label="...">
+                            <ul class="pagination">
+                                <li class="page-item disabled">
+                                    <a class="page-link" href="#" tabindex="-1">Previous</a>
+                                </li>
+                                <li class="page-item"><a class="page-link" href="#">1</a></li>
+                                <li class="page-item active">
+                                    <a class="page-link" href="#">2 <span class="sr-only">(current)</span></a>
+                                </li>
+                                <li class="page-item"><a class="page-link" href="#">3</a></li>
+                                <li class="page-item">
+                                    <a class="page-link" href="#">Next</a>
+                                </li>
+                            </ul>
+                        </nav>
+                    </div>
+                </div>
+            </div>
+
+
+        </div>
+    </div><!-- .animated -->
+{% endblock %}
