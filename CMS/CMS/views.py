@@ -8,8 +8,6 @@ from Institution.models import *
 from User.models import *
 import re, json, collections
 
-
->>>>>>> 5de5dc64ffbb75804bf47318b44ce2c0e557c77a
 def base(request):
     return render(request, 'base.html')
 
@@ -60,8 +58,8 @@ def download(request):
         tmp = rootpath.split("/")
         url += tmp[-1]
     except:
-    	a = collections.OrderedDict({"errorInfo":"服务器出错，请稍后重试。"})
-		return Response(a, status = status.HTTP_400_BAD_REQUEST)
+        a = collections.OrderedDict({"errorInfo":"服务器出错，请稍后重试。"})
+        return Response(a, status = status.HTTP_400_BAD_REQUEST)
     if url is not None:
         response = StreamingHttpResponse(file_iterator(url))
         response['Content-Type'] = 'application/octet-stream'
