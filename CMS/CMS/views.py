@@ -38,28 +38,28 @@ def personal_info(request):
 
 
 def download(request):
-        def file_iterator(file_name, chunk_size=512):
-                with open(file_name, "rb") as f:
-                        while True:
-                                c = f.read(chunk_size)
-                                if c:
-                                        yield c
-                                else:
-                                        break
-        try:
-                url = "/home/ubuntu/CMS/CMS/media/download/"
-                rootpath = request.path
-                tmp = rootpath.split("/")
-                url+=tmp[-1]
-        except:
-                return Response(a, status = status.HTTP_400_BAD_REQUEST)
-        if url is not None:
-                response = StreamingHttpResponse(file_iterator(url))
-                response['Content-Type'] = 'application/octet-stream'
-                response['Content-Disposition'] = 'attachment;filename="{0}"'.format(tmp[-1])
-                return response
-        a = collections.OrderedDict({"errorInfo":"服务器出错，请稍后重试。"})
-        return Response(a, status = status.HTTP_400_BAD_REQUEST)
+    def file_iterator(file_name, chunk_size=512):
+            with open(file_name, "rb") as f:
+                    while True:
+                            c = f.read(chunk_size)
+                            if c:
+                                    yield c
+                            else:
+                                    break
+    try:
+            url = "/home/ubuntu/CMS/CMS/media/download/"
+            rootpath = request.path
+            tmp = rootpath.split("/")
+            url+=tmp[-1]
+    except:
+            return Response(a, status = status.HTTP_400_BAD_REQUEST)
+    if url is not None:
+            response = StreamingHttpResponse(file_iterator(url))
+            response['Content-Type'] = 'application/octet-stream'
+            response['Content-Disposition'] = 'attachment;filename="{0}"'.format(tmp[-1])
+            return response
+    a = collections.OrderedDict({"errorInfo":"服务器出错，请稍后重试。"})
+    return Response(a, status = status.HTTP_400_BAD_REQUEST)
 
 def logout(request):
 	try:
