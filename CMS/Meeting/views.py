@@ -195,7 +195,7 @@ class MeetingViewSet(viewsets.ModelViewSet):
             context = {
                 'conference': thisMeeting,
                 'isfavorite': isfavorite,
-                'map': "http://maps.google.com.tw/maps?f=q&amp;hl=zh-TW&amp;geocode=&q=" + thisMeeting.organization + "&z=16&output=embed&t=",
+                'map': "http://maps.google.com.tw/maps?f=q&amp;amp;hl=zh-TW&amp;geocode=&;q=" + thisMeeting.organization + "&z=16&output=embed&t=",
             }
             return HttpResponse(template.render(context, request))
         except:
@@ -222,7 +222,7 @@ class MeetingViewSet(viewsets.ModelViewSet):
             context = {
                 'conference': thisMeeting,
                 'isfavorite': False,
-                'map': "http://maps.google.com.tw/maps?f=q&amp;hl=zh-TW&amp;geocode=&q=" + thisMeeting.organization + "&z=16&output=embed&t=",
+                'map': "http://maps.google.com.tw/maps?f=q&amp;amp;hl=zh-TW&amp;geocode=&;q=" + thisMeeting.organization + "&z=16&output=embed&t=",
             }
             return HttpResponse(template.render(context, request))
 
@@ -408,28 +408,46 @@ class MeetingViewSet(viewsets.ModelViewSet):
         template = loader.get_template('manage.html')
         if request.session['type'] == '0' or request.session['is_login'] != 'true':
             return render(request, "base.html")
-        try:
-            thisEmployee = Employee.objects.get(username=request.session['username'])
-            thisInstitution = thisEmployee.institution
-            thisMeeting = Meeting.objects.get(meeting_id=request.data.get("id"))
+        #try:
+        thisEmployee = Employee.objects.get(username=request.session['username'])
+        thisInstitution = thisEmployee.institution
+        thisMeeting = Meeting.objects.get(meeting_id=int(request.data.get("meeting_id")))
+        print("haha")
+        print(request.FILES['file'])
+        a=Meeting(
+            meeting_id = thisMeeting.meeting_id,
+            template = request.FILES['file'],
+            title=thisMeeting.title,
+            organization=thisMeeting.organization,
+            ddl_date=thisMeeting.ddl_date,
+            result_notice_date=thisMeeting.result_notice_date,
+            regist_attend_date=thisMeeting.regist_attend_date,
+            meeting_date=thisMeeting.meeting_date,
+            meeting_end_date=thisMeeting.meeting_end_date,
+            receipt=thisMeeting.receipt,
+            intro=thisMeeting.intro,
+            essay_request=thisMeeting.essay_request,
+            about_us= thisMeeting.about_us,
+            schedule=thisMeeting.schedule,
+            institution=thisMeeting.institution,
+            support=thisMeeting.support,
+        )
+        a.save()
+        emailTitle = "CMS系统提示，会议信息发生修改"
+        emailContent = "会议id为" + str(thisMeeting.meeting_id) + "的会议信息发生修改，请查看" + "http://127.0.0.1:8000/meeting/" + str(thisMeeting.meeting_id) + "/"
+        userSet = thisMeeting.User_set.all()
+        AttendeeSet = thisMeeting.Attendee_set.all()
+        emailList = []
+        for user in userSet:
+            emailList.append(user.email)
+        for user in AttendeeSet:
+            emailList.append(user.email)
+        cmsem.send_mail(emailList, emailTitle, emailContent)
+        return  HttpResponseRedirect("/meeting/manage/?pk="+str(thisMeeting.meeting_id))
+        #except:
+        #    pass
+        return  HttpResponse(template.render(errorInfo("传输文件发生错误"), request))
 
-            thisMeeting.template = request.FILES['file']
-            thisMeeting.save(update_fields=['template'])
-
-            emailTitle = "CMS系统提示，会议信息发生修改"
-            emailContent = "会议id为" + thisMeeting.meeting_id + "的会议信息发生修改，请查看" + "http://127.0.0.1:8000/meeting/" + thisMeeting.meeting_id + "/"
-            userSet = thisMeeting.User_set.all()
-            AttendeeSet = thisMeeting.Attendee_set.all()
-            emailList = []
-            for user in userSet:
-                emailList.append(user.email)
-            for user in AttendeeSet:
-                emailList.append(user.email)
-            cmsem.send_mail(emailList, emailTitle, emailContent)
-            return  Response(template.render({"info" : "已发送通知邮件"}, request))
-        except:
-            pass
-        return  Response(template.render(errorInfo("传输文件发生错误"), request))
 
     @action(methods=['POST'], detail=False)
     def updateMeeting(self, request):
@@ -522,7 +540,7 @@ class MeetingViewSet(viewsets.ModelViewSet):
             # thisMeeting.save(update_fields=['tel'])
             #thisMeeting.save()
             emailTitle = "CMS系统提示，会议信息发生修改"
-            emailContent = "会议id为"+thisMeeting.meeting_id+"的会议信息发生修改，请查看"+"http://127.0.0.1:8000/meeting/"+thisMeeting.meeting_id+"/"
+            emailContent = "会议id为"+str(thisMeeting.meeting_id)+"的会议信息发生修改，请查看"+"http://127.0.0.1:8000/meeting/"+str(thisMeeting.meeting_id)+"/"
             userSet = thisMeeting.User_set.all()
             AttendeeSet = thisMeeting.Attendee_set.all()
             emailList = []

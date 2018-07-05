@@ -53,7 +53,7 @@ def download(request):
                     break
 
     try:
-        url = "/home/ubuntu/CMS/CMS/media/download/"
+        url = "D:/CMS/download/"
         rootpath = request.path
         tmp = rootpath.split("/")
         url += tmp[-1]
