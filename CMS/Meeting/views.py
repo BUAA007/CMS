@@ -201,13 +201,39 @@ class MeetingViewSet(viewsets.ModelViewSet):
 
 
     @action(methods=['GET'], detail=False)
-    def osearch(self, request):  # 根据时间搜索未写
+    def search(self, request):  # 根据时间搜索未写
         queryset = Meeting.objects.all()
-        word = request.query_params.get('s', None)
+        word = request.data.get('search', None)
+        time1 = request.data.get('time1',None)
+        time2 = request.data.get('time2',None)
+        conditions = {}
         if word is not None:
-            queryset = Meeting.objects.filter(title__contains=word)
-        serializer = MeetingSerializer(queryset, many=True)
-        return Response(serializer.data, status=status.HTTP_200_OK)
+            conditions['title__contains'] = word
+        if time1 is not None:
+            conditions['meeting_date__gte'] = time1
+        if time2 is not None:
+            conditions['meeting_date__lte'] = time2
+        result = queryset.filter(**conditions)
+        template = loader.get_template('conference_list.html')
+        def check_time(conference):
+            now = timezone.now()
+            if now <= conference.ddl_date:
+                conference.status = "投稿中"
+            elif now <= conference.result_notice_date:
+                conference.status = "已截稿"
+            elif now <= conference.regist_attend_date:
+                conference.status = "注册中"
+            elif now <= conference.meeting_date:
+                conference.status = "截止注册"
+            elif now <= conference.meeting_end_date:
+                conference.status = "会议中"
+            else:
+                conference.status = "会议完成"
+
+        list(map(check_time, queryset))
+        context = {'conference_list': queryset}
+        return HttpResponse(template.render(context, request))
+
 
     @action(methods=['GET'], detail=False)
     def allpaper(self, request):
