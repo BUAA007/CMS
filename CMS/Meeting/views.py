@@ -354,12 +354,12 @@ class MeetingViewSet(viewsets.ModelViewSet):
             return Response(a, status = status.HTTP_400_BAD_REQUEST)
         def file_iterator(file_name, chunk_size=512):
             with open(file_name, "rb") as f:
-                    while True:
-                            c = f.read(chunk_size)
-                            if c:
-                                    yield c
-                            else:
-                                    break
+                while True:
+                    c = f.read(chunk_size)
+                    if c:
+                        yield c
+                    else:
+                        break
         if url is not None:
             response = StreamingHttpResponse(file_iterator(url))
             response['Content-Type'] = 'application/octet-stream'
