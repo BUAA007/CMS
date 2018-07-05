@@ -62,39 +62,35 @@
                 <ul class="list-group mb-3">
                     <li class="list-group-item d-flex justify-content-between lh-condensed">
                         <div>
-                            <h6 class="my-0">组织机构</h6>
+                            <h6 class="my-0">机构名称</h6>
                             <small class="text-muted">{{ institution.name }}</small>
                         </div>
                     </li>
                     <li class="list-group-item d-flex justify-content-between lh-condensed">
                         <div>
-                            <h6 class="my-0">组织机构</h6>
-                            <small class="text-muted">{{ conference.institution.name }}</small>
+                            <h6 class="my-0">工商号</h6>
+                            <small class="text-muted">{{ institution.corporate_id }}</small>
                         </div>
                     </li>
 
                     <li class="list-group-item d-flex justify-content-between lh-condensed">
                         <div>
-                            <h6 class="my-0">组织机构</h6>
-                            <small class="text-muted">{{ conference.institution.name }}</small>
+                            <h6 class="my-0">注册时间</h6>
+                            <small class="text-muted">{{ institution.establish_date | date:'Y/m/d' }}</small>
                         </div>
                     </li>
 
                     <li class="list-group-item d-flex justify-content-between lh-condensed">
                         <div>
-                            <h6 class="my-0">住宿交通</h6>
-                            <small class="text-muted">{{ conference.support }}</small>
+                            <h6 class="my-0">地点</h6>
+                            <small class="text-muted">{{ institution.place }}</small>
                         </div>
                     </li>
                     <li class="list-group-item d-flex justify-content-between lh-condensed">
                         <div>
-                            <h6 class="my-0">联系我们</h6>
-                            <small class="text-muted">{{ conference.about_us }}</small>
+                            <h6 class="my-0">法人信息</h6>
+                            <small class="text-muted">{{ institution.legal_person }}</small>
                         </div>
-                    </li>
-                    <li class="list-group-item d-flex justify-content-between lh-condensed">
-                        <span>注册费用</span>
-                        <strong>￥{{ conference.receipt }}</strong>
                     </li>
                 </ul>
                 <h4 class="d-flex justify-content-between align-items-center mb-3">
@@ -105,29 +101,47 @@
                         <div class="input-group-prepend">
                             <span class="input-group-text" id="basic-addon1"><i class="fa fa-user-plus"></i></span>
                         </div>
-                        <input type="text" class="form-control" placeholder="用户名" aria-label="Username"
-                               aria-describedby="basic-addon1">
+                        <input type="text" id="id_username" class="form-control" required placeholder="用户名" name="username">
                     </div>
                     <div class="input-group mb-3">
                         <div class="input-group-prepend">
                             <span class="input-group-text" id="basic-addon1"><i class="fa fa-key"></i></span>
                         </div>
-                        <input type="text" class="form-control" placeholder="密码" aria-label="Username"
-                               aria-describedby="basic-addon1">
+                        <input type="password" id="id_password" class="form-control" required placeholder="密码" name="password">
                     </div>
                     <div class="input-group mb-3">
                         <div class="input-group-prepend">
                             <span class="input-group-text" id="basic-addon1"><i class="fa fa-key"></i></span>
                         </div>
-                        <input type="text" class="form-control" placeholder="确认密码" aria-label="Username"
-                               aria-describedby="basic-addon1">
+                        <input type="password" id="id_password2" class="form-control" required placeholder="确认密码" name="password2">
                     </div>
                     <div class="d-flex justify-content-center">
-                        <button type="submit" class="btn btn-secondary">确定</button>
+                        <button type="button" class="btn btn-secondary" onclick="registerPerson()">确定</button>
                     </div>
                 </form>
             </div>
 
         </div>
     </div><!-- .animated -->
+    <script>
+        function registerPerson() {
+            var username = document.getElementById('id_username').value;
+            var password = document.getElementById('id_password').value;
+            var password2 = document.getElementById('id_password2').value;
+            jQuery(function ($) {
+                $.ajax({
+                    url: '/institution/employee/registerother/',
+                    type: 'POST',
+                    data: {'username': username, 'password': password, 'password2': password2}, // Request body
+                    dataType: 'json',
+                    success: function (response) {
+                        document.getElementById('info').innerText = response['errorInfo'];
+                        jQuery(function ($) {
+                            $('#id_errors').modal('show')
+                        });
+                    },
+                });
+            });
+        }
+    </script>
 {% endblock %}
