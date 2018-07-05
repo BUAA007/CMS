@@ -1,0 +1,135 @@
+{% extends 'base.html' %}
+{% load staticfiles %}
+
+{% block title %}
+    test
+{% endblock %}
+
+{% block content %}
+{% if errorInfo != null %}
+    <div class="sufee-alert alert with-close alert-primary alert-dismissible fade show">
+        <span class="badge badge-pill  badge-warning">Fail</span>
+            {{ errorInfo }}
+        <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+        </button>
+    </div>
+{% endif %}
+{% if info != null %}
+    <div class="sufee-alert alert with-close alert-primary alert-dismissible fade show">
+        <span class="badge badge-pill badge-primary">Success</span>
+            {{ info }}，已发送邮件通知
+        <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+        </button>
+    </div>
+{%  endif %}
+
+    <div class="animated fadeIn">
+        <div class="container">
+            <div class="col-lg-12 col-lg-offset-4">
+                <div class="card">
+                    <div class="card-header"><strong>管理会议信息</strong></div>
+                    <form method="post" action="/meeting/updateMeeting/" enctype="multipart/form-data">
+                    <input type="text" value="{{ conference.meeting_id }}" style="display: none" name="id">
+                    <div class="card-body card-block">
+                    <div class="row form-group">
+                        <div class="col col-md-3"><label for="text-input" class=" form-control-label">会议标题</label></div>
+                        <div class="col-12 col-md-9">
+                            <input type="text" name="title" placeholder="填写会议标题" class="form-control" value="{{ conference.title }}"></div>
+                    </div>
+                    <div class="row form-group">
+                        <div class="col col-md-3"><label for="text-input" class=" form-control-label">联系我们</label></div>
+                        <div class="col-12 col-md-9"><input name="about_us" placeholder="填写联系方式" class="form-control" value="{{ conference.about_us }}"></div>
+                    </div>
+                    <div class="row form-group">
+                        <div class="col col-md-3"><label for="text-input" class=" form-control-label">截稿日期</label></div>
+                        <div class="col-md-9">
+                            <input type="datetime-local" class="form-control" id="date1" name="ddl_date" value="{{ ddl_date }}" {% if conference.status1 == '1' %} readonly {% endif %}>
+                        </div>
+                    </div>
+                    <div class="row form-group">
+                        <div class="col col-md-3"><label for="text-input" class=" form-control-label">录用通知日期</label>
+                        </div>
+                        <div class="col-md-9">
+                            <input type="datetime-local" class="form-control" id="date2" name="result_notice_date" value="{{ result_notice_date }}" {% if conference.status2 == '1'%} readonly{% endif %}>
+                        </div>
+                    </div>
+                    <div class="row form-group">
+                        <div class="col col-md-3"><label for="text-input" class=" form-control-label">注册日期</label></div>
+                        <div class="col-md-9">
+                            <input type="datetime-local" class="form-control" id="date3" name="regist_attend_date" value="{{ regist_attend_date }}" {% if conference.status3 == '1' %} readonly {% endif %}>
+                        </div>
+                    </div>
+                    <div class="row form-group">
+                        <div class="col col-md-3"><label for="text-input" class=" form-control-label">会议日期</label></div>
+                        <div class="col-md-9">
+                            <input type="datetime-local" class="form-control" id="date4" name="meeting_date" value="{{ meeting_date }}" {% if conference.status4 == '1'%} readonly {% endif %}>
+                        </div>
+                    </div>
+                    <div class="row form-group">
+                        <div class="col col-md-3"><label for="text-input" class=" form-control-label">会议结束日期</label></div>
+                        <div class="input-group date form_datetime col-md-9">
+                            <input type="datetime-local" class="form-control" id="date5" name="meeting_end_date" value="{{ meeting_end_date }}" {% if conference.status5 == '1' %} readonly {% endif %}>
+                        </div>
+                    </div>
+                    <div class="row form-group">
+                        <div class="col col-md-3"><label for="text-input" class=" form-control-label">注册费用</label></div>
+                        <div class="col-12 col-md-9"><input type="text" readonly name="receipt" placeholder="填写注册费用，单位（元）" class="form-control" value="{{ conference.receipt }}"></div>
+                    </div>
+                    <div class="row form-group">
+                        <div class="col col-md-3"><label for="textarea-input" class=" form-control-label">会议简介</label>
+                        </div>
+                        <div class="col-12 col-md-9"><textarea name="intro" rows="9" placeholder="填写会议简介" class="form-control">{{ conference.intro }}</textarea>
+                        </div>
+                    </div>
+                    <div class="row form-group">
+                        <div class="col col-md-3"><label for="textarea-input" class=" form-control-label">征文信息</label>
+                        </div>
+                        <div class="col-12 col-md-9"><textarea name="essay_request" rows="9"
+                                                               placeholder="填写征文信息" class="form-control">{{ conference.essay_request}}</textarea>
+                        </div>
+                    </div>
+                    <div class="row form-group">
+                        <div class="col col-md-3"><label for="textarea-input"
+                                                         class=" form-control-label">住宿交通信息</label></div>
+                        <div class="col-12 col-md-9"><textarea name="support" rows="9"
+                                                               placeholder="填写住宿交通信息"
+                                                               class="form-control">{{ conference.support }}</textarea></div>
+                    </div>
+                    <div class="row form-group">
+                        <div class="col col-md-3"><label for="textarea-input"
+                                                         class=" form-control-label">地点</label></div>
+                        <div class="col-12 col-md-9"><textarea name="organization" rows="2"
+                                                               placeholder="填写会议地点(例如北京市海淀区北京航空航天大学南门)"
+                                                               class="form-control" >{{ conference.organization }}</textarea></div>
+                    </div>
+                    <div class="row form-group">
+                        <div class="col col-md-3"><label for="textarea-input" class=" form-control-label">日程安排</label>
+                        </div>
+                        <div class="col-12 col-md-9"><textarea name="schedule" rows="9"
+                                                               placeholder="填写日程安排" class="form-control">{{ conference.schedule }}</textarea>
+                        </div>
+                    </div>
+                </div>
+                <div class="card-footer">
+                    <button type="button" class="btn btn-warning btn-sm">
+                        <i class="fa fa-dot-circle-o"> </i>更改论文模板
+                    </button>
+                    <button type="submit" class="btn btn-primary btn-sm">
+                        <i class="fa fa-dot-circle-o"></i> 提交
+                    </button>
+                </div>
+                        </form>
+            </div>
+
+        </div>
+
+
+    </div>
+
+
+</div>
+
+
+{% endblock %}
