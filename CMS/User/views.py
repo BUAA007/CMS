@@ -339,7 +339,7 @@ class UserViewSet(viewsets.ModelViewSet):
                 else:
                     url = "../allpaper"
                     return HttpResponseRedirect(url)
-
+                    #显示提示信息
     @action(methods=['POST'], detail=False)
     def favorite(self, request):
         try:
