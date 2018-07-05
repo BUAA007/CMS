@@ -211,11 +211,12 @@ class EmployeeViewSet(viewsets.ModelViewSet):
 
        password = md5(password)
        try:
-           thisEmployee = Employee.objects.get(username=request.session['username'])
+           thisEmployee = Employee.objects.get(id=request.session['id'])
+           thisInstitution = thisEmployee.institution
            otherEmployee = Employee(
                username = username,
                password = password,
-               #institution = thisInstitution.institution,
+               institution = thisInstitution
                )
            otherEmployee.save()
            return HttpResponse(info("success"), content_type="application/json")

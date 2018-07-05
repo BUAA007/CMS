@@ -101,19 +101,22 @@
                         <div class="input-group-prepend">
                             <span class="input-group-text" id="basic-addon1"><i class="fa fa-user-plus"></i></span>
                         </div>
-                        <input type="text" id="id_username" class="form-control" required placeholder="用户名" name="username">
+                        <input type="text" id="id_username" class="form-control" required placeholder="用户名"
+                               name="username">
                     </div>
                     <div class="input-group mb-3">
                         <div class="input-group-prepend">
                             <span class="input-group-text" id="basic-addon1"><i class="fa fa-key"></i></span>
                         </div>
-                        <input type="password" id="id_password" class="form-control" required placeholder="密码" name="password">
+                        <input type="password" id="id_password" class="form-control" required placeholder="密码"
+                               name="password">
                     </div>
                     <div class="input-group mb-3">
                         <div class="input-group-prepend">
                             <span class="input-group-text" id="basic-addon1"><i class="fa fa-key"></i></span>
                         </div>
-                        <input type="password" id="id_password2" class="form-control" required placeholder="确认密码" name="password2">
+                        <input type="password" id="id_password2" class="form-control" required placeholder="确认密码"
+                               name="password2">
                     </div>
                     <div class="d-flex justify-content-center">
                         <button type="button" class="btn btn-secondary" onclick="registerPerson()">确定</button>
@@ -135,7 +138,11 @@
                     data: {'username': username, 'password': password, 'password2': password2}, // Request body
                     dataType: 'json',
                     success: function (response) {
-                        document.getElementById('info').innerText = response['errorInfo'];
+                        if (response['errorInfo'] != null) {
+                            document.getElementById('info').innerText = response['errorInfo'];
+                        } else {
+                            document.getElementById('info').innerText = response['info'];
+                        }
                         jQuery(function ($) {
                             $('#id_errors').modal('show')
                         });
