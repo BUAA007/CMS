@@ -17,6 +17,7 @@ from django.utils import timezone
 from datetime import datetime,date
 from xlwt import *
 import os
+import collections
 
 PAGE_MAX = 10
 
