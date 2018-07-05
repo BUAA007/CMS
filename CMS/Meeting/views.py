@@ -455,7 +455,7 @@ class MeetingViewSet(viewsets.ModelViewSet):
         support = request.data.get("support")
         if not support:
 	        return HttpResponse(template.render(errorInfo("请填写住宿交通信息"), request))
-        file = request.FILES['template']
+        file = request.FILES['content']
         print(file)
         if not file:
             return Response(template.render(errorInfo("请提交论文模板"), request))
