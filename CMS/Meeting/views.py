@@ -19,7 +19,7 @@ from xlwt import *
 import os
 import collections
 
-PAGE_MAX = 10
+PAGE_MAX = 9
 
 def checkNull(msg):
     return msg
