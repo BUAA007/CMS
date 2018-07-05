@@ -24,7 +24,7 @@ class User(models.Model):
 
 class Join(models.Model):
 	receipt = models.FileField(
-		upload_to = 'receipt',
+		upload_to = 'download/',
 		)
 	name = models.CharField(
 		max_length = 32,

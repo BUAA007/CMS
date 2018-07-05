@@ -32,18 +32,39 @@
                                 </div>
                                 <div class="row form-group">
                                     <div class="col col-md-3"><label for="text-input" class=" form-control-label">密码</label></div>
-                                    <div class="col-md-4" id="p"><label for="text-input" class=" form-control-label">*******</label></div>
-                                    <div class="col-md-3" id="p2"><a href="#" onclick="updatePassword()"><i class="ti-pencil"></i></a></div>
+                                    <div class="col-md-4" id="p">
+                                        <label for="text-input" class=" form-control-label" id="passLabel">*******</label>
+                                        <label>
+                                            <input type="password" style="display: none" id="passInput" class="form-control">
+                                        </label>
+                                        <label style="display: none; color: red" id="passError">
+                                        </label>
+                                    </div>
+                                    <div class="col-md-3" id="p2"><a href="#" onclick="updatePassword()"><i class="ti-pencil" id="passIcon"></i></a></div>
                                 </div>
                                 <div class="row form-group">
                                     <div class="col col-md-3"><label for="text-input" class=" form-control-label">绑定邮箱</label></div>
-                                    <div class="col-md-4" id="info"><label for="text-input" class=" form-control-label">{{ email }}</label></div>
-                                    <div class="col-md-3" id="info2"><a href="#" onclick="updateEmail()"><i class="ti-pencil"></i></a></div>
+                                    <div class="col-md-4" id="info">
+                                        <label for="text-input" class="form-control-label" id="emailLabel">{{ email }}</label>
+                                        <label>
+                                            <input type="email" style="display: none" id="emailInput" class="form-control">
+                                        </label>
+                                        <label style="display: none; color: red"  id="emailError">
+                                        </label>
+                                    </div>
+                                    <div class="col-md-3" id="info2"><a href="#" onclick="updateEmail()"><i class="ti-pencil" id="emailIcon"></i></a></div>
                                 </div>
                                 <div class="row form-group">
                                     <div class="col col-md-3" ><label for="text-input" class=" form-control-label">绑定手机</label></div>
-                                    <div class="col-md-4" id="info3"><label for="text-input" class=" form-control-label">{{ tel }}</label></div>
-                                    <div class="col-md-3" id="info4"><a href="#" onclick="updatePhone()"><i class="ti-pencil"></i></a></div>
+                                    <div class="col-md-4" id="info3">
+                                        <label for="text-input" class="form-control-label" id="phoneLabel">{{ tel }}</label>
+                                        <label>
+                                            <input type="text" style="display: none" id="phoneInput" class="form-control">
+                                        </label>
+                                        <label style="display: none; color: red" id="phoneError">
+                                        </label>
+                                    </div>
+                                    <div class="col-md-3" id="info4"><a href="#" onclick="updatePhone()"><i class="ti-pencil" id="phoneIcon"></i></a></div>
                                 </div>
                                 {%  if request.session.type == '1'%}
                                     <div class="row form-group">
@@ -58,7 +79,106 @@
             </div>
     <script type="text/javascript">
         function updateEmail(){
+            if(document.getElementById("emailIcon").className != "fa fa-check") {
+                document.getElementById("emailIcon").className = "fa fa-check"
+                document.getElementById("emailInput").style.display = ""
+                document.getElementById("emailLabel").style.display = "none"
+                document.getElementById("emailError").style.display = "none"
 
+            }else{
+                var email = document.getElementById("emailInput").value
+                var data = {
+                    "email" : email
+                }
+
+                 jQuery(function ($) {
+                     $.ajax({
+                         url: '/user/user/updateEmail/',
+                         type: 'POST',
+                         data: data,
+                         dataType: 'json',
+                         success: function (response) {
+                             if (response['errorInfo'] != null){
+                                 document.getElementById("emailError").style.display = ""
+                                 document.getElementById("emailError").innerText = response['errorInfo']
+                             } else {
+                                 document.getElementById("emailLabel").innerText = email
+                             }
+                         }
+                     });
+                 });
+                document.getElementById("emailIcon").className = "ti-pencil"
+                document.getElementById("emailInput").style.display = "none"
+                document.getElementById("emailLabel").style.display = ""
+            }
+        }
+
+
+        function updatePhone(){
+            if(document.getElementById("phoneIcon").className != "fa fa-check") {
+                document.getElementById("phoneIcon").className = "fa fa-check"
+                document.getElementById("phoneInput").style.display = ""
+                document.getElementById("phoneLabel").style.display = "none"
+                document.getElementById("phoneError").style.display = "none"
+            }else{
+                var phone = document.getElementById("phoneInput").value;
+                var data = {
+                    "tel" : phone
+                }
+                jQuery(function ($) {
+                     $.ajax({
+                         url: '/user/user/updateTel/',
+                         type: 'POST',
+                         data: data,
+                         dataType: 'json',
+                         success: function (response) {
+                             if (response['errorInfo'] != null) {
+                                 document.getElementById("phoneError").style.display = ""
+                                 document.getElementById("phoneError").innerText = response['errorInfo']
+                             } else {
+                                 document.getElementById("phoneLabel").innerText = phone
+                             }
+                         }
+                     });
+                 });
+                document.getElementById("phoneIcon").className = "ti-pencil"
+                document.getElementById("phoneInput").style.display = "none"
+                document.getElementById("phoneLabel").style.display = ""
+            }
+
+        }
+
+        function updatePassword(){
+            if(document.getElementById("passIcon").className != "fa fa-check") {
+                document.getElementById("passIcon").className = "fa fa-check"
+                document.getElementById("passInput").style.display = ""
+                document.getElementById("passLabel").style.display = "none"
+                document.getElementById("passError").style.display = "none"
+            }else{
+                var password = document.getElementById("passInput").value;
+                var data = {
+                    "password" : password
+                }
+                jQuery(function ($) {
+                     $.ajax({
+                         url: '/user/user/updatePassword/',
+                         type: 'POST',
+                         data: data,
+                         dataType: 'json',
+                         success: function (response) {
+                             if (response['errorInfo'] != null) {
+                                 document.getElementById("passError").style.display = ""
+                                 document.getElementById("passError").innerText = response['errorInfo']
+                             } else {
+                                 document.getElementById("passLabel").innerText = "*******"
+                             }
+                         }
+                     });
+                 });
+                document.getElementById("passIcon").className = "ti-pencil"
+                document.getElementById("passInput").style.display = "none"
+                document.getElementById("passLabel").style.display = ""
+            }
         }
 
     </script>
