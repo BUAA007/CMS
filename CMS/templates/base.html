@@ -200,7 +200,6 @@
         {% endblock %}
     </div> <!-- .content -->
 </div><!-- /#right-panel -->
-{% if message %}
     <div class="modal fade" id="id_errors" tabindex="-1" role="dialog"
          aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
         <div class="modal-dialog modal-dialog-centered" role="document">
@@ -220,6 +219,8 @@
             </div>
         </div>
     </div>
+{% if message %}
+
     <script>
         jQuery(function ($) {
             $('#id_errors').modal('show')
