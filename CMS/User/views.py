@@ -12,6 +12,9 @@ from django.http import HttpResponse, HttpResponseRedirect
 import re, json
 import collections
 import hashlib
+import sys
+sys.path.append('../')
+from Admin import cmsem
 PAGE_MAX = 9
 
 # Create your views here.
@@ -255,10 +258,11 @@ class UserViewSet(viewsets.ModelViewSet):
                 'message': '失败，请登录'
             }
             return HttpResponse(template.render(context, request))
-        user_type = request.session['type']
-        thisuser = User.objects.get(id=user_id)
+        if timezone.now()<=thismeeting.ddl_date:
+            user_type = request.session['type']
+            thisuser = User.objects.get(id=user_id)
 
-        thispaper = Paper(author_1=request.data.get("author_1"),
+            thispaper = Paper(author_1=request.data.get("author_1"),
                           author_2=request.data.get("author_2"),
                           author_3=request.data.get("author_3"),
                           title=request.data.get("title"),
@@ -270,23 +274,28 @@ class UserViewSet(viewsets.ModelViewSet):
                           owner=thisuser,
                           meeting=thismeeting,
                           )
-        try:
-            thispaper.save()
+            try:
+                thispaper.save()
             # thisuser.participate.add(thismeeting) 暂时还未参加会议，需要审核和注册
-            template = loader.get_template('conference.html')
-            context = {
-                'conference': thismeeting,
-                'message': '成功'
-            }
+                template = loader.get_template('conference.html')
+                context = {
+                    'conference': thismeeting,
+                    'message': '成功'
+                }
+                return HttpResponse(template.render(context, request))
+            except:
+                template = loader.get_template('conference.html')
+                context = {
+                    'conference': thismeeting,
+                    'message': '失败,填写信息错误'
+                }
             return HttpResponse(template.render(context, request))
-        except:
+        else:
             template = loader.get_template('conference.html')
             context = {
-                'conference': thismeeting,
-                'message': '失败,填写信息错误'
+                'message': '已超过投稿时间，无法投稿'
             }
         return HttpResponse(template.render(context, request))
-
     @action(methods=['POST'], detail=False)
     def modify(self, request):
         try:
@@ -312,31 +321,42 @@ class UserViewSet(viewsets.ModelViewSet):
                 }
                 return HttpResponse(template.render(context, request))
             else:
-                if thispaper.status == 0 or thispaper.status == -1:
+                if timezone.now()<=thispaper.meeting.result_notice_date:
+                    if thispaper.status == 0 or thispaper.status == -1:
                     # thisuser = User.objects.get(id=user_id)
-                    thispaper.author_1 = request.data.get("author_1")
-                    print(request.data)
-                    thispaper.author_2 = request.data.get("author_2")
-                    thispaper.author_3 = request.data.get("author_3")
-                    thispaper.title = request.data.get("title")
-                    thispaper.abstract = request.data.get("abstract")
-                    thispaper.keyword = request.data.get("keyword")
-                    thispaper.status = "-1"
-                    thispaper.suggestion = "无"
-                    thispaper.explain = request.data.get("explain")
-                    thispaper.save()
+                        thispaper.author_1 = request.data.get("author_1")
+                        print(request.data)
+                        thispaper.author_2 = request.data.get("author_2")
+                        thispaper.author_3 = request.data.get("author_3")
+                        thispaper.title = request.data.get("title")
+                        thispaper.abstract = request.data.get("abstract")
+                        thispaper.keyword = request.data.get("keyword")
+                        thispaper.status = "-1"
+                        thispaper.suggestion = "无"
+                        thispaper.explain = request.data.get("explain")
+                        thispaper.save()
 
-                    thispaper.content = request.FILES['content']
-                    thispaper.save()
-                    thisuser = User.objects.get(id=user_id)
-                    papers = thisuser.paper_set.all()
-                    template = loader.get_template('judgement.html')
-                    context = {
-                        'papers': papers,
-                        'message': '修改成功，请等待审核'
-                    }
-                    return HttpResponse(template.render(context, request))
+                        thispaper.content = request.FILES['content']
+                        thispaper.save()
+                        thisuser = User.objects.get(id=user_id)
+                        papers = thisuser.paper_set.all()
+                        template = loader.get_template('judgement.html')
+                        context = {
+                            'papers': papers,
+                            'message': '修改成功，请等待审核'
+                        }
+                        return HttpResponse(template.render(context, request))
 
+                    else:
+                        thisuser = User.objects.get(id=user_id)
+                        # thismeeting = Meeting.objects.get(meeting_id=pk)
+                        papers = thisuser.paper_set.all()
+                        template = loader.get_template('judgement.html')
+                        context = {
+                            'papers': papers,
+                            'message': '失败,该论文不可修改'
+                        }
+                        return HttpResponse(template.render(context, request))
                 else:
                     thisuser = User.objects.get(id=user_id)
                     # thismeeting = Meeting.objects.get(meeting_id=pk)
@@ -344,9 +364,10 @@ class UserViewSet(viewsets.ModelViewSet):
                     template = loader.get_template('judgement.html')
                     context = {
                         'papers': papers,
-                        'message': '失败,该论文不可修改'
+                        'message': '失败,已超过修改稿截止日期'
                     }
                     return HttpResponse(template.render(context, request))
+
 
     @action(methods=['POST'], detail=False)
     def favorite(self, request):

@@ -18,6 +18,9 @@ from datetime import datetime,date
 from xlwt import *
 import os
 import collections
+import sys
+sys.path.append('../')
+from Admin import cmsem
 
 PAGE_MAX = 9
 
