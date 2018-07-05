@@ -9,7 +9,7 @@ from Meeting.models import Meeting
 from Meeting.serializers import MeetingSerializer
 from django.contrib.auth import authenticate, login, logout
 from django.shortcuts import get_object_or_404
-from django.http import HttpResponse
+from django.http import HttpResponse,HttpResponseRedirect
 from django.template import loader
 from User.models import *
 from Institution.models import Employee
@@ -41,7 +41,7 @@ class MeetingViewSet(viewsets.ModelViewSet):
         template = loader.get_template('release_meeting.html')
         context = {}
         if request.session['type'] == '0' or request.session['is_login'] != 'true':
-            return Response(errorInfo("succsss"), status=status.HTTP_200_OK)
+            return render(request, "base.html")
 
         thisEmployee = Employee.objects.get(username=request.session['username'])
         thisInstitution = thisEmployee.institution
@@ -412,48 +412,57 @@ class MeetingViewSet(viewsets.ModelViewSet):
 
         # if thisinstitution.status!="1":
         #    return Response({"errorInfo":"have not been received"}, status=status.HTTP_200_OK)
+
         title = request.data.get("title")
         if not title:
-	        return HttpResponse(template.render(errorInfo("会议标题不能为空"), request))
+	        return Response(errorInfo("会议标题不能为空"), content_type="application/json")
         about_us = request.data.get("about_us")
         if not about_us:
-	        return HttpResponse(template.render(errorInfo("联系我们不能为空"), request))
+	        return Response(template.render(errorInfo("请填写住宿交通信息"), request))
         ddl_date = request.data.get("ddl_date"),
+
         if ddl_date[0] == "":
-	        return HttpResponse(template.render(errorInfo("请填写正确截稿日期"), request))
+	        return Response(errorInfo("请填写正确截稿日期"), content_type="application/json")
         result_notice_date = request.data.get("result_notice_date"),
         if result_notice_date[0] == "":
-	        return HttpResponse(template.render(errorInfo("请填写正确论文通知日期"), request))
+	        return Response(errorInfo("请填写正确论文通知日期"), content_type="application/json")
         regist_attend_date = request.data.get("regist_attend_date"),
+
         if regist_attend_date[0] == "":
-	        return HttpResponse(template.render(errorInfo("请填写正确用户参会注册截止日期"), request))
+	        return Response(errorInfo("请填写正确用户参会注册截止日期"), content_type="application/json")
         meeting_date = request.data.get("meeting_date"),
         if meeting_date[0] == "":
-	        return HttpResponse(template.render(errorInfo("请填写正确会议开始日期"), request))
+	        return Response(errorInfo("请填写正确会议开始日期"), content_type="application/json")
         meeting_end_date = request.data.get("meeting_end_date"),
+
         if meeting_end_date[0] == "":
-	        return HttpResponse(template.render(errorInfo("请填写正确会议结束日期"), request))
+	        return Response(errorInfo("请填写正确会议结束日期"), content_type="application/json")
         receipt = request.data.get("receipt")
         if not receipt:
-	        return HttpResponse(template.render(errorInfo("请填写正确用户参会注册所需费用"), request))
+	        return Response(errorInfo("请填写正确用户参会注册所需费用"), content_type="application/json")
         intro = request.data.get("intro")
+
         if not intro:
-	        return HttpResponse(template.render(errorInfo("请填写会议简介"), request))
+	        return Response(errorInfo("请填写会议简介"), content_type="application/json")
         essay_request = request.data.get("essay_request")
+
         if not essay_request:
-	        return HttpResponse(template.render(errorInfo("请填写征文要求信息"), request))
+	        return Response(errorInfo("请填写征文要求信息"), content_type="application/json")
         organization = request.data.get("organization")
+
         if not organization:
-	        return HttpResponse(template.render(errorInfo("请填写会议地址"), request))
+	        return Response(errorInfo("请填写会议地址"), content_type="application/json")
         schedule = request.data.get("schedule")
+
         if not schedule:
-	        return HttpResponse(template.render(errorInfo("请填写会议日程安排"), request))
+	        return Response(errorInfo("请填写会议日程安排"), content_type="application/json")
         support = request.data.get("support")
         if not support:
-	        return HttpResponse(template.render(errorInfo("请填写住宿交通信息"), request))
+	        return Response(errorInfo("请填写住宿交通信息"), content_type="application/json")
         # meeting_serializer = MeetingSerializer(data = request.data)
         # return HttpResponse(request.session['username']+" "+str(ddl_date))
         # if meeting_serializer.is_valid():
+
         if (ddl_date <= result_notice_date) and (result_notice_date <= regist_attend_date) and (
                 regist_attend_date <= meeting_date) and (meeting_date <= meeting_end_date):
             # return HttpResponse(request.session['username'])
@@ -481,21 +490,22 @@ class MeetingViewSet(viewsets.ModelViewSet):
             #thisMeeting.save()
             emailTitle = "CMS系统提示，会议信息发生修改"
             emailContent = "会议id为"+thisMeeting.meeting_id+"的会议信息发生修改，请查看"+"http://127.0.0.1:8000/meeting/"+thisMeeting.meeting_id+"/"
-            userSet = thisMeeting.User_set.all()            
+            userSet = thisMeeting.User_set.all()
             AttendeeSet = thisMeeting.Attendee_set.all()
             emailList = []
-            emailList.append()
+
             for user in userSet:
                 emailList.append(user.email)
             for user in AttendeeSet:
                 emailList.append(user.email)
             cmsem.send_mail(emailList, emailTitle, emailContent)
-            return HttpResponse(template.render({"info":"success"},request))
+            return Response({'info' : '已发送邮件通知'}, content_type="application/json")
+
             # return HttpResponse("时间不合法")
         # return HttpResponse(meeting_serializer.errors)
         # except:
         #    pass
-        return HttpResponse(template.render(errorInfo("填写的日期不合法"), request))
+        return Response(errorInfo("传递时间不合法"), content_type="application/json")
 
     @action(methods=['POST'], detail=False)
     def excel_export(self, request):

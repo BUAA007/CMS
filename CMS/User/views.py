@@ -417,10 +417,10 @@ class UserViewSet(viewsets.ModelViewSet):
         else:
             user_id=request.session['id']
             thisuser=User.objects.get(id=user_id)
-            allfavorite=thisuser.meeting.all().order_by('-meeting_id')
+            allfavorite=thisuser.favorite.all().order_by('-meeting_id')
             template = loader.get_template('conference_list.html')
             context = {
-                'conference': allfavorite,
+                'conference_list': allfavorite,
             }
             if not len(allfavorite):
                 total_page = 1
@@ -429,7 +429,7 @@ class UserViewSet(viewsets.ModelViewSet):
             pages, pre_page, next_page = get_pages(total_page, page)
             papers = allfavorite[PAGE_MAX * (page - 1): PAGE_MAX * page]
 
-            context['conference'] = allfavorite
+            context['conference_list'] = allfavorite
             context['page'] = page
             context['pages'] = pages
             context['pre_page'] = pre_page
