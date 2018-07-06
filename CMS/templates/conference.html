@@ -85,7 +85,7 @@
                             </div>
                         </div>
                         <input type="hidden" value="{{ conference.meeting_id }}" name="meeting">
-                        <input type="hidden" name="type" value="1">
+                        <input type="hidden" name="type" value="2">
                         <div class="form-group">
                             <div class="col-6">
                                 <h6>参会人员</h6>
@@ -412,28 +412,6 @@
                     error: function (msg) {
 
                     }
-                });
-            });
-        }
-
-        function listen() {
-            let meeting_id = {{ conference.meeting_id }};
-            jQuery(function ($) {
-                $.ajax({
-                    url: '/user/join/',
-                    type: 'POST',
-                    data: {'meeting': meeting_id, 'type': '2'}, // Request body
-                    dataType: 'json',
-                    success: function (response) {
-                        if (response['errorInfo']) {
-                            document.getElementById('info').innerHTML = response['errorInfo'];
-                        } else {
-                            document.getElementById('info').innerHTML = response['info'];
-                        }
-                        jQuery(function ($) {
-                            $('#id_errors').modal('show')
-                        });
-                    },
                 });
             });
         }
