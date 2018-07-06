@@ -236,7 +236,7 @@ class MeetingViewSet(viewsets.ModelViewSet):
     @action(methods=['POST'], detail=False)
     def search(self, request):  # 根据时间搜索未写
         queryset = Meeting.objects.all()
-        word = request.data.get('search', None)
+        word = request.data.get('word', None)
         time1 = request.data.get('time1',None)
         time2 = request.data.get('time2',None)
         conditions = {}
