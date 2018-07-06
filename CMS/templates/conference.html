@@ -415,27 +415,5 @@
                 });
             });
         }
-
-        function listen() {
-            let meeting_id = {{ conference.meeting_id }};
-            jQuery(function ($) {
-                $.ajax({
-                    url: '/user/join/',
-                    type: 'POST',
-                    data: {'meeting': meeting_id, 'type': '2'}, // Request body
-                    dataType: 'json',
-                    success: function (response) {
-                        if (response['errorInfo']) {
-                            document.getElementById('info').innerHTML = response['errorInfo'];
-                        } else {
-                            document.getElementById('info').innerHTML = response['info'];
-                        }
-                        jQuery(function ($) {
-                            $('#id_errors').modal('show')
-                        });
-                    },
-                });
-            });
-        }
     </script>
 {% endblock %}

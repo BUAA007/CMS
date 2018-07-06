@@ -1,0 +1,64 @@
+{% extends 'base.html' %}
+{% load staticfiles %}
+
+{% block title %}
+    test
+{% endblock %}
+
+{% block content %}
+    <div class="animated fadeIn">
+        <div class="row">
+
+            <div class="col-md-12">
+                <div class="card">
+                    <div class="card-header">
+                        <strong class="card-title">所有会议</strong>
+                    </div>
+                    <div class="card-body">
+                        <div>
+                            <table id="bootstrap-data-table" class="table table-striped table-bordered">
+                                <thead>
+                                <tr>
+                                    <th>#</th>
+                                    <th>标题</th>
+                                    <th>简介</th>
+                                    <th>组织机构</th>
+                                    <th>状态</th>
+                                </tr>
+                                </thead>
+                                <tbody>
+                                {% for conference in conference_list %}
+                                    <tr>
+                                        <td>{{ forloop.counter }}</td>
+                                        <td class="text-truncate"><a href="/meeting/{{ conference.meeting_id }}">{{ conference.title }}</a></td>
+                                        <td>{{ conference.intro }}</td>
+                                        <td>{{ conference.institution.name }}</td>
+                                        <td>{{ conference.status }}</td>
+                                    </tr>
+                                {% endfor %}
+                                </tbody>
+                            </table>
+                        </div>
+                        <nav aria-label="Page navigation">
+                            <ul class="pagination">
+                                <li class="page-item">
+                                    <a class="page-link" href="?page={{ pre_page }}&word={{ word }}&time1={{ time1 }}&time2={{ time2 }}" aria-label="Previous">
+                                        <span aria-hidden="true">&laquo;</span>
+                                    </a>
+                                </li>
+                                {% for page in pages %}
+                                    <li class="page-item"><a class="page-link" href="?page={{ page }}&word={{ word }}&time1={{ time1 }}&time2={{ time2 }}">{{ page }}</a></li>
+                                {% endfor %}
+                                <li class="page-item">
+                                    <a class="page-link" href="?page={{ next_page }}&word={{ word }}&time1={{ time1 }}&time2={{ time2 }}" aria-label="Next">
+                                        <span aria-hidden="true">&raquo;</span>
+                                    </a>
+                                </li>
+                            </ul>
+                        </nav>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div><!-- .animated -->
+{% endblock %}

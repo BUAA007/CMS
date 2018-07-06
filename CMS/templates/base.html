@@ -99,7 +99,9 @@
                            aria-expanded="false"> <i class="menu-icon fa fa-comments"></i>会议</a>
                         <ul class="sub-menu children dropdown-menu">
                             <li><i class="menu-icon fa fa-list-ul"></i><a href="/meeting/list2">会议列表</a></li>
+                            {% if request.session.is_login == 'true' %}
                             <li><i class="menu-icon fa fa-heart"></i><a href="/user/user/allfavorite">收藏列表</a></li>
+                            {% endif %}
                         </ul>
                     </li>
                     <!-- /.menu-title -->
@@ -138,8 +140,7 @@
                 <a id="menuToggle" class="menutoggle pull-left"><i class="fa fa fa-tasks"></i></a>
                 <div class="header-left">
                     <div class="col-6">
-                        <form id="searchForm" class="form-horizontal" method="post" action="/meeting/search/">
-                            {% csrf_token %}
+                        <form id="searchForm" class="form-horizontal" method="get" action="/meeting/search/">
                             <div class="row">
                                 <a class="col-2" href="#" onclick="searchPost()"><i class="fa fa-search"></i></a>
                                 <a class="col-2" href="#" onclick="chooseCalendar()"><i
