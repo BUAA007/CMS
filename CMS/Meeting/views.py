@@ -90,6 +90,9 @@ class MeetingViewSet(viewsets.ModelViewSet):
 		file = request.FILES['file']
 		if not file:
 			return HttpResponse(template.render(errorInfo("请填写论文模板文件"), request))
+		style = request.data.get("style")
+		if not style:
+			return HttpResponse(template.render(errorInfo("请选择展示模板网页风格"), request))
 		# meeting_serializer = MeetingSerializer(data = request.data)
 		# return HttpResponse(request.session['username']+" "+str(ddl_date))
 		# if meeting_serializer.is_valid():
@@ -112,6 +115,7 @@ class MeetingViewSet(viewsets.ModelViewSet):
 				institution=thisInstitution,
 				support=support,
 				template=file,
+				style=style,
 			)
 			thisMeeting.save()
 			return HttpResponse(template.render({'info': '登记成功'}, request))
@@ -185,7 +189,7 @@ class MeetingViewSet(viewsets.ModelViewSet):
 			if now >= thisMeeting.meeting_end_date:
 				thisMeeting.status5 = True
 			thisuser = User.objects.get(id=user_id)
-
+			'''
 			queryset = thisuser.participate.all()
 			allpaper = thisuser.paper_set.all()
 			allmeeting = list()
@@ -200,6 +204,8 @@ class MeetingViewSet(viewsets.ModelViewSet):
 			print(allmeeting)
 			listenmeeting = set(queryset) - set(allmeeting)
 			print(listenmeeting)
+			'''
+			listenmeeting = thisuser.participate.all()
 			if thisMeeting in listenmeeting:
 				islisten = True
 			else:
@@ -212,13 +218,18 @@ class MeetingViewSet(viewsets.ModelViewSet):
 				isfavorite = False
 			else:
 				isfavorite = True
-			template = loader.get_template('conference.html')
+			if thisMeeting.style == "1":
+				template = loader.get_template('conference.html')
+			if thisMeeting.style == "2":
+				template = loader.get_template('conference2.html')
 			context = {
 				'conference': thisMeeting,
 				'isfavorite': isfavorite,
 				'islisten': islisten,
-				'map': "http://maps.gaode.com/search?query=" + thisMeeting.organization
+				'map': "http://maps.gaode.com/search?query=" + thisMeeting.organization,
+				'ddl_date': str(thisMeeting.meeting_date.strftime("%Y-%m-%d %H:%M:%S")),
 			}
+			print(str(thisMeeting.meeting_date.strftime("%Y-%m-%d %H:%M:%S")))
 
 			return HttpResponse(template.render(context, request))
 		except:
@@ -242,7 +253,10 @@ class MeetingViewSet(viewsets.ModelViewSet):
 			print(thisMeeting.status1, thisMeeting.status2, thisMeeting.status3, thisMeeting.status4,
 			      thisMeeting.status5)
 			# print(thisMeeting.status1)
-			template = loader.get_template('conference.html')
+			if thisMeeting.style == "1":
+				template = loader.get_template('conference.html')
+			if thisMeeting.style == "2":
+				template = loader.get_template('conference2.html')
 			context = {
 				'conference': thisMeeting,
 				'isfavorite': False,
@@ -738,6 +752,7 @@ class MeetingViewSet(viewsets.ModelViewSet):
 			page = int(request.GET['page'])
 		except (KeyError, ValueError):
 			page = 1
+		'''
 		queryset = thisuser.participate.all().order_by('-meeting_id')
 		allpaper = thisuser.paper_set.all()
 		allmeeting = list()
@@ -749,6 +764,8 @@ class MeetingViewSet(viewsets.ModelViewSet):
 						if join.meeting not in allmeeting:
 							allmeeting.append(join.meeting)
 		listenmeeting = set(queryset) - set(allmeeting)
+		'''
+		listenmeeting = thisuser.participate.all().order_by('-meeting_id')
 		queryset = sorted(listenmeeting, key=lambda x: x.ddl_date)
 		template = loader.get_template('conference_list.html')
 

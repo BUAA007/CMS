@@ -112,6 +112,17 @@
                                                                placeholder="填写日程安排" class="form-control"></textarea>
                         </div>
                     </div>
+                        <div class="row form-group">
+                            <div class="col-12 col-md-3"><label for="textarea-input" class=" form-control-label">选择展示风格 &nbsp&nbsp&nbsp&nbsp&nbsp <a id="a" href="http://123.206.65.175/meeting/1">链接</a></label>
+                        </div>
+                        <div class="col-10 col-md-10">
+                            <select name="style" id="select" class="form-control" onchange="changeStyle()">
+                                <option value="1">风格1</option>
+                                <option value="2">风格2</option>
+                              </select>
+                        </div>
+
+                    </div>
                      <label for="file" class="btn btn-warning btn-sm">更改论文模板</label>
                     <input id="file" type="file" style="display:none" name="file">
                 </div>
@@ -131,6 +142,12 @@
 
 
 </div>
+<script>
+    function changeStyle() {
+        var a = document.getElementById("select").value
+        document.getElementById("a").setAttribute("href", "http://123.206.65.175/meeting/"+a)
+    }
 
+</script>
 
 {% endblock %}
