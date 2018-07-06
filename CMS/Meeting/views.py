@@ -754,12 +754,12 @@ class MeetingViewSet(viewsets.ModelViewSet):
         context['next_page'] = next_page
         return HttpResponse(template.render(context, request))
 
-    @action(methods=['POST'], detail=False)
+    @action(methods=['GET'], detail=False)
     def excel_export(self, request):
         """
         导出excel表格
         """
-        meeting = int(request.data.get("meeting"))
+        meeting = int(request.GET["meeting"])
         thismeeting = Meeting.objects.get(meeting_id = meeting)
         url = "excel/"+thismeeting.title+".xls"
         list_obj = thismeeting.paper_set.all()
