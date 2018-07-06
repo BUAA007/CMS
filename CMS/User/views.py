@@ -607,5 +607,5 @@ class JoinViewSet(viewsets.ModelViewSet):
             url = '../../meeting/'+meetingid+'/?message=success'
             return HttpResponseRedirect(url)
         except:
-            url = '../../meeting/'+meetingid+'/?message='+message
+            url = '../../meeting/list2/?message='+message
             return HttpResponseRedirect(url)
