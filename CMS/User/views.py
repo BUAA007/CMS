@@ -527,6 +527,7 @@ class JoinViewSet(viewsets.ModelViewSet):
                 paperid = int(request.data.get("paper"))
                 try:
                     thispaper = Paper.objects.get(id=paperid)
+
                 except:
                     message = "论文错误"
                     raise RuntimeError()
@@ -537,6 +538,9 @@ class JoinViewSet(viewsets.ModelViewSet):
                     raise RuntimeError()
                 if timezone.now()>thismeeting.regist_attend_date:
                     message = "注册时间已过"
+                    raise RuntimeError()
+                if thispaper.status != 1:
+                    message = "提交的论文未通过"
                     raise RuntimeError()
                 count = 1
                 namename = "name" + str(count)
