@@ -85,7 +85,7 @@
                             </div>
                         </div>
                         <input type="hidden" value="{{ conference.meeting_id }}" name="meeting">
-                        <input type="hidden" name="type" value="1">
+                        <input type="hidden" name="type" value="2">
                         <div class="form-group">
                             <div class="col-6">
                                 <h6>参会人员</h6>
@@ -224,8 +224,8 @@
                                     </div>
                                     <div class="col-3" id="favoriteDiv">
                                         {% if isfavorite %}
-                                            <a onclick="favorite()">
-                                                <i class="fa text-danger fa-heart"></i>
+                                            <a onclick="favorite()" class="text-danger">
+                                                <i class="fa fa-heart"></i>
                                                 已收藏
                                             </a>
                                         {% else %}
@@ -236,10 +236,18 @@
                                         {% endif %}
                                     </div>
                                     <div class="col-3" data-toggle="modal" data-target="#registerConference">
-                                        <a href="#">
+                                        {% if islisten %}
+                                            <a href="#" class="text-info">
+                                            <i class="fa fa-phone"></i>
+                                            已申请聆听
+                                        {% else %}
+                                            <a href="#">
                                             <i class="fa fa-phone"></i>
                                             聆听
                                         </a>
+                                            
+                                        </a>
+                                        {% endif %}
                                     </div>
                                     <div class="col-3" onclick="fuck()">
                                         <a href="#">
@@ -388,8 +396,8 @@
                             isFavorite = !isFavorite;
                             var div = document.getElementById('favoriteDiv');
                             if (isFavorite) {
-                                div.innerHTML = '<a onclick="favorite()">\n' +
-                                    '                                            <i class="fa text-danger fa-heart"></i>\n' +
+                                div.innerHTML = '<a onclick="favorite()" class="text-danger">\n' +
+                                    '                                            <i class="fa fa-heart"></i>\n' +
                                     '                                            已收藏\n' +
                                     '                                        </a>'
                             } else {
@@ -404,28 +412,6 @@
                     error: function (msg) {
 
                     }
-                });
-            });
-        }
-
-        function listen() {
-            let meeting_id = {{ conference.meeting_id }};
-            jQuery(function ($) {
-                $.ajax({
-                    url: '/user/join/',
-                    type: 'POST',
-                    data: {'meeting': meeting_id, 'type': '2'}, // Request body
-                    dataType: 'json',
-                    success: function (response) {
-                        if (response['errorInfo']) {
-                            document.getElementById('info').innerHTML = response['errorInfo'];
-                        } else {
-                            document.getElementById('info').innerHTML = response['info'];
-                        }
-                        jQuery(function ($) {
-                            $('#id_errors').modal('show')
-                        });
-                    },
                 });
             });
         }

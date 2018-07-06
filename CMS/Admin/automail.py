@@ -30,5 +30,10 @@ if __name__ == "__main__":
 		if (meeting.regist_attend_date - time).days == 1 or (meeting.regist_attend_date - time).days == 0:
 			for user in meeting.User_set.all():
 				to_list2.append(user.email)
+	#file = "/home/ubuntu/CMS/CMS/log"
+	file = "d:/log"
+	mess = "\n"+str(datetime.now())+"send ddl mail to:"+';'.join(to_list)
+	with open(file, 'a+',encoding='gbk') as f:
+		f.write(mess)
 	cmsem.send_mail(to_list, sub, content)
 	cmsem.send_mail(to_list2, sub2, content2)
