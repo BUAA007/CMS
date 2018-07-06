@@ -4,31 +4,39 @@ from rest_framework.response import Response
 from rest_framework import status
 from rest_framework.decorators import action
 from django.template import loader
-from django.http import HttpResponse
+from django.http import HttpResponse,HttpResponseRedirect
 from Admin.models import *
 from Admin.serializers import *
 from Institution.models import Institution, Employee
 from Institution.serializers import InstitutionSerializer
 
-
+PAGE_MAX = 9
 # Create your views here.
 
 class AdminViewSet(viewsets.ModelViewSet):
 	queryset = Admin.objects.all()
 	serializer_class = AdminSerializer
 
-	def retrieve(self, request, pk=None):
-		if pk is None:
-			queryset = Institution.objects.all()
-		else:
-			try:
-				queryset = Institution.objects.filter(id = int(pk))
-			except:
-				return Response( {"errorinfo":"机构编号错误 "},status = status.HTTP_200_OK)
-		template = loader.get_template('admin_list.html')
-		context = {
-			'institutions': queryset,
-		}
+	@action(methods=['GET'], detail=False)
+	def search(self, request):
+		try:
+			if request.session["is_login"] == 'true' and request.session["type"] == '2':
+				pk = request.GET['word']
+				if pk == "":
+					return HttpResponseRedirect("/myadmin/adminCMS/")
+
+				try:
+					queryset = Institution.objects.get(id=int(pk))
+				except:
+					return render(request, "admin_search.html", {"errorInfo" : "未查询到机构"})
+				context = {
+					'institution': queryset,
+					'info' : "success"
+				}
+				return render(request, "admin_search.html", context)
+		except:
+			pass
+		return render(request, "base.html")
 
 	@action(methods=['POST'], detail=False)
 	def checkinstitution(self, request):
@@ -55,14 +63,34 @@ class AdminViewSet(viewsets.ModelViewSet):
 
 	@action(methods=['GET'], detail=False)
 	def adminCMS(self, request):  # 显示所有未通过审核机构的基本信息
-		allinstitution = Institution.objects.all()
-		allinstitutionse = InstitutionSerializer(allinstitution, many=True)
+		try:
+			if request.session["is_login"] == 'true' and request.session["type"] == '2':
+				try:
+					page = int(request.GET["page"])
+				except(KeyError, ValueError):
+					page = 1
+				allinstitution = Institution.objects.all()
+				allinstitutionse = InstitutionSerializer(allinstitution, many=True)
 
-		template = loader.get_template('admin_list.html')
-		context = {
-			'institutions': allinstitution,
-		}
-		return render(request, "admin_list.html", context)
+				template = loader.get_template('admin_list.html')
+				context = {
+				'institutions': allinstitution,
+				}
+				if not len(allinstitution):
+					total_page = 1
+				else:
+					total_page = (len(allinstitution) - 1)
+				pages, pre_page, next_page = get_pages(total_page, page)
+				allinstitution = allinstitution[PAGE_MAX * (page - 1): PAGE_MAX * page]
+				context['institutions'] = allinstitution
+				context['page'] = page
+				context['pages'] = pages
+				context['pre_page'] = pre_page
+				context['next_page'] = next_page
+				return render(request, "admin_list.html", context)
+		except:
+			pass
+		return render(request, "base.html")
 
 	@action(methods=['POST'], detail=False)
 	def checkInstitution(self, request):
@@ -85,7 +113,7 @@ class AdminViewSet(viewsets.ModelViewSet):
 		for employee in employeeSet:
 			emailList.append(employee.email)
 
-		return Response({"info" : "操作成功"}, content_type="application/json")
+		return Response({"info": "操作成功"}, content_type="application/json")
 
 	@action(methods=['POST'], detail=False)
 	def login(self, request):
@@ -107,3 +135,21 @@ class AdminViewSet(viewsets.ModelViewSet):
 				pass
 		# return render(request,'base.html',status = status.HTTP_201_CREATED)                ## 登录成功就将url重定向到后台的url
 		return Response({'errorInfo': '管理员用户名或密码不正确'}, content_type="application/json")
+
+def get_pages(total_page, cur_page):
+	pages = [i + 1 for i in range(total_page)]
+	if cur_page > 1:
+		pre_page = cur_page - 1
+	else:
+		pre_page = 1
+	if cur_page < total_page:
+		next_page = cur_page + 1
+	else:
+		next_page = total_page
+	if cur_page <= 2:
+		pages = pages[:5]
+	elif total_page - cur_page <= 2:
+		pages = pages[-5:]
+	else:
+		pages = filter(lambda x: abs(x - cur_page) <= 2, pages)
+	return pages, pre_page, next_page
