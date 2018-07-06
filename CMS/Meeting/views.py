@@ -838,7 +838,7 @@ class MeetingViewSet(viewsets.ModelViewSet):
 		response = StreamingHttpResponse(file_iterator(url))
 		response['Content-Type'] = 'application/vnd.ms-excel'
 		from urllib import parse
-		excel_name = str(thismeeting.meeting_id + "paperinfo")
+		excel_name = str(thismeeting.meeting_id) + "paperinfo"
 		response['Content-Disposition'] = 'attachment;filename=' + parse.quote(excel_name) + '.xls'
 		return response
 		'''
