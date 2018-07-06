@@ -17,6 +17,19 @@ class AdminViewSet(viewsets.ModelViewSet):
 	queryset = Admin.objects.all()
 	serializer_class = AdminSerializer
 
+	def retrieve(self, request, pk=None):
+		if pk is None:
+			queryset = Institution.objects.all()
+		else:
+			try:
+				queryset = Institution.objects.filter(id = int(pk))
+			except:
+				return Response( {"errorinfo":"机构编号错误 "},status = status.HTTP_200_OK)
+		template = loader.get_template('admin_list.html')
+		context = {
+			'institutions': queryset,
+		}
+
 	@action(methods=['POST'], detail=False)
 	def checkinstitution(self, request):
 		# user_id=request.session['id']

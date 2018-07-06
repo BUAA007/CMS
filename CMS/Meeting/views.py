@@ -184,9 +184,27 @@ class MeetingViewSet(viewsets.ModelViewSet):
                 thisMeeting.status5 = True
             print(thisMeeting.status1,thisMeeting.status2,thisMeeting.status3,thisMeeting.status4,thisMeeting.status5)
             thisuser = User.objects.get(id=user_id)
+
+            islisten = False
+            queryset = thisuser.participate.all()
+            allpaper = thisuser.paper_set.all()
+            allmeeting = list()
+            for paper in allpaper:
+                allmeeting.append(paper.meeting)
+            listenmeeting = queryset.difference(allmeeting)
+            if thisMeeting in listenmeeting:
+                islisten = True
+            else:
+                islisten = False
             # return Response("info: contribute succsss", status=status.HTTP_200_OK)
             try:
                 favorite = thisuser.favorite.get(meeting_id=thisMeeting.meeting_id)
+            except:
+                isfavorite = False
+            else:
+                isfavorite = True
+            try:
+                favorite = thisuser.participate.get(meeting_id=thisMeeting.meeting_id)
             except:
                 isfavorite = False
             else:
@@ -195,6 +213,7 @@ class MeetingViewSet(viewsets.ModelViewSet):
             context = {
                 'conference': thisMeeting,
                 'isfavorite': isfavorite,
+                'islisten':islisten,
                 'map': "http://maps.google.com.tw/maps?f=q&amp;amp;hl=zh-TW&amp;geocode=&;q=" + thisMeeting.organization + "&z=16&output=embed&t=",
             }
             return HttpResponse(template.render(context, request))
@@ -222,26 +241,38 @@ class MeetingViewSet(viewsets.ModelViewSet):
             context = {
                 'conference': thisMeeting,
                 'isfavorite': False,
+                'islisten':False,
                 'map': "http://maps.google.com.tw/maps?f=q&amp;amp;hl=zh-TW&amp;geocode=&;q=" + thisMeeting.organization + "&z=16&output=embed&t=",
             }
             return HttpResponse(template.render(context, request))
 
 
-    @action(methods=['POST'], detail=False)
+    @action(methods=['GET'], detail=False)
     def search(self, request):  # 根据时间搜索未写
+        try:
+            page = int(request.GET['page'])
+        except (KeyError, ValueError):
+            page = 1
         queryset = Meeting.objects.all()
-        word = request.data.get('search', None)
-        time1 = request.data.get('time1',None)
-        time2 = request.data.get('time2',None)
+        word = request.GET['word']
+        time1 = request.GET['time1']
+        time2 = request.GET['time2']
+        if word is None:
+            word = ""
+        # word = request.data.get('word', None)
+        # time1 = request.data.get('time1',None)
+        # time2 = request.data.get('time2',None)
         conditions = {}
-        if word is not None:
+        if word !="":
             conditions['title__contains'] = word
-        if time1 is not None:
+        if time1 !="":
             conditions['meeting_date__gte'] = time1
-        if time2 is not None:
+        if time2 !="":
             conditions['meeting_date__lte'] = time2
         result = queryset.filter(**conditions)
-        template = loader.get_template('conference_list.html')
+
+
+        template = loader.get_template('search_list.html')
         def check_time(conference):
             now = timezone.now()
             if now <= conference.ddl_date:
@@ -256,9 +287,24 @@ class MeetingViewSet(viewsets.ModelViewSet):
                 conference.status = "会议中"
             else:
                 conference.status = "会议完成"
+        if not len(result):
+            total_page = 1
+        else:
+            total_page = (len(result) - 1) // PAGE_MAX + 1
+        pages, pre_page, next_page = get_pages(total_page, page)
+        result = result[PAGE_MAX * (page - 1): PAGE_MAX * page]
 
-        list(map(check_time, queryset))
-        context = {'conference_list': queryset}
+        context = {'conference_list': result}
+        context['page'] = page
+        context['pages'] = pages
+        context['pre_page'] = pre_page
+        context['next_page'] = next_page
+        context['word'] = word
+        context['time1'] = time1
+        context['time2'] = time2
+
+        list(map(check_time, result))
+        
         return HttpResponse(template.render(context, request))
 
 
@@ -558,6 +604,137 @@ class MeetingViewSet(viewsets.ModelViewSet):
         #    pass
         return Response(errorInfo("传递时间不合法"), content_type="application/json")
 
+    @action(methods=['POST'],detail=False)
+    def allregistermeeting(self,request):
+        user_id=request.session['id']
+        thisuser=User.object.get(id=user_id)
+        allpaper=thisuser.paper_set.all()
+        allmeeting=list()
+        for paper in allpaper:
+            allmeeting.append(paper.meeting)
+        try:
+            page = int(request.GET['page'])
+        except (KeyError, ValueError):
+            page = 1
+        queryset = allmeeting.order_by('-meeting_id')
+        template = loader.get_template('conference_list.html')
+        def check_time(conference):
+            now = timezone.now()
+            if now <= conference.ddl_date:
+                conference.status = "投稿中"
+            elif now <= conference.result_notice_date:
+                conference.status = "已截稿"
+            elif now <= conference.regist_attend_date:
+                conference.status = "注册中"
+            elif now <= conference.meeting_date:
+                conference.status = "截止注册"
+            elif now <= conference.meeting_end_date:
+                conference.status = "会议中"
+            else:
+                conference.status = "会议完成"
+
+        list(map(check_time, allmeeting))
+        context = {'conference_list': allmeeting}
+        if not len(allmeeting):
+            total_page = 1
+        else:
+            total_page = (len(allmeeting) - 1) // PAGE_MAX + 1
+        pages, pre_page, next_page = get_pages(total_page, page)
+        queryset = allmeeting[PAGE_MAX * (page - 1): PAGE_MAX * page]
+
+        context['conference_list'] = allmeeting
+        context['page'] = page
+        context['pages'] = pages
+        context['pre_page'] = pre_page
+        context['next_page'] = next_page
+        return HttpResponse(template.render(context, request))
+
+    @action(methods=['POST'], detail=False)
+    def alljoinmeeting(self, request):
+        user_id=request.session['id']
+        thisuser = User.object.get(id=user_id)
+        try:
+            page = int(request.GET['page'])
+        except (KeyError, ValueError):
+            page = 1
+        queryset=thisuser.participate.all().order_by('-meeting_id')
+        template = loader.get_template('conference_list.html')
+
+        def check_time(conference):
+            now = timezone.now()
+            if now <= conference.ddl_date:
+                conference.status = "投稿中"
+            elif now <= conference.result_notice_date:
+                conference.status = "已截稿"
+            elif now <= conference.regist_attend_date:
+                conference.status = "注册中"
+            elif now <= conference.meeting_date:
+                conference.status = "截止注册"
+            elif now <= conference.meeting_end_date:
+                conference.status = "会议中"
+            else:
+                conference.status = "会议完成"
+        list(map(check_time, queryset))
+        context = {'conference_list': queryset}
+        if not len(queryset):
+            total_page = 1
+        else:
+            total_page = (len(queryset) - 1) // PAGE_MAX + 1
+        pages, pre_page, next_page = get_pages(total_page, page)
+        queryset = queryset[PAGE_MAX * (page - 1): PAGE_MAX * page]
+
+        context['conference_list'] = queryset
+        context['page'] = page
+        context['pages'] = pages
+        context['pre_page'] = pre_page
+        context['next_page'] = next_page
+        return HttpResponse(template.render(context, request))
+
+    @action(methods=['POST'], detail=False)
+    def alllistenmeeting(self, request):
+        user_id = request.session['id']
+        thisuser = User.object.get(id=user_id)
+        try:
+            page = int(request.GET['page'])
+        except (KeyError, ValueError):
+            page = 1
+        queryset = thisuser.participate.all().order_by('-meeting_id')
+        allpaper = thisuser.paper_set.all()
+        allmeeting = list()
+        for paper in allpaper:
+            allmeeting.append(paper.meeting)
+        listenmeeting = queryset.difference(allmeeting)
+        template = loader.get_template('conference_list.html')
+        def check_time(conference):
+            now = timezone.now()
+            if now <= conference.ddl_date:
+                conference.status = "投稿中"
+            elif now <= conference.result_notice_date:
+                conference.status = "已截稿"
+            elif now <= conference.regist_attend_date:
+                conference.status = "注册中"
+            elif now <= conference.meeting_date:
+                conference.status = "截止注册"
+            elif now <= conference.meeting_end_date:
+                conference.status = "会议中"
+            else:
+                conference.status = "会议完成"
+        list(map(check_time, listenmeeting))
+        context = {'conference_list': listenmeeting}
+        if not len(listenmeeting):
+            total_page = 1
+        else:
+            total_page = (len(listenmeeting) - 1) // PAGE_MAX + 1
+        pages, pre_page, next_page = get_pages(total_page, page)
+        queryset = listenmeeting[PAGE_MAX * (page - 1): PAGE_MAX * page]
+
+        context['conference_list'] = listenmeeting
+        context['page'] = page
+        context['pages'] = pages
+        context['pre_page'] = pre_page
+        context['next_page'] = next_page
+        return HttpResponse(template.render(context, request))
+
     @action(methods=['POST'], detail=False)
     def excel_export(self, request):
         """
@@ -617,23 +794,6 @@ class MeetingViewSet(viewsets.ModelViewSet):
         a = collections.OrderedDict({"errorInfo":"服务器出错，请稍后重试。"})
         return Response(a, status = status.HTTP_400_BAD_REQUEST)
 
-def get_pages(total_page, cur_page):
-    pages = [i + 1 for i in range(total_page)]
-    if cur_page > 1:
-        pre_page = cur_page - 1
-    else:
-        pre_page = 1
-    if cur_page < total_page:
-        next_page = cur_page + 1
-    else:
-        next_page = total_page
-    if cur_page <= 2:
-        pages = pages[:5]
-    elif total_page - cur_page <= 2:
-        pages = pages[-5:]
-    else:
-        pages = filter(lambda x: abs(x - cur_page) <= 2, pages)
-    return pages, pre_page, next_page
 def get_pages(total_page, cur_page):
     pages = [i + 1 for i in range(total_page)]
     if cur_page > 1:

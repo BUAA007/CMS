@@ -257,7 +257,7 @@ class UserViewSet(viewsets.ModelViewSet):
                 'conference': thismeeting,
                 'message': '失败，请登录'
             }
-            url = "../../../meeting/" + str(thismeeting.meeting_id)
+            url = "../../../meeting/?message=请登录" + str(thismeeting.meeting_id)
             return HttpResponseRedirect(url)
         if timezone.now()<=thismeeting.ddl_date:
             user_type = request.session['type']
@@ -283,7 +283,7 @@ class UserViewSet(viewsets.ModelViewSet):
                     'conference': thismeeting,
                     'message': '成功'
                 }
-                url = "../../../meeting/" + str(thismeeting.meeting_id)
+                url = "../../../meeting/?message=成功" + str(thismeeting.meeting_id)
                 return HttpResponseRedirect(url)
             except:
                 template = loader.get_template('conference.html')
@@ -291,7 +291,7 @@ class UserViewSet(viewsets.ModelViewSet):
                     'conference': thismeeting,
                     'message': '失败,填写信息错误'
                 }
-                url = "../../../meeting/" + str(thismeeting.meeting_id)
+                url = "../../../meeting/?message=填写错误" + str(thismeeting.meeting_id)
                 return HttpResponseRedirect(url)
         else:
             template = loader.get_template('conference.html')
@@ -299,7 +299,7 @@ class UserViewSet(viewsets.ModelViewSet):
                 'conference': thismeeting,
                 'message': '已超过投稿时间，无法投稿'
             }
-            url="../../../meeting/"+str(thismeeting.meeting_id)
+            url="../../../meeting/?message=超过投稿时间"+str(thismeeting.meeting_id)
             return HttpResponseRedirect(url)
             #return HttpResponse(template.render(context, request))
     @action(methods=['POST'], detail=False)
@@ -307,12 +307,13 @@ class UserViewSet(viewsets.ModelViewSet):
         try:
             user_id = request.session['id']
         except:
+            return Response("失败，请登录",status=status.HTTP_200_OK)
             template = loader.get_template('judgement.html')
             context = {
                 # 'conference': thismeeting,
                 'message': '失败，请登录'
             }
-            url="../allpaper"
+            url="../allpaper/?message=请登录"
             return HttpResponseRedirect(url)
 
         else:
@@ -327,7 +328,7 @@ class UserViewSet(viewsets.ModelViewSet):
                     'papers': papers,
                     'message': '失败,填写论文编号错误'
                 }
-                url = "../allpaper"
+                url = "../allpaper/?message=填写编号错误"
                 return HttpResponseRedirect(url)
 
             else:
@@ -355,7 +356,7 @@ class UserViewSet(viewsets.ModelViewSet):
                             'papers': papers,
                             'message': '修改成功，请等待审核'
                         }
-                        url = "../allpaper"
+                        url = "../allpaper/？message=成功，请等待审核"
                         return HttpResponseRedirect(url)
 
                     else:
@@ -367,7 +368,7 @@ class UserViewSet(viewsets.ModelViewSet):
                             'papers': papers,
                             'message': '失败,该论文不可修改'
                         }
-                        url = "../allpaper"
+                        url = "../allpaper/?message?=论文不可修改"
                         return HttpResponseRedirect(url)
 
                 else:
@@ -379,7 +380,7 @@ class UserViewSet(viewsets.ModelViewSet):
                         'papers': papers,
                         'message': '失败,已超过修改稿截止日期'
                     }
-                    url = "../allpaper"
+                    url = "../allpaper/?message=超过修改稿截止日期"
                     return HttpResponseRedirect(url)
 
 
@@ -518,7 +519,7 @@ class JoinViewSet(viewsets.ModelViewSet):
     serializer_class = JoinSerializer
 
     def create(self, request):
-        message  = ""
+        message  = "未知错误"
         try:
             receipt = request.FILES['file']
             type = int(request.data.get("type"))
@@ -566,7 +567,15 @@ class JoinViewSet(viewsets.ModelViewSet):
                     resername = "reservation" + str(count)
                     name = request.data.get(namename)
                 thispaper.owner.participate.add(thismeeting)
-                return HttpResponseRedirect('../user/allpaper')
+                thispaper.owner.save()
+                return HttpResponseRedirect('../user/allpaper/?message=注册成功')
+
+            try:
+                userid = int(request.session['id'])
+                thisuser = User.object.get(id = userid)
+            except:
+                message = "账户错误"
+                raise RuntimeError()
             meetingid = int(request.data.get("meeting"))
             try:
                 thismeeting = Meeting.objects.get(meeting_id=meetingid)
@@ -603,16 +612,10 @@ class JoinViewSet(viewsets.ModelViewSet):
                 gendername = "gender" + str(count)
                 resername = "reservation" + str(count)
                 name = request.data.get(namename)
-            thispaper.owner.participate.add(thismeeting)
-            return HttpResponseRedirect('../user/allpaper')
+            thisuser.participate.add(thismeeting)
+            thisuser.save()
+            url = '../../meeting/'+meetingid+'/?message=聆听成功'
+            return HttpResponseRedirect(url)
         except:
-            user_id = request.session['id']
-            thisuser = User.objects.get(id=user_id)
-            # thismeeting = Meeting.objects.get(meeting_id=pk)
-            papers = thisuser.paper_set.all()
-            template = loader.get_template('judgement.html')
-            context = {
-                'papers': papers,
-                'message': message
-            }
-            return HttpResponse(template.render(context, request))
+            url = '../../meeting/list2/?message='+message
+            return HttpResponseRedirect(url)
