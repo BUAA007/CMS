@@ -38,6 +38,7 @@
 
 <script src="{% static 'assets/js/plugins.js' %}"></script>
 <script src="{% static 'assets/js/main.js' %}"></script>
+<script src="{% static 'laydate/laydate.js' %}"></script>
 <!-- Left Panel -->
 <aside id="left-panel" class="left-panel">
     <nav class="navbar navbar-expand-sm navbar-default">
@@ -137,11 +138,15 @@
                 <a id="menuToggle" class="menutoggle pull-left"><i class="fa fa fa-tasks"></i></a>
                 <div class="header-left">
                     <div class="col-6">
-                        <form class="form-horizontal">
+                        <form id="searchForm" class="form-horizontal" method="post" action="/meeting/search/">
+                            {% csrf_token %}
                             <div class="row">
-                                <button class="col-2 search-trigger" type="submit"><i class="fa fa-search"></i></button>
+                                <a class="col-2" href="#" onclick="searchPost()"><i class="fa fa-search"></i></a>
+                                <a class="col-2" href="#" onclick="chooseCalendar()"><i
+                                        class="fa fa-calendar"></i>
+                                </a>
                                 <input class="col-7 mr-sm-2 form-control rounded" type="text" placeholder="Search ..."
-                                       aria-label="Search">
+                                       aria-label="Search" id="word">
                             </div>
                         </form>
                     </div>
@@ -220,6 +225,39 @@
         </div>
     </div>
 </div>
+<div class="modal fade" id="id_calendar" tabindex="-1" role="dialog"
+     aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">自定日期范围</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <form class="form-horizontal">
+                    <div class="form-group">
+                        <label>从</label>
+                        <input form="searchForm" type="text" class="layui-input form-control" id="time1"
+                               placeholder="yyyy-MM-dd" lay-key="1">
+                    </div>
+                    <div class="form-group">
+                        <label>至</label>
+                        <input form="searchForm" type="text" class="layui-input form-control" id="time2"
+                               placeholder="yyyy-MM-dd" lay-key="2">
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button type="button" onclick="searchPost()" form="searchForm" class="btn btn-primary"
+                        data-dismiss="modal">确定
+                </button>
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">关闭</button>
+            </div>
+        </div>
+    </div>
+</div>
 {% if message %}
 
     <script>
@@ -230,22 +268,6 @@
 {% endif %}
 <!-- Right Panel -->
 <script>
-    (function ($) {
-        "use strict";
-
-        jQuery('#vmap').vectorMap({
-            map: 'world_en',
-            backgroundColor: null,
-            color: '#ffffff',
-            hoverOpacity: 0.7,
-            selectedColor: '#1de9b6',
-            enableZoom: true,
-            showTooltip: true,
-            scaleColors: ['#1de9b6', '#03a9f5'],
-            normalizeFunction: 'polynomial'
-        });
-    })(jQuery);
-
     function logout() {
         $.ajax({
             url: '/logout/',
@@ -270,12 +292,31 @@
         return null;
     }
 
+    laydate.render({
+        elem: '#calendar1'
+    });
+    laydate.render({
+        elem: '#calendar2'
+    });
+
     let urlMessage = getQueryString('message');
-    if (urlMessage  != null) {
+    if (urlMessage != null) {
         jQuery(function ($) {
             document.getElementById('info').innerText = urlMessage;
             $('#id_errors').modal('show')
         });
+    }
+
+    function chooseCalendar() {
+        jQuery(function ($) {
+            $('#id_calendar').modal('show')
+        });
+    }
+
+    function searchPost() {
+        var postForm = document.getElementById('searchForm');
+        console.log([postForm])
+        {#postForm.submit();#}
     }
 </script>
 
