@@ -79,7 +79,7 @@ class AdminViewSet(viewsets.ModelViewSet):
 				if not len(allinstitution):
 					total_page = 1
 				else:
-					total_page = (len(allinstitution) - 1)
+					total_page = (len(allinstitution) - 1) // PAGE_MAX + 1
 				pages, pre_page, next_page = get_pages(total_page, page)
 				allinstitution = allinstitution[PAGE_MAX * (page - 1): PAGE_MAX * page]
 				context['institutions'] = allinstitution
