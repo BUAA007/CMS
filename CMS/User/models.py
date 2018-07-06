@@ -39,10 +39,6 @@ class Join(models.Model):
 		null=True,
 		default = 1,
 		)
-	# papid = models.IntegerField(
-	# 	null=True,
-	# 	default = 1,
-	# 	)
 	paper = models.ForeignKey(
 		"Paper.Paper",
 		on_delete=models.CASCADE,

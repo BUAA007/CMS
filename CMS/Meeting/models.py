@@ -46,9 +46,6 @@ class Meeting(models.Model):
 		upload_to='download/',
 		null = True,
 		)
-	style=models.CharField(  #会议主页
-        default="1"
-    )
 	receipt	= models.FloatField(		#pdf或jpg(url)
 		null = True,
 		)
@@ -56,6 +53,10 @@ class Meeting(models.Model):
 		max_length = 128,
 		null = True,
 		)
+	style=models.CharField(
+		max_length=20,
+		default="1"
+	)
 	about_us = models.CharField(
 		max_length = 128,
 		null = True,
