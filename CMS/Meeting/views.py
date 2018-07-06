@@ -396,7 +396,12 @@ class MeetingViewSet(viewsets.ModelViewSet):
                   dict["manage"] = x
                   dict["count"] = count
                   manage_list.append(dict)
-
+              for x in queryset:
+                  dict = {}
+                  count = x.join_set.all().count()
+                  dict["manage"] = x
+                  dict["count_join"] = count
+                  manage_list.append(dict)
               context = {
                   'manage_list': manage_list,
               }
