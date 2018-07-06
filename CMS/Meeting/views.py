@@ -790,7 +790,7 @@ class MeetingViewSet(viewsets.ModelViewSet):
 		"""
 		meeting = int(request.GET["meeting"])
 		thismeeting = Meeting.objects.get(meeting_id = meeting)
-		url = "/home/ubuntu/CMS/CMS/media/excel/"+thismeeting.title+".xls"
+		url = "/home/ubuntu/CMS/CMS/media/excel/"+thismeeting.meeting_id+".xls"
 		list_obj = thismeeting.paper_set.all()
 		if list_obj:
 			# 创建工作薄 投稿编号、作者、题目、单位、摘要等内容
@@ -838,7 +838,7 @@ class MeetingViewSet(viewsets.ModelViewSet):
 		response = StreamingHttpResponse(file_iterator(url))
 		response['Content-Type'] = 'application/vnd.ms-excel'
 		from urllib import parse
-		excel_name = thismeeting.title + "投稿信息"
+		excel_name = thismeeting.meeting_id + "info"
 		response['Content-Disposition'] = 'attachment;filename=' + parse.quote(excel_name) + '.xls'
 		return response
 		'''
