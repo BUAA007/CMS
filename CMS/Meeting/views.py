@@ -824,16 +824,15 @@ class MeetingViewSet(viewsets.ModelViewSet):
 			ws.save(url)
 			############################
 		else:
-			a = collections.OrderedDict({"errorInfo":"没有相关记录"})
-			return Response(a, status = status.HTTP_400_BAD_REQUEST)
+			return HttpResponseRedirect("/meeting/manageList/?message=无投稿信息")
 		def file_iterator(file_name, chunk_size=512):
-		with open(file_name, "rb") as f:
-			while True:
-				c = f.read(chunk_size)
-				if c:
-					yield c
-				else:
-					break
+			with open(file_name, "rb") as f:
+				while True:
+					c = f.read(chunk_size)
+					if c:
+						yield c
+					else:
+						break
 
 		response = StreamingHttpResponse(file_iterator(url))
 		response['Content-Type'] = 'application/vnd.ms-excel'
