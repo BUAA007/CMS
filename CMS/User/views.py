@@ -299,7 +299,7 @@ class UserViewSet(viewsets.ModelViewSet):
                 'conference': thismeeting,
                 'message': '已超过投稿时间，无法投稿'
             }
-            url="../../../meeting/"+str(thismeeting.meeting_id)
+            url="../../../meeting/?message=超过投稿时间"+str(thismeeting.meeting_id)
             return HttpResponseRedirect(url)
             #return HttpResponse(template.render(context, request))
     @action(methods=['POST'], detail=False)
