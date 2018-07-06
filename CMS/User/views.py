@@ -566,6 +566,7 @@ class JoinViewSet(viewsets.ModelViewSet):
                     resername = "reservation" + str(count)
                     name = request.data.get(namename)
                 thispaper.owner.participate.add(thismeeting)
+                thispaper.owner.save()
                 return HttpResponseRedirect('../user/allpaper/?message=success')
             meetingid = int(request.data.get("meeting"))
             try:
@@ -604,6 +605,7 @@ class JoinViewSet(viewsets.ModelViewSet):
                 resername = "reservation" + str(count)
                 name = request.data.get(namename)
             thispaper.owner.participate.add(thismeeting)
+            thispaper.owner.save()
             url = '../../meeting/'+meetingid+'/?message=success'
             return HttpResponseRedirect(url)
         except:
