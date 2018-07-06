@@ -53,6 +53,10 @@ class Meeting(models.Model):
 		max_length = 128,
 		null = True,
 		)
+	style=models.CharField(
+		max_length=20,
+		default="1"
+	)
 	about_us = models.CharField(
 		max_length = 128,
 		null = True,

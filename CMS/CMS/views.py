@@ -53,7 +53,7 @@ def download(request):
                     break
 
     try:
-        url = "/home/ubuntu/CMS/CMS/media/download/"
+        url = "D:/CMS/download/"
         rootpath = request.path
         tmp = rootpath.split("/")
         url += tmp[-1]
@@ -99,3 +99,6 @@ def release(request):
     except:
         pass
     return render(request, 'login.html')
+
+def adminCMS(request):
+    return render(request, 'admin_list.html')

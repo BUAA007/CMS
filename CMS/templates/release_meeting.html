@@ -29,7 +29,7 @@
             <div class="col-lg-12 col-lg-offset-4">
                 <div class="card">
                     <div class="card-header"><strong>会议信息登记</strong></div>
-                    <form method="POST" action="/meeting/">
+                    <form method="POST" action="/meeting/" enctype="multipart/form-data">
                     <div class="card-body card-block">
                     <div class="row form-group">
                         <div class="col col-md-3"><label for="text-input" class=" form-control-label">会议标题</label></div>
@@ -112,11 +112,11 @@
                                                                placeholder="填写日程安排" class="form-control"></textarea>
                         </div>
                     </div>
+                     <label for="file" class="btn btn-warning btn-sm">更改论文模板</label>
+                    <input id="file" type="file" style="display:none" name="file">
                 </div>
                 <div class="card-footer">
-                    <button type="button" class="btn btn-warning btn-sm">
-                        <i class="fa fa-dot-circle-o"> </i>上传论文模板
-                    </button>
+
                     <button type="submit" class="btn btn-primary btn-sm">
                         <i class="fa fa-dot-circle-o"></i> 提交
                     </button>
