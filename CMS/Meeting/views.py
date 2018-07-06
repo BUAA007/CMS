@@ -233,18 +233,23 @@ class MeetingViewSet(viewsets.ModelViewSet):
             return HttpResponse(template.render(context, request))
 
 
-    @action(methods=['POST'], detail=False)
+    @action(methods=['GET'], detail=False)
     def search(self, request):  # 根据时间搜索未写
         try:
-          page = int(request.GET['page'])
+            page = int(request.GET['page'])
         except (KeyError, ValueError):
-          page = 1
+            page = 1
         queryset = Meeting.objects.all()
-        word = request.data.get('word', None)
-        time1 = request.data.get('time1',None)
-        time2 = request.data.get('time2',None)
+        word = request.GET['word']
+        time1 = request.GET['time1']
+        time2 = request.GET['time2']
+        if word is None:
+            word = ""
+        # word = request.data.get('word', None)
+        # time1 = request.data.get('time1',None)
+        # time2 = request.data.get('time2',None)
         conditions = {}
-        if word is not None:
+        if word !="":
             conditions['title__contains'] = word
         if time1 !="":
             conditions['meeting_date__gte'] = time1
@@ -253,7 +258,7 @@ class MeetingViewSet(viewsets.ModelViewSet):
         result = queryset.filter(**conditions)
 
 
-        template = loader.get_template('conference_list.html')
+        template = loader.get_template('search_list.html')
         def check_time(conference):
             now = timezone.now()
             if now <= conference.ddl_date:
@@ -280,6 +285,9 @@ class MeetingViewSet(viewsets.ModelViewSet):
         context['pages'] = pages
         context['pre_page'] = pre_page
         context['next_page'] = next_page
+        context['word'] = word
+        context['time1'] = time1
+        context['time2'] = time2
 
         list(map(check_time, result))
         
