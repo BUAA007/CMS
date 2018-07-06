@@ -26,6 +26,7 @@ class AdminViewSet(viewsets.ModelViewSet):
 		context = {
 			'institutions': queryset,
 		}
+		return HttpResponse(template.render(context, request))
 
 
 	@action(methods = ['POST'],detail = False)
