@@ -356,7 +356,7 @@ class UserViewSet(viewsets.ModelViewSet):
                             'papers': papers,
                             'message': '修改成功，请等待审核'
                         }
-                        url = "../allpaper/？message=成功，请等待审核"
+                        url = "../allpaper/?message=成功，请等待审核"
                         return HttpResponseRedirect(url)
 
                     else:
@@ -566,8 +566,8 @@ class JoinViewSet(viewsets.ModelViewSet):
                     gendername = "gender" + str(count)
                     resername = "reservation" + str(count)
                     name = request.data.get(namename)
-                thispaper.owner.participate.add(thismeeting)
-                thispaper.owner.save()
+                #thispaper.owner.participate.add(thismeeting)
+                #thispaper.owner.save()
                 return HttpResponseRedirect('../user/allpaper/?message=注册成功')
 
             try:
