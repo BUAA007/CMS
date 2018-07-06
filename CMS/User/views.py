@@ -518,6 +518,7 @@ class JoinViewSet(viewsets.ModelViewSet):
     serializer_class = JoinSerializer
 
     def create(self, request):
+        message  = ""
         try:
             receipt = request.FILES['file']
             type = int(request.data.get("type"))
