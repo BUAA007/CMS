@@ -26,6 +26,7 @@ urlpatterns = [
     path('myadmin/', include('Admin.urls')),
     path('user/', include('User.urls')),
     path('',views.base),
+    path('base',views.base),
     path('login/',views.login),
     path('user_register/',views.user_register),
     path('institution_register/',views.institution_register),
