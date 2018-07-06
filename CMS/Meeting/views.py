@@ -826,7 +826,22 @@ class MeetingViewSet(viewsets.ModelViewSet):
 		else:
 			a = collections.OrderedDict({"errorInfo":"没有相关记录"})
 			return Response(a, status = status.HTTP_400_BAD_REQUEST)
+		def file_iterator(file_name, chunk_size=512):
+		with open(file_name, "rb") as f:
+			while True:
+				c = f.read(chunk_size)
+				if c:
+					yield c
+				else:
+					break
 
+		response = StreamingHttpResponse(file_iterator(url))
+		response['Content-Type'] = 'application/vnd.ms-excel'
+		from urllib import parse
+		excel_name = thismeeting.title + "投稿信息"
+		response['Content-Disposition'] = 'attachment;filename=' + parse.quote(excel_name) + '.xls'
+		return response
+		'''
 		def get_excel_stream(file):
 			# StringIO操作的只能是str，如果要操作二进制数据，就需要使用BytesIO。
 			excel_stream = io.BytesIO()
@@ -845,6 +860,7 @@ class MeetingViewSet(viewsets.ModelViewSet):
 		# 将文件流写入到response返回
 		response.write(res)
 		return response
+		'''
 
 
 def get_pages(total_page, cur_page):
