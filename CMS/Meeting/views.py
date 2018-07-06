@@ -1,4 +1,5 @@
 from django.shortcuts import render
+import io
 from rest_framework import viewsets
 from rest_framework.decorators import action
 from rest_framework.response import Response
@@ -9,7 +10,7 @@ from Meeting.models import Meeting
 from Meeting.serializers import MeetingSerializer
 from django.contrib.auth import authenticate, login, logout
 from django.shortcuts import get_object_or_404
-from django.http import HttpResponse, HttpResponseRedirect
+from django.http import HttpResponse,HttpResponseRedirect, StreamingHttpResponse
 from django.template import loader
 from User.models import *
 from Institution.models import Employee
@@ -19,12 +20,10 @@ from xlwt import *
 import os
 import collections
 import sys
-
 sys.path.append('../')
 from Admin import cmsem
 
 PAGE_MAX = 9
-
 
 def checkNull(msg):
 	return msg
@@ -190,7 +189,7 @@ class MeetingViewSet(viewsets.ModelViewSet):
 			if now >= thisMeeting.meeting_end_date:
 				thisMeeting.status5 = True
 			thisuser = User.objects.get(id=user_id)
-
+			'''
 			queryset = thisuser.participate.all()
 			allpaper = thisuser.paper_set.all()
 			allmeeting = list()
@@ -205,6 +204,8 @@ class MeetingViewSet(viewsets.ModelViewSet):
 			print(allmeeting)
 			listenmeeting = set(queryset) - set(allmeeting)
 			print(listenmeeting)
+			'''
+			listenmeeting = thisuser.participate.all()
 			if thisMeeting in listenmeeting:
 				islisten = True
 			else:
@@ -751,6 +752,7 @@ class MeetingViewSet(viewsets.ModelViewSet):
 			page = int(request.GET['page'])
 		except (KeyError, ValueError):
 			page = 1
+		'''
 		queryset = thisuser.participate.all().order_by('-meeting_id')
 		allpaper = thisuser.paper_set.all()
 		allmeeting = list()
@@ -762,6 +764,8 @@ class MeetingViewSet(viewsets.ModelViewSet):
 						if join.meeting not in allmeeting:
 							allmeeting.append(join.meeting)
 		listenmeeting = set(queryset) - set(allmeeting)
+		'''
+		listenmeeting = thisuser.participate.all().order_by('-meeting_id')
 		queryset = sorted(listenmeeting, key=lambda x: x.ddl_date)
 		template = loader.get_template('conference_list.html')
 
@@ -796,14 +800,14 @@ class MeetingViewSet(viewsets.ModelViewSet):
 		context['next_page'] = next_page
 		return HttpResponse(template.render(context, request))
 
-	@action(methods=['POST'], detail=False)
+	@action(methods=['GET'], detail=False)
 	def excel_export(self, request):
 		"""
 		导出excel表格
 		"""
-		meeting = int(request.data.get("meeting"))
-		thismeeting = Meeting.objects.get(meeting_id=meeting)
-		url = "excel/" + thismeeting.title + ".xls"
+		meeting = int(request.GET["meeting"])
+		thismeeting = Meeting.objects.get(meeting_id = meeting)
+		url = "/home/ubuntu/CMS/CMS/media/excel/"+str(thismeeting.meeting_id)+".xls"
 		list_obj = thismeeting.paper_set.all()
 		if list_obj:
 			# 创建工作薄 投稿编号、作者、题目、单位、摘要等内容
@@ -833,13 +837,11 @@ class MeetingViewSet(viewsets.ModelViewSet):
 			###########################
 			exist_file = os.path.exists(url)
 			if exist_file:
-				os.remove(url)
+			    os.remove(url)
 			ws.save(url)
-		############################
+			############################
 		else:
-			a = collections.OrderedDict({"errorInfo": "服务器出错，请稍后重试。"})
-			return Response(a, status=status.HTTP_400_BAD_REQUEST)
-
+			return HttpResponseRedirect("/meeting/manageList/?message=无投稿信息")
 		def file_iterator(file_name, chunk_size=512):
 			with open(file_name, "rb") as f:
 				while True:
@@ -849,13 +851,32 @@ class MeetingViewSet(viewsets.ModelViewSet):
 					else:
 						break
 
-		if url is not None:
-			response = StreamingHttpResponse(file_iterator(url))
-			response['Content-Type'] = 'application/octet-stream'
-			response['Content-Disposition'] = 'attachment;filename="{0}"'.format(tmp[-1])
-			return response
-		a = collections.OrderedDict({"errorInfo": "服务器出错，请稍后重试。"})
-		return Response(a, status=status.HTTP_400_BAD_REQUEST)
+		response = StreamingHttpResponse(file_iterator(url))
+		response['Content-Type'] = 'application/vnd.ms-excel'
+		from urllib import parse
+		excel_name = str(thismeeting.meeting_id) + "paperinfo"
+		response['Content-Disposition'] = 'attachment;filename=' + parse.quote(excel_name) + '.xls'
+		return response
+		'''
+		def get_excel_stream(file):
+			# StringIO操作的只能是str，如果要操作二进制数据，就需要使用BytesIO。
+			excel_stream = io.BytesIO()
+			# 这点很重要，传给save函数的不是保存文件名，而是一个BytesIO流（在内存中读写）
+			file.save(excel_stream)
+			# getvalue方法用于获得写入后的byte将结果返回给re
+			res = excel_stream.getvalue()
+			excel_stream.close()
+			return res
+		res = get_excel_stream(ws)
+		# 设置HttpResponse的类型
+		response = HttpResponse(content_type='application/vnd.ms-excel')
+		from urllib import parse
+		excel_name = thismeeting.title + "投稿信息"
+		response['Content-Disposition'] = 'attachment;filename=' + parse.quote(excel_name) + '.xls'
+		# 将文件流写入到response返回
+		response.write(res)
+		return response
+		'''
 
 
 def get_pages(total_page, cur_page):

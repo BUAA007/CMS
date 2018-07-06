@@ -197,17 +197,7 @@ class EmployeeViewSet(viewsets.ModelViewSet):
        username = request.data.get("username")
        password = request.data.get("password")
        password2 = request.data.get("password2")
-       try:
-          if not Employee.objects.get(username = username):
-              return  HttpResponse(errorInfo("用户名已存在"), content_type="application/json")
-       except:
-           pass
-       if not checkUsername(username):    #必须以字母开头，长度在10位以内
-          return  HttpResponse(errorInfo("用户名不合法"), content_type="application/json")
-       if not checkPassword(password):    #包含大写、小写、符号；长度大于等于8
-          return  HttpResponse(errorInfo("密码不合法"), content_type="application/json")
-       if not password == password2:
-          return  HttpResponse(errorInfo("确认密码不一致"), content_type="application/json")
+       
 
        password = md5(password)
        try:

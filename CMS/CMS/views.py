@@ -2,7 +2,7 @@ from django.shortcuts import render
 from rest_framework import viewsets
 from rest_framework.decorators import action
 from rest_framework.response import Response
-from django.http import StreamingHttpResponse
+from django.http import StreamingHttpResponse,HttpResponseRedirect
 from rest_framework.decorators import action
 from django.http import HttpResponse
 from django.shortcuts import render
@@ -52,27 +52,37 @@ def personal_info(request):
 
 def download(request):
 	def file_iterator(file_name, chunk_size=512):
-		with open(file_name, "rb") as f:
-			while True:
-				c = f.read(chunk_size)
-				if c:
-					yield c
-				else:
-					break
-
+		try:
+			with open(file_name, "rb") as f:
+				while True:
+					c = f.read(chunk_size)
+					if c:
+						yield c
+					else:
+						break
+		except:
+			return "nofile"
 	try:
 		url = "D:/CMS/download/"
 		rootpath = request.path
+		path2 = rootpath.split("/download")[0]
+		print(path2)
+		print(rootpath)
 		tmp = rootpath.split("/")
 		url += tmp[-1]
 	except:
+		return HttpResponseRedirect(path2)
 		a = collections.OrderedDict({"errorInfo": "服务器出错，请稍后重试。"})
 		return Response(a, status=status.HTTP_400_BAD_REQUEST)
 	if url is not None:
-		response = StreamingHttpResponse(file_iterator(url))
+		try:
+			response = StreamingHttpResponse(file_iterator(url))
+		except:
+			print("file error")
 		response['Content-Type'] = 'application/octet-stream'
 		response['Content-Disposition'] = 'attachment;filename="{0}"'.format(tmp[-1])
 		return response
+	return HttpResponseRedirect(path2)
 	a = collections.OrderedDict({"errorInfo": "服务器出错，请稍后重试。"})
 	return HttpResponse(a, status=status.HTTP_400_BAD_REQUEST)
 
