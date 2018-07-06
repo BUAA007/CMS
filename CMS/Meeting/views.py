@@ -182,7 +182,6 @@ class MeetingViewSet(viewsets.ModelViewSet):
                 thisMeeting.status4 = True
             if now >= thisMeeting.meeting_end_date:
                 thisMeeting.status5 = True
-            print(thisMeeting.status1,thisMeeting.status2,thisMeeting.status3,thisMeeting.status4,thisMeeting.status5)
             thisuser = User.objects.get(id=user_id)
 
             islisten = False
@@ -203,7 +202,6 @@ class MeetingViewSet(viewsets.ModelViewSet):
                 isfavorite = False
             else:
                 isfavorite = True
-
             template = loader.get_template('conference.html')
             context = {
                 'conference': thisMeeting,
@@ -211,10 +209,8 @@ class MeetingViewSet(viewsets.ModelViewSet):
                 'islisten':islisten,
                 'map': "http://maps.google.com.tw/maps?f=q&amp;amp;hl=zh-TW&amp;geocode=&;q=" + thisMeeting.organization + "&z=16&output=embed&t=",
             }
-            print(context)
             return HttpResponse(template.render(context, request))
-        except Exception as e:
-            print(e)
+        except:
             now = timezone.now()
             thisMeeting.status1 = False
             thisMeeting.status2 = False
@@ -241,7 +237,6 @@ class MeetingViewSet(viewsets.ModelViewSet):
                 'islisten':False,
                 'map': "http://maps.google.com.tw/maps?f=q&amp;amp;hl=zh-TW&amp;geocode=&;q=" + thisMeeting.organization + "&z=16&output=embed&t=",
             }
-            print(context)
             return HttpResponse(template.render(context, request))
 
 
