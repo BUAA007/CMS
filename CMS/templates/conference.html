@@ -65,6 +65,69 @@
             </div>
         </div>
     </div>
+    <div class="modal fade" id="registerConference" tabindex="-1" role="dialog"
+         aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="exampleModalCenterTitle">聆听会议</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <form enctype="multipart/form-data" class="form-horizontal" action="/user/join/" method="post"
+                          id="registerConferenceForm">
+                        <div class="form-group">
+                            <div class="custom-file">
+                                <input type="file" name="file" class="custom-file-input" required id="content">
+                                <label class="custom-file-label" for="content">上传缴费凭证</label>
+                            </div>
+                        </div>
+                        <input type="hidden" value="{{ conference.meeting_id }}" name="meeting">
+                        <input type="hidden" name="type" value="1">
+                        <div class="form-group">
+                            <div class="col-6">
+                                <h6>参会人员</h6>
+                            </div>
+                            <div class="col-1 float-right ">
+                                <a href="#" class="fa fa-plus-square" onclick="addPerson()"></a>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <div class="input-group mb-3">
+                                <div class="input-group-prepend">
+                                    <span class="input-group-text" id="inputGroup-sizing-default">姓名</span>
+                                </div>
+                                <input placeholder="请输入姓名" required type="text" class="form-control"
+                                       aria-label="Default"
+                                       aria-describedby="inputGroup-sizing-default" name="name1">
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <div class="col-6">
+                                <input type="radio" required name="gender1" value="male">
+                                <label>男</label>
+                                <input type="radio" name="gender1" value="female">
+                                <label>女</label>
+                            </div>
+                            <div class="col-6">
+                                <input type="radio" required name="reservation1" value="yes">
+                                <label>预定住宿</label>
+                                <input type="radio" name="reservation1" value="no">
+                                <label>不预定住宿</label>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">关闭</button>
+                    <button form="registerConferenceForm" type="submit" class="btn btn-primary">提交</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
     <div class="animated fadeIn">
         <div class="row">
 
@@ -143,7 +206,7 @@
                                     </li>
                                 </ul>
                             </div>
-                            
+
                             <div class="embed-responsive embed-responsive-16by9">
                                 <iframe class="embed-responsive-item"
                                         src="{{ map }}"
@@ -151,40 +214,40 @@
                             </div>
 
                             {% if request.session.type == '0' %}
-                            <hr class="my-4">
-                            <div>
-                                <div class="col-3" data-toggle="modal" data-target="#postPaper">
-                                    <a href="#">
-                                        <i class="fa fa-map"></i>
-                                        投稿
-                                    </a>
-                                </div>
-                                <div class="col-3" id="favoriteDiv">
-                                    {% if isfavorite %}
-                                        <a onclick="favorite()">
-                                            <i class="fa text-danger fa-heart"></i>
-                                            已收藏
+                                <hr class="my-4">
+                                <div>
+                                    <div class="col-3" data-toggle="modal" data-target="#postPaper">
+                                        <a href="#">
+                                            <i class="fa fa-map"></i>
+                                            投稿
                                         </a>
-                                    {% else %}
-                                        <a onclick="favorite()">
-                                            <i class="fa fa-heart"></i>
-                                            收藏
+                                    </div>
+                                    <div class="col-3" id="favoriteDiv">
+                                        {% if isfavorite %}
+                                            <a onclick="favorite()">
+                                                <i class="fa text-danger fa-heart"></i>
+                                                已收藏
+                                            </a>
+                                        {% else %}
+                                            <a onclick="favorite()">
+                                                <i class="fa fa-heart"></i>
+                                                收藏
+                                            </a>
+                                        {% endif %}
+                                    </div>
+                                    <div class="col-3" data-toggle="modal" data-target="#registerConference">
+                                        <a href="#">
+                                            <i class="fa fa-phone"></i>
+                                            聆听
                                         </a>
-                                    {% endif %}
+                                    </div>
+                                    <div class="col-3" onclick="fuck()">
+                                        <a href="#">
+                                            <i class="fa fa-download"></i>
+                                            下载模板
+                                        </a>
+                                    </div>
                                 </div>
-                                <div class="col-3" onclick="fuck()">
-                                    <a href="#">
-                                        <i class="fa fa-phone"></i>
-                                        聆听
-                                    </a>
-                                </div>
-                                <div class="col-3" onclick="fuck()">
-                                    <a href="#">
-                                        <i class="fa fa-download"></i>
-                                        下载模板
-                                    </a>
-                                </div>
-                            </div>
                             {% endif %}
                         </div>
                         <div class="col-lg-3">
@@ -308,7 +371,7 @@
             isFavorite = false;
         {% endif %}
         function favorite() {
-            var meeting_id = {{ conference.meeting_id }};
+            let meeting_id = {{ conference.meeting_id }};
             jQuery(function ($) {
                 $.ajax({
                     url: '/user/user/favorite/',
@@ -334,13 +397,35 @@
                                     '                                            <i class="fa fa-heart"></i>\n' +
                                     '                                            收藏\n' +
                                     '                                        </a>'
-                                
+
                             }
                         }
                     },
                     error: function (msg) {
 
                     }
+                });
+            });
+        }
+
+        function listen() {
+            let meeting_id = {{ conference.meeting_id }};
+            jQuery(function ($) {
+                $.ajax({
+                    url: '/user/join/',
+                    type: 'POST',
+                    data: {'meeting': meeting_id, 'type': '2'}, // Request body
+                    dataType: 'json',
+                    success: function (response) {
+                        if (response['errorInfo']) {
+                            document.getElementById('info').innerHTML = response['errorInfo'];
+                        } else {
+                            document.getElementById('info').innerHTML = response['info'];
+                        }
+                        jQuery(function ($) {
+                            $('#id_errors').modal('show')
+                        });
+                    },
                 });
             });
         }
