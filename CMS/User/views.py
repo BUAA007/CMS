@@ -571,8 +571,8 @@ class JoinViewSet(viewsets.ModelViewSet):
                 return HttpResponseRedirect('../user/allpaper/?message=注册成功')
 
             try:
-                userid = int(request.session['id'])
-                thisuser = User.object.get(id = userid)
+                userid = request.session['id']
+                thisuser = User.objects.get(id = userid)
             except:
                 message = "账户错误"
                 raise RuntimeError()
@@ -614,7 +614,7 @@ class JoinViewSet(viewsets.ModelViewSet):
                 name = request.data.get(namename)
             thisuser.participate.add(thismeeting)
             thisuser.save()
-            url = '../../meeting/'+meetingid+'/?message=聆听成功'
+            url = '../../meeting/'+str(meetingid)+'/?message=聆听成功'
             return HttpResponseRedirect(url)
         except:
             url = '../../meeting/list2/?message='+message

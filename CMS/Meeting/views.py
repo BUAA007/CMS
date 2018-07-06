@@ -184,17 +184,21 @@ class MeetingViewSet(viewsets.ModelViewSet):
                 thisMeeting.status5 = True
             thisuser = User.objects.get(id=user_id)
 
-            islisten = False
             queryset = thisuser.participate.all()
             allpaper = thisuser.paper_set.all()
             allmeeting = list()
             for paper in allpaper:
-                allmeeting.append(paper.meeting)
-            listenmeeting = queryset.difference(allmeeting)
+                if paper.status=="1"and paper.meeting not in allmeeting:
+                    allmeeting.append(paper.meeting)
+            print(queryset)
+            print(allmeeting)
+            listenmeeting = set(queryset)-set(allmeeting)
+            print(listenmeeting)
             if thisMeeting in listenmeeting:
                 islisten = True
             else:
                 islisten = False
+
             # return Response("info: contribute succsss", status=status.HTTP_200_OK)
             try:
                 favorite = thisuser.favorite.get(meeting_id=thisMeeting.meeting_id)
@@ -209,6 +213,7 @@ class MeetingViewSet(viewsets.ModelViewSet):
                 'islisten':islisten,
                 'map': "http://maps.google.com.tw/maps?f=q&amp;amp;hl=zh-TW&amp;geocode=&;q=" + thisMeeting.organization + "&z=16&output=embed&t=",
             }
+
             return HttpResponse(template.render(context, request))
         except:
             now = timezone.now()
@@ -695,7 +700,8 @@ class MeetingViewSet(viewsets.ModelViewSet):
         allpaper = thisuser.paper_set.all()
         allmeeting = list()
         for paper in allpaper:
-            allmeeting.append(paper.meeting)
+            if paper.status=="1"and paper.meeting not in allmeeting:
+                allmeeting.append(paper.meeting)
         listenmeeting = queryset.difference(allmeeting)
         template = loader.get_template('conference_list.html')
         def check_time(conference):
