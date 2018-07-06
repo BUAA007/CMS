@@ -519,7 +519,7 @@ class JoinViewSet(viewsets.ModelViewSet):
     serializer_class = JoinSerializer
 
     def create(self, request):
-        message  = ""
+        message  = "未知错误"
         try:
             receipt = request.FILES['file']
             type = int(request.data.get("type"))
@@ -569,6 +569,13 @@ class JoinViewSet(viewsets.ModelViewSet):
                 thispaper.owner.participate.add(thismeeting)
                 thispaper.owner.save()
                 return HttpResponseRedirect('../user/allpaper/?message=注册成功')
+
+            try:
+                userid = int(request.session['id'])
+                thisuser = User.object.get(id = userid)
+            except:
+                message = "账户错误"
+                raise RuntimeError()
             meetingid = int(request.data.get("meeting"))
             try:
                 thismeeting = Meeting.objects.get(meeting_id=meetingid)
@@ -605,8 +612,8 @@ class JoinViewSet(viewsets.ModelViewSet):
                 gendername = "gender" + str(count)
                 resername = "reservation" + str(count)
                 name = request.data.get(namename)
-            thispaper.owner.participate.add(thismeeting)
-            thispaper.owner.save()
+            thisuser.participate.add(thismeeting)
+            thisuser.save()
             url = '../../meeting/'+meetingid+'/?message=聆听成功'
             return HttpResponseRedirect(url)
         except:
