@@ -80,7 +80,8 @@
                             <li><i class="menu-icon fa fa-wrench"></i><a href="/meeting/manageList">管理会议</a></li>
 
 
-                            <li><i class="menu-icon fa fa-user-plus"></i><a href="/institution/employee/allemployee">配置账号</a></li>
+                            <li><i class="menu-icon fa fa-user-plus"></i><a href="/institution/employee/allemployee">配置账号</a>
+                            </li>
                         </ul>
                     </li>
                     <h3 class="menu-title"></h3><!-- /.menu-title -->
@@ -200,25 +201,25 @@
         {% endblock %}
     </div> <!-- .content -->
 </div><!-- /#right-panel -->
-    <div class="modal fade" id="id_errors" tabindex="-1" role="dialog"
-         aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
-        <div class="modal-dialog modal-dialog-centered" role="document">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <h5 class="modal-title" id="exampleModalCenterTitle">提示</h5>
-                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                        <span aria-hidden="true">&times;</span>
-                    </button>
-                </div>
-                <div class="modal-body" id="info">
-                    {{ message }}
-                </div>
-                <div class="modal-footer">
-                    <button type="button" class="btn btn-secondary" data-dismiss="modal">关闭</button>
-                </div>
+<div class="modal fade" id="id_errors" tabindex="-1" role="dialog"
+     aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="exampleModalCenterTitle">提示</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body" id="info">
+                {{ message }}
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">关闭</button>
             </div>
         </div>
     </div>
+</div>
 {% if message %}
 
     <script>
@@ -260,6 +261,21 @@
             }
 
         })
+    }
+
+    function getQueryString(name) {
+        var reg = new RegExp("(^|&)" + name + "=([^&]*)(&|$)");
+        var r = window.location.search.substr(1).match(reg);
+        if (r != null) return decodeURI(r[2]);
+        return null;
+    }
+
+    let urlMessage = getQueryString('message');
+    if (urlMessage  != null) {
+        jQuery(function ($) {
+            document.getElementById('info').innerText = urlMessage;
+            $('#id_errors').modal('show')
+        });
     }
 </script>
 
