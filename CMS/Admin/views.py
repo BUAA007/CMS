@@ -47,3 +47,6 @@ class AdminViewSet(viewsets.ModelViewSet):
 			'institution': allinstitution,
 		}
 		return HttpResponse(template.render(context, request))
+
+	def adminCMS(request):
+		return render(request, 'admin_list.html')

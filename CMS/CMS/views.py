@@ -100,5 +100,3 @@ def release(request):
         pass
     return render(request, 'login.html')
 
-def adminCMS(request):
-    return render(request, 'admin_list.html')
