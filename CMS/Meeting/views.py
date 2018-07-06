@@ -185,7 +185,7 @@ class MeetingViewSet(viewsets.ModelViewSet):
 			if now >= thisMeeting.meeting_end_date:
 				thisMeeting.status5 = True
 			thisuser = User.objects.get(id=user_id)
-
+			'''
 			queryset = thisuser.participate.all()
 			allpaper = thisuser.paper_set.all()
 			allmeeting = list()
@@ -200,6 +200,8 @@ class MeetingViewSet(viewsets.ModelViewSet):
 			print(allmeeting)
 			listenmeeting = set(queryset) - set(allmeeting)
 			print(listenmeeting)
+			'''
+			listenmeeting = thisuser.participate.all()
 			if thisMeeting in listenmeeting:
 				islisten = True
 			else:
@@ -738,6 +740,7 @@ class MeetingViewSet(viewsets.ModelViewSet):
 			page = int(request.GET['page'])
 		except (KeyError, ValueError):
 			page = 1
+		'''
 		queryset = thisuser.participate.all().order_by('-meeting_id')
 		allpaper = thisuser.paper_set.all()
 		allmeeting = list()
@@ -749,6 +752,8 @@ class MeetingViewSet(viewsets.ModelViewSet):
 						if join.meeting not in allmeeting:
 							allmeeting.append(join.meeting)
 		listenmeeting = set(queryset) - set(allmeeting)
+		'''
+		listenmeeting = thisuser.participate.all().order_by('-meeting_id')
 		queryset = sorted(listenmeeting, key=lambda x: x.ddl_date)
 		template = loader.get_template('conference_list.html')
 
