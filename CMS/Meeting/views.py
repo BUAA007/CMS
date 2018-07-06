@@ -13,7 +13,7 @@ from django.shortcuts import get_object_or_404
 from django.http import HttpResponse,HttpResponseRedirect, StreamingHttpResponse
 from django.template import loader
 from User.models import *
-from Institution.models import Employee
+from Institution.models import *
 from django.utils import timezone
 from datetime import datetime, date
 from xlwt import *
@@ -43,12 +43,11 @@ class MeetingViewSet(viewsets.ModelViewSet):
 		context = {}
 		if request.session['type'] == '0' or request.session['is_login'] != 'true':
 			return render(request, "base.html")
-
 		thisEmployee = Employee.objects.get(username=request.session['username'])
 		thisInstitution = thisEmployee.institution
-		# if thisinstitution.status!="1":
-		#    return Response({"errorInfo":"have not been received"}, status=status.HTTP_200_OK)
 		title = request.data.get("title")
+		if thisInstitution.status !="1":
+			return HttpResponse(template.render(errorInfo("机构未通过审核"), request))
 		if not title:
 			return HttpResponse(template.render(errorInfo("会议标题不能为空"), request))
 		about_us = request.data.get("about_us")
@@ -251,7 +250,7 @@ class MeetingViewSet(viewsets.ModelViewSet):
 			if now >= thisMeeting.meeting_end_date:
 				thisMeeting.status5 = True
 			print(thisMeeting.status1, thisMeeting.status2, thisMeeting.status3, thisMeeting.status4,
-			      thisMeeting.status5)
+				  thisMeeting.status5)
 			# print(thisMeeting.status1)
 			if thisMeeting.style == "1":
 				template = loader.get_template('conference.html')
@@ -476,7 +475,7 @@ class MeetingViewSet(viewsets.ModelViewSet):
 				if now >= thisMeeting.meeting_end_date:
 					thisMeeting.status5 = '1'
 				print(thisMeeting.status1, thisMeeting.status2, thisMeeting.status3, thisMeeting.status4,
-				      thisMeeting.status5)
+					  thisMeeting.status5)
 
 				# return Response("info: contribute succsss", status=status.HTTP_200_OK)
 				template = loader.get_template('manage.html')
@@ -524,8 +523,7 @@ class MeetingViewSet(viewsets.ModelViewSet):
 		)
 		a.save()
 		emailTitle = "CMS系统提示，会议信息发生修改"
-		emailContent = "会议id为" + str(thisMeeting.meeting_id) + "的会议信息发生修改，请查看" + "http://127.0.0.1:8000/meeting/" + str(
-			thisMeeting.meeting_id) + "/"
+		emailContent = "会议id为" + str(thisMeeting.meeting_id) + "的会议信息发生修改，请查看" + "http://123.206.65.175/meeting/" + str(thisMeeting.meeting_id) + "/"
 		userSet = thisMeeting.User_set.all()
 		AttendeeSet = thisMeeting.Attendee_set.all()
 		emailList = []
@@ -837,7 +835,7 @@ class MeetingViewSet(viewsets.ModelViewSet):
 			###########################
 			exist_file = os.path.exists(url)
 			if exist_file:
-			    os.remove(url)
+				os.remove(url)
 			ws.save(url)
 			############################
 		else:
