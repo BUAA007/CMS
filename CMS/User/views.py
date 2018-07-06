@@ -607,7 +607,7 @@ class JoinViewSet(viewsets.ModelViewSet):
                 name = request.data.get(namename)
             thispaper.owner.participate.add(thismeeting)
             thispaper.owner.save()
-            url = '../../meeting/'+meetingid+'/?message=成功'
+            url = '../../meeting/'+meetingid+'/?message=聆听成功'
             return HttpResponseRedirect(url)
         except:
             url = '../../meeting/list2/?message='+message
