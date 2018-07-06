@@ -34,5 +34,6 @@ urlpatterns = [
     path('logout/',views.logout),
     path('release/', views.release),
     url(r'.*/download/.*',views.download),
-    url('adminCMS', views.adminCMS)
+
+
 ]

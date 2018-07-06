@@ -1,4 +1,5 @@
 {% load staticfiles %}
+
 <html>
 
     <style>
@@ -77,16 +78,19 @@
             </div>
             <p></p>
             <div class="form-group" style="color:#111111">
-                <label class="radio-inline">
+                <label class="radio-inline" style="padding-left:0px;">
                     <input name="user_type" id="unit_user" type="radio" value="0" checked="true">
                     单位用户
                 </label>
-                &nbsp&nbsp&nbsp&nbsp&nbsp
+
                 <label class="radio-inline">
                     <input name="user_type" id="user"  type="radio" value="1">
                     个体用户
                 </label>
-
+                <label class="radio-inline">
+                    <input name="user_type" id="admin"  type="radio" value="2">
+                    管理员
+                </label>
             </div>
             <button class="btn btn-lg btn-primary btn-block mt-4 mb-2" type="button" onclick="up()" >登录</button>
             <a href="#">忘记密码</a>
@@ -103,7 +107,10 @@
         }
     });
 
+
+
     function up() {
+
         var type
         var radio = document.getElementsByName("user_type");
         for (var i = 0; i < radio.length; i++) {
@@ -114,6 +121,8 @@
         var url = '/user/user/login/';
         if (type == 0) {
             url = '/institution/employee/login/';
+        }else if (type == 2){
+            url = '/myadmin/login/'
         }
         var data = {
             "username": document.getElementById("username").value,
@@ -131,7 +140,11 @@
                     document.getElementById("username").value = null;
                     document.getElementById("password").value = null;
                 } else {
-                    window.location.href = '/base/';
+                    if(type == 2){
+                        window.location.href = '/myadmin/adminCMS';
+                    }else {
+                        window.location.href = '/base/';
+                    }
                 }
 
             }
