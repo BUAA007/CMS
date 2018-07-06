@@ -188,8 +188,12 @@ class MeetingViewSet(viewsets.ModelViewSet):
             allpaper = thisuser.paper_set.all()
             allmeeting = list()
             for paper in allpaper:
-                if paper.status=="1"and paper.meeting not in allmeeting:
-                    allmeeting.append(paper.meeting)
+                if paper.status == 1:
+                    alljoin = paper.join_set.all()
+                    if alljoin != []:
+                        for join in alljoin:
+                            if join.meeting not in allmeeting:
+                                allmeeting.append(join.meeting)
             print(queryset)
             print(allmeeting)
             listenmeeting = set(queryset)-set(allmeeting)
@@ -602,19 +606,25 @@ class MeetingViewSet(viewsets.ModelViewSet):
         #    pass
         return Response(errorInfo("传递时间不合法"), content_type="application/json")
 
-    @action(methods=['POST'],detail=False)
+    @action(methods=['POST','GET'],detail=False)
     def allregistermeeting(self,request):
         user_id=request.session['id']
-        thisuser=User.object.get(id=user_id)
+        thisuser=User.objects.get(id=user_id)
         allpaper=thisuser.paper_set.all()
         allmeeting=list()
         for paper in allpaper:
-            allmeeting.append(paper.meeting)
+            if paper.status==1:
+                alljoin=paper.join_set.all()
+                if alljoin!=[]:
+                    for join in alljoin :
+                        if join.meeting not in allmeeting:
+                            allmeeting.append(join.meeting)
+        print(allmeeting)
         try:
             page = int(request.GET['page'])
         except (KeyError, ValueError):
             page = 1
-        queryset = allmeeting.order_by('-meeting_id')
+        queryset = sorted(allmeeting, key=lambda x: x.ddl_date)
         template = loader.get_template('conference_list.html')
         def check_time(conference):
             now = timezone.now()
@@ -631,16 +641,16 @@ class MeetingViewSet(viewsets.ModelViewSet):
             else:
                 conference.status = "会议完成"
 
-        list(map(check_time, allmeeting))
-        context = {'conference_list': allmeeting}
-        if not len(allmeeting):
+        list(map(check_time, queryset))
+        context = {'conference_list': queryset}
+        if not len(queryset):
             total_page = 1
         else:
-            total_page = (len(allmeeting) - 1) // PAGE_MAX + 1
+            total_page = (len(queryset) - 1) // PAGE_MAX + 1
         pages, pre_page, next_page = get_pages(total_page, page)
-        queryset = allmeeting[PAGE_MAX * (page - 1): PAGE_MAX * page]
+        queryset = queryset[PAGE_MAX * (page - 1): PAGE_MAX * page]
 
-        context['conference_list'] = allmeeting
+        context['conference_list'] = queryset
         context['page'] = page
         context['pages'] = pages
         context['pre_page'] = pre_page
@@ -688,10 +698,10 @@ class MeetingViewSet(viewsets.ModelViewSet):
         context['next_page'] = next_page
         return HttpResponse(template.render(context, request))
 
-    @action(methods=['POST'], detail=False)
+    @action(methods=['POST','GET'], detail=False)
     def alllistenmeeting(self, request):
         user_id = request.session['id']
-        thisuser = User.object.get(id=user_id)
+        thisuser = User.objects.get(id=user_id)
         try:
             page = int(request.GET['page'])
         except (KeyError, ValueError):
@@ -702,7 +712,8 @@ class MeetingViewSet(viewsets.ModelViewSet):
         for paper in allpaper:
             if paper.status=="1"and paper.meeting not in allmeeting:
                 allmeeting.append(paper.meeting)
-        listenmeeting = queryset.difference(allmeeting)
+        listenmeeting = set(queryset) - set(allmeeting)
+        queryset = sorted(listenmeeting, key=lambda x: x.ddl_date)
         template = loader.get_template('conference_list.html')
         def check_time(conference):
             now = timezone.now()
@@ -718,16 +729,16 @@ class MeetingViewSet(viewsets.ModelViewSet):
                 conference.status = "会议中"
             else:
                 conference.status = "会议完成"
-        list(map(check_time, listenmeeting))
-        context = {'conference_list': listenmeeting}
-        if not len(listenmeeting):
+        list(map(check_time, queryset))
+        context = {'conference_list': queryset}
+        if not len(queryset):
             total_page = 1
         else:
-            total_page = (len(listenmeeting) - 1) // PAGE_MAX + 1
+            total_page = (len(queryset) - 1) // PAGE_MAX + 1
         pages, pre_page, next_page = get_pages(total_page, page)
-        queryset = listenmeeting[PAGE_MAX * (page - 1): PAGE_MAX * page]
+        queryset = queryset[PAGE_MAX * (page - 1): PAGE_MAX * page]
 
-        context['conference_list'] = listenmeeting
+        context['conference_list'] = queryset
         context['page'] = page
         context['pages'] = pages
         context['pre_page'] = pre_page
