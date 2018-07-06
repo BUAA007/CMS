@@ -182,17 +182,10 @@ class MeetingViewSet(viewsets.ModelViewSet):
                 thisMeeting.status4 = True
             if now >= thisMeeting.meeting_end_date:
                 thisMeeting.status5 = True
-            print(thisMeeting.status1,thisMeeting.status2,thisMeeting.status3,thisMeeting.status4,thisMeeting.status5)
             thisuser = User.objects.get(id=user_id)
             # return Response("info: contribute succsss", status=status.HTTP_200_OK)
             try:
                 favorite = thisuser.favorite.get(meeting_id=thisMeeting.meeting_id)
-            except:
-                isfavorite = False
-            else:
-                isfavorite = True
-            try:
-                favorite = thisuser.participate.get(meeting_id=thisMeeting.meeting_id)
             except:
                 isfavorite = False
             else:
