@@ -413,5 +413,34 @@
                 });
             });
         }
+
+        let personNumber = 1;
+        function addPerson() {
+            var div = document.getElementById('registerConferenceForm');
+            personNumber++;
+            div.innerHTML += '<div class="form-group">\n' +
+                '                        <div class="input-group mb-3">\n' +
+                '                            <div class="input-group-prepend">\n' +
+                '                                <span class="input-group-text" id="inputGroup-sizing-default">姓名</span>\n' +
+                '                            </div>\n' +
+                '                            <input placeholder="请输入姓名" required type="text" class="form-control" aria-label="Default"\n' +
+                '                                   aria-describedby="inputGroup-sizing-default" name="name' + personNumber+ '">\n' +
+                '                        </div>\n' +
+                '                    </div>\n' +
+                '                    <div class="form-group">\n' +
+                '                        <div class="col-6">\n' +
+                '                            <input type="radio" required name="gender' + personNumber+ '" value="male">\n' +
+                '                            <label>男</label>\n' +
+                '                            <input type="radio" name="gender' + personNumber+ '" value="female">\n' +
+                '                            <label>女</label>\n' +
+                '                        </div>\n' +
+                '                        <div class="col-6">\n' +
+                '                            <input type="radio" required name="reservation' + personNumber+ '" value="yes">\n' +
+                '                            <label>预定住宿</label>\n' +
+                '                            <input type="radio" name="reservation' + personNumber+ '" value="no">\n' +
+                '                            <label>不预定住宿</label>\n' +
+                '                        </div>\n' +
+                '                    </div>'
+        }
     </script>
 {% endblock %}

@@ -141,6 +141,7 @@
                         if (response['errorInfo'] != null) {
                             document.getElementById('info').innerText = response['errorInfo'];
                         } else {
+                            window.location.href = "/institution/employee/allemployee";
                             document.getElementById('info').innerText = response['info'];
                         }
                         jQuery(function ($) {
