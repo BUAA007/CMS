@@ -146,7 +146,7 @@
                                         class="fa fa-calendar"></i>
                                 </a>
                                 <input class="col-7 mr-sm-2 form-control rounded" type="text" placeholder="Search ..."
-                                       aria-label="Search" id="word">
+                                       aria-label="Search" name="word" id="word">
                             </div>
                         </form>
                     </div>
@@ -239,12 +239,12 @@
                 <form class="form-horizontal">
                     <div class="form-group">
                         <label>从</label>
-                        <input form="searchForm" type="text" class="layui-input form-control" id="time1"
+                        <input form="searchForm" type="text" class="layui-input form-control" id="time1" name="time1"
                                placeholder="yyyy-MM-dd" lay-key="1">
                     </div>
                     <div class="form-group">
                         <label>至</label>
-                        <input form="searchForm" type="text" class="layui-input form-control" id="time2"
+                        <input form="searchForm" type="text" class="layui-input form-control" id="time2" name="time2"
                                placeholder="yyyy-MM-dd" lay-key="2">
                     </div>
                 </form>
@@ -315,8 +315,7 @@
 
     function searchPost() {
         var postForm = document.getElementById('searchForm');
-        console.log([postForm])
-        {#postForm.submit();#}
+        postForm.submit();
     }
 </script>
 
