@@ -91,6 +91,9 @@ class MeetingViewSet(viewsets.ModelViewSet):
 		file = request.FILES['file']
 		if not file:
 			return HttpResponse(template.render(errorInfo("请填写论文模板文件"), request))
+		style = request.data.get("style")
+		if not style:
+			return HttpResponse(template.render(errorInfo("请选择展示模板网页风格"), request))
 		# meeting_serializer = MeetingSerializer(data = request.data)
 		# return HttpResponse(request.session['username']+" "+str(ddl_date))
 		# if meeting_serializer.is_valid():
@@ -113,6 +116,7 @@ class MeetingViewSet(viewsets.ModelViewSet):
 				institution=thisInstitution,
 				support=support,
 				template=file,
+				style=style,
 			)
 			thisMeeting.save()
 			return HttpResponse(template.render({'info': '登记成功'}, request))
@@ -213,13 +217,18 @@ class MeetingViewSet(viewsets.ModelViewSet):
 				isfavorite = False
 			else:
 				isfavorite = True
-			template = loader.get_template('conference.html')
+			if thisMeeting.style == "1":
+				template = loader.get_template('conference.html')
+			if thisMeeting.style == "2":
+				template = loader.get_template('conference2.html')
 			context = {
 				'conference': thisMeeting,
 				'isfavorite': isfavorite,
 				'islisten': islisten,
-				'map': "http://maps.gaode.com/search?query=" + thisMeeting.organization
+				'map': "http://maps.gaode.com/search?query=" + thisMeeting.organization,
+				'ddl_date': str(thisMeeting.meeting_date.strftime("%Y-%m-%d %H:%M:%S")),
 			}
+			print(str(thisMeeting.meeting_date.strftime("%Y-%m-%d %H:%M:%S")))
 
 			return HttpResponse(template.render(context, request))
 		except:
@@ -243,7 +252,10 @@ class MeetingViewSet(viewsets.ModelViewSet):
 			print(thisMeeting.status1, thisMeeting.status2, thisMeeting.status3, thisMeeting.status4,
 			      thisMeeting.status5)
 			# print(thisMeeting.status1)
-			template = loader.get_template('conference.html')
+			if thisMeeting.style == "1":
+				template = loader.get_template('conference.html')
+			if thisMeeting.style == "2":
+				template = loader.get_template('conference2.html')
 			context = {
 				'conference': thisMeeting,
 				'isfavorite': False,
