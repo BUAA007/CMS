@@ -191,6 +191,12 @@ class MeetingViewSet(viewsets.ModelViewSet):
                 isfavorite = False
             else:
                 isfavorite = True
+            try:
+                favorite = thisuser.participate.get(meeting_id=thisMeeting.meeting_id)
+            except:
+                isfavorite = False
+            else:
+                isfavorite = True
             template = loader.get_template('conference.html')
             context = {
                 'conference': thisMeeting,
