@@ -47,7 +47,7 @@
 <!-- Right Panel -->
 <header id="header" class="header">
 
-    <div class="header-menu">
+     <div class="header-menu">
 
         <div class="col-sm-7">
             <a id="menuToggle" class="menutoggle pull-left"><i class="fa fa fa-tasks"></i></a>
@@ -89,9 +89,9 @@
             </tr>
             </thead>
 
+            {% if info != null %}
+                <tbody id="allB">
 
-            <tbody id="allB">
-            {% for institution in institutions %}
                 <tr>
 
                     <td>{{ institution.id }}</td>
@@ -107,29 +107,13 @@
                     </td>
 
                 </tr>
-            {% endfor %}
 
 
-            </tbody>
+                </tbody>
+            {% endif %}
         </table>
     </div>
-    <nav aria-label="Page navigation">
-        <ul class="pagination">
-            <li class="page-item">
-                <a class="page-link" href="?page={{ pre_page }}" aria-label="Previous">
-                    <span aria-hidden="true">&laquo;</span>
-                </a>
-            </li>
-            {% for page in pages %}
-                <li class="page-item"><a class="page-link" href="?page={{ page }}">{{ page }}</a></li>
-            {% endfor %}
-            <li class="page-item">
-                <a class="page-link" href="?page={{ next_page }}" aria-label="Next">
-                    <span aria-hidden="true">&raquo;</span>
-                </a>
-            </li>
-        </ul>
-    </nav>
+
 </div>
 
 <script type="text/javascript">
