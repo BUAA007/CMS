@@ -710,8 +710,12 @@ class MeetingViewSet(viewsets.ModelViewSet):
         allpaper = thisuser.paper_set.all()
         allmeeting = list()
         for paper in allpaper:
-            if paper.status=="1"and paper.meeting not in allmeeting:
-                allmeeting.append(paper.meeting)
+            if paper.status == 1:
+                alljoin = paper.join_set.all()
+                if alljoin != []:
+                    for join in alljoin:
+                        if join.meeting not in allmeeting:
+                            allmeeting.append(join.meeting)
         listenmeeting = set(queryset) - set(allmeeting)
         queryset = sorted(listenmeeting, key=lambda x: x.ddl_date)
         template = loader.get_template('conference_list.html')
