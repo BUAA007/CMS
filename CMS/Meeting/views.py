@@ -203,12 +203,7 @@ class MeetingViewSet(viewsets.ModelViewSet):
                 isfavorite = False
             else:
                 isfavorite = True
-            try:
-                favorite = thisuser.participate.get(meeting_id=thisMeeting.meeting_id)
-            except:
-                isfavorite = False
-            else:
-                isfavorite = True
+
             template = loader.get_template('conference.html')
             context = {
                 'conference': thisMeeting,
@@ -216,8 +211,10 @@ class MeetingViewSet(viewsets.ModelViewSet):
                 'islisten':islisten,
                 'map': "http://maps.google.com.tw/maps?f=q&amp;amp;hl=zh-TW&amp;geocode=&;q=" + thisMeeting.organization + "&z=16&output=embed&t=",
             }
+            print(context)
             return HttpResponse(template.render(context, request))
-        except:
+        except Exception as e:
+            print(e)
             now = timezone.now()
             thisMeeting.status1 = False
             thisMeeting.status2 = False
@@ -244,6 +241,7 @@ class MeetingViewSet(viewsets.ModelViewSet):
                 'islisten':False,
                 'map': "http://maps.google.com.tw/maps?f=q&amp;amp;hl=zh-TW&amp;geocode=&;q=" + thisMeeting.organization + "&z=16&output=embed&t=",
             }
+            print(context)
             return HttpResponse(template.render(context, request))
 
 
