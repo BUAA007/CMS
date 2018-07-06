@@ -783,68 +783,68 @@ class MeetingViewSet(viewsets.ModelViewSet):
 		context['next_page'] = next_page
 		return HttpResponse(template.render(context, request))
 
-    @action(methods=['GET'], detail=False)
-    def excel_export(self, request):
-        """
-        导出excel表格
-        """
-        meeting = int(request.GET["meeting"])
-        thismeeting = Meeting.objects.get(meeting_id = meeting)
-        url = "/home/ubuntu/CMS/CMS/media/excel/"+thismeeting.title+".xls"
-        list_obj = thismeeting.paper_set.all()
-        if list_obj:
-            # 创建工作薄 投稿编号、作者、题目、单位、摘要等内容
-            ws = Workbook(encoding='utf-8')
-            w = ws.add_sheet(u"投稿信息")
-            w.write(0, 0, u"投稿编号")
-            w.write(0, 1, u"第一作者")
-            w.write(0, 2, u"题目")
-            w.write(0, 3, u"摘要")
-            w.write(0, 4, u"关键字")
-            # 写入数据
-            excel_row = 1
-            for obj in list_obj:
-                data_id = obj.id
-                data_author = obj.author_1
-                data_title = obj.title
-                data_abstract = obj.abstract
-                dada_keyword = obj.keyword
-                w.write(excel_row, 0, data_id)
-                w.write(excel_row, 1, data_author)
-                w.write(excel_row, 2, data_title)
-                w.write(excel_row, 3, data_abstract)
-                w.write(excel_row, 4, dada_keyword)
-                excel_row += 1
-            # 检测文件是够存在
-            # 方框中代码是保存本地文件使用，如不需要请删除该代码
-            ###########################
-            exist_file = os.path.exists(url)
-            if exist_file:
-                os.remove(url)
-            ws.save(url)
-            ############################
-        else:
-            a = collections.OrderedDict({"errorInfo":"没有相关记录"})
-            return Response(a, status = status.HTTP_400_BAD_REQUEST)
+	@action(methods=['GET'], detail=False)
+	def excel_export(self, request):
+		"""
+		导出excel表格
+		"""
+		meeting = int(request.GET["meeting"])
+		thismeeting = Meeting.objects.get(meeting_id = meeting)
+		url = "/home/ubuntu/CMS/CMS/media/excel/"+thismeeting.title+".xls"
+		list_obj = thismeeting.paper_set.all()
+		if list_obj:
+			# 创建工作薄 投稿编号、作者、题目、单位、摘要等内容
+			ws = Workbook(encoding='utf-8')
+			w = ws.add_sheet(u"投稿信息")
+			w.write(0, 0, u"投稿编号")
+			w.write(0, 1, u"第一作者")
+			w.write(0, 2, u"题目")
+			w.write(0, 3, u"摘要")
+			w.write(0, 4, u"关键字")
+			# 写入数据
+			excel_row = 1
+			for obj in list_obj:
+				data_id = obj.id
+				data_author = obj.author_1
+				data_title = obj.title
+				data_abstract = obj.abstract
+				dada_keyword = obj.keyword
+				w.write(excel_row, 0, data_id)
+				w.write(excel_row, 1, data_author)
+				w.write(excel_row, 2, data_title)
+				w.write(excel_row, 3, data_abstract)
+				w.write(excel_row, 4, dada_keyword)
+				excel_row += 1
+			# 检测文件是够存在
+			# 方框中代码是保存本地文件使用，如不需要请删除该代码
+			###########################
+			exist_file = os.path.exists(url)
+			if exist_file:
+			    os.remove(url)
+			ws.save(url)
+			############################
+		else:
+			a = collections.OrderedDict({"errorInfo":"没有相关记录"})
+			return Response(a, status = status.HTTP_400_BAD_REQUEST)
 
-        def get_excel_stream(file):
-            # StringIO操作的只能是str，如果要操作二进制数据，就需要使用BytesIO。
-            excel_stream = io.BytesIO()
-            # 这点很重要，传给save函数的不是保存文件名，而是一个BytesIO流（在内存中读写）
-            file.save(excel_stream)
-            # getvalue方法用于获得写入后的byte将结果返回给re
-            res = excel_stream.getvalue()
-            excel_stream.close()
-            return res
-        res = get_excel_stream(ws)
-        # 设置HttpResponse的类型
-        response = HttpResponse(content_type='application/vnd.ms-excel')
-        from urllib import parse
-        excel_name = thismeeting.title + "投稿信息"
-        response['Content-Disposition'] = 'attachment;filename=' + parse.quote(excel_name) + '.xls'
-        # 将文件流写入到response返回
-        response.write(res)
-        return response
+		def get_excel_stream(file):
+			# StringIO操作的只能是str，如果要操作二进制数据，就需要使用BytesIO。
+			excel_stream = io.BytesIO()
+			# 这点很重要，传给save函数的不是保存文件名，而是一个BytesIO流（在内存中读写）
+			file.save(excel_stream)
+			# getvalue方法用于获得写入后的byte将结果返回给re
+			res = excel_stream.getvalue()
+			excel_stream.close()
+			return res
+		res = get_excel_stream(ws)
+		# 设置HttpResponse的类型
+		response = HttpResponse(content_type='application/vnd.ms-excel')
+		from urllib import parse
+		excel_name = thismeeting.title + "投稿信息"
+		response['Content-Disposition'] = 'attachment;filename=' + parse.quote(excel_name) + '.xls'
+		# 将文件流写入到response返回
+		response.write(res)
+		return response
 
 
 def get_pages(total_page, cur_page):
