@@ -283,7 +283,7 @@ class UserViewSet(viewsets.ModelViewSet):
                     'conference': thismeeting,
                     'message': '成功'
                 }
-                url = "../../../meeting/?message=成功" + str(thismeeting.meeting_id)
+                url = "../../../meeting/"+ str(thismeeting.meeting_id)+"/?message=成功"
                 return HttpResponseRedirect(url)
             except:
                 template = loader.get_template('conference.html')
@@ -291,7 +291,7 @@ class UserViewSet(viewsets.ModelViewSet):
                     'conference': thismeeting,
                     'message': '失败,填写信息错误'
                 }
-                url = "../../../meeting/?message=填写错误" + str(thismeeting.meeting_id)
+                url = "../../../meeting/"+ str(thismeeting.meeting_id)+"/?message=填写错误"
                 return HttpResponseRedirect(url)
         else:
             template = loader.get_template('conference.html')
@@ -299,7 +299,7 @@ class UserViewSet(viewsets.ModelViewSet):
                 'conference': thismeeting,
                 'message': '已超过投稿时间，无法投稿'
             }
-            url="../../../meeting/?message=超过投稿时间"+str(thismeeting.meeting_id)
+            url="../../../meeting/"+ str(thismeeting.meeting_id)+"/?message=超过投稿时间"
             return HttpResponseRedirect(url)
             #return HttpResponse(template.render(context, request))
     @action(methods=['POST'], detail=False)

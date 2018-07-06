@@ -1,4 +1,5 @@
 from django.shortcuts import render
+import io
 from rest_framework import viewsets
 from rest_framework.decorators import action
 from rest_framework.response import Response
@@ -9,7 +10,7 @@ from Meeting.models import Meeting
 from Meeting.serializers import MeetingSerializer
 from django.contrib.auth import authenticate, login, logout
 from django.shortcuts import get_object_or_404
-from django.http import HttpResponse,HttpResponseRedirect
+from django.http import HttpResponse,HttpResponseRedirect, StreamingHttpResponse
 from django.template import loader
 from User.models import *
 from Institution.models import Employee
@@ -761,9 +762,11 @@ class MeetingViewSet(viewsets.ModelViewSet):
         """
         meeting = int(request.GET["meeting"])
         thismeeting = Meeting.objects.get(meeting_id = meeting)
-        url = "excel/"+thismeeting.title+".xls"
+        url = "/home/ubuntu/CMS/CMS/media/excel/"+thismeeting.title+".xls"
         list_obj = thismeeting.paper_set.all()
+        print(0)
         if list_obj:
+            print(1)
             # 创建工作薄 投稿编号、作者、题目、单位、摘要等内容
             ws = Workbook(encoding='utf-8')
             w = ws.add_sheet(u"投稿信息")
@@ -774,6 +777,7 @@ class MeetingViewSet(viewsets.ModelViewSet):
             w.write(0, 4, u"关键字")
             # 写入数据
             excel_row = 1
+            print(2)
             for obj in list_obj:
                 data_id = obj.id
                 data_author = obj.author_1
@@ -789,29 +793,35 @@ class MeetingViewSet(viewsets.ModelViewSet):
             # 检测文件是够存在
             # 方框中代码是保存本地文件使用，如不需要请删除该代码
             ###########################
+            print(3)
             exist_file = os.path.exists(url)
             if exist_file:
                 os.remove(url)
             ws.save(url)
+            print(4)
             ############################
         else:
-            a = collections.OrderedDict({"errorInfo":"服务器出错，请稍后重试。"})
+            a = collections.OrderedDict({"errorInfo":"没有相关记录"})
             return Response(a, status = status.HTTP_400_BAD_REQUEST)
-        def file_iterator(file_name, chunk_size=512):
-            with open(file_name, "rb") as f:
-                while True:
-                    c = f.read(chunk_size)
-                    if c:
-                        yield c
-                    else:
-                        break
-        if url is not None:
-            response = StreamingHttpResponse(file_iterator(url))
-            response['Content-Type'] = 'application/octet-stream'
-            response['Content-Disposition'] = 'attachment;filename="{0}"'.format(tmp[-1])
-            return response
-        a = collections.OrderedDict({"errorInfo":"服务器出错，请稍后重试。"})
-        return Response(a, status = status.HTTP_400_BAD_REQUEST)
+
+        def get_excel_stream(file):
+            # StringIO操作的只能是str，如果要操作二进制数据，就需要使用BytesIO。
+            excel_stream = io.BytesIO()
+            # 这点很重要，传给save函数的不是保存文件名，而是一个BytesIO流（在内存中读写）
+            file.save(excel_stream)
+            # getvalue方法用于获得写入后的byte将结果返回给re
+            res = excel_stream.getvalue()
+            excel_stream.close()
+            return res
+        res = get_excel_stream(ws)
+        # 设置HttpResponse的类型
+        response = HttpResponse(content_type='application/vnd.ms-excel')
+        from urllib import parse
+        excel_name = thismeeting.title + "投稿信息"
+        response['Content-Disposition'] = 'attachment;filename=' + parse.quote(excel_name) + '.xls'
+        # 将文件流写入到response返回
+        response.write(res)
+        return response
 
 def get_pages(total_page, cur_page):
     pages = [i + 1 for i in range(total_page)]
