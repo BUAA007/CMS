@@ -566,7 +566,7 @@ class JoinViewSet(viewsets.ModelViewSet):
                     resername = "reservation" + str(count)
                     name = request.data.get(namename)
                 thispaper.owner.participate.add(thismeeting)
-                return HttpResponseRedirect('../user/allpaper')
+                return HttpResponseRedirect('../user/allpaper/?message=success')
             meetingid = int(request.data.get("meeting"))
             try:
                 thismeeting = Meeting.objects.get(meeting_id=meetingid)
@@ -604,15 +604,8 @@ class JoinViewSet(viewsets.ModelViewSet):
                 resername = "reservation" + str(count)
                 name = request.data.get(namename)
             thispaper.owner.participate.add(thismeeting)
-            return HttpResponseRedirect('../user/allpaper')
+            url = '../../meeting/'+meetingid+'/?message=success'
+            return HttpResponseRedirect(url)
         except:
-            user_id = request.session['id']
-            thisuser = User.objects.get(id=user_id)
-            # thismeeting = Meeting.objects.get(meeting_id=pk)
-            papers = thisuser.paper_set.all()
-            template = loader.get_template('judgement.html')
-            context = {
-                'papers': papers,
-                'message': message
-            }
-            return HttpResponse(template.render(context, request))
+            url = '../../meeting/'+meetingid+'/?message='+message
+            return HttpResponseRedirect(url)
