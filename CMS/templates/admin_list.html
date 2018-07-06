@@ -38,78 +38,148 @@
 
 <script src="{% static 'assets/js/plugins.js' %}"></script>
 <script src="{% static 'assets/js/main.js' %}"></script>
-    <!-- Left Panel -->
 
-    <!-- Right Panel -->
+<!-- <script type="text/javascript" src="https://cdn.jsdelivr.net/html5shiv/3.7.3/html5shiv.min.js"></script> -->
+
+
+<!-- Left Panel -->
+
+<!-- Right Panel -->
 
 
 <div class="card-body">
     <div>
         <table id="bootstrap-data-table" class="table table-striped table-bordered">
-                        <thead>
-                        <tr>
-                            <th>#</th>
+            <thead>
+            <tr>
+                <th>机构id</th>
+                <th>机构名称</th>
+                <th>工商号</th>
+                <th>法人姓名</th>
+                <th>状态</th>
+                <th>操作</th>
+            </tr>
+            </thead>
+            <tbody>
 
-                            <th>机构名称</th>
-                            <th>法人姓名</th>
-                            <th>状态</th>
-                            <th>操作</th>
-                        </tr>
-                        </thead>
-                        <tbody>
+            {% for institution in institutions %}
+                <tr>
 
-                            <tr>
-                                <td>1</td>
-                                <td class="text-truncate"><a href="/meeting/3">nmsl</a></td>
-                                <td>wsnd</td>
-                                <td>4396</td>
-                                <td>
-                                    <a href="#" onclick="fuck()"><font color="blue">管理</font></a>
-                                </td>
-                            </tr>
+                    <td>{{ institution.id }}</td>
+                    <td>{{ institution.name }}</td>
+                    <td> {{ institution.corporate_id }}</td>
+                    <td>{{ institution.legal_person }}</td>
+                    <td>{% if institution.status == '1' %}审核通过{% endif %}{% if institution.status == '0' %}
+                        审核待定{% endif %}</td>
+                    <td width="80px">
+                        <a href="javascript:void(0);"  onclick="pass({{ institution.id }});"><i class="fa fa-check"></i></a>
 
+                        <a href="javascript:void(0);" onclick="reject({{ institution.id }})"><i class="fa fa-trash"></i></a>
+                    </td>
 
-
-                        </tbody>
-                    </table>
-                </div>
-                <nav aria-label="...">
-                    <ul class="pagination">
-                        <li class="page-item disabled">
-                            <a class="page-link" href="#" tabindex="-1">Previous</a>
-                        </li>
-                        <li class="page-item"><a class="page-link" href="#">1</a></li>
-                        <li class="page-item active">
-                            <a class="page-link" href="#">2 <span class="sr-only">(current)</span></a>
-                        </li>
-                        <li class="page-item"><a class="page-link" href="#">3</a></li>
-                        <li class="page-item">
-                            <a class="page-link" href="#">Next</a>
-                        </li>
-                    </ul>
-                </nav>
-            </div>
+                </tr>
+            {% endfor %}
 
 
-    </div><!-- /#right-panel -->
+            </tbody>
+        </table>
+    </div>
+    <nav aria-label="...">
+        <ul class="pagination">
+            <li class="page-item disabled">
+                <a class="page-link" href="#" tabindex="-1">Previous</a>
+            </li>
+            <li class="page-item"><a class="page-link" href="#">1</a></li>
+            <li class="page-item active">
+                <a class="page-link" href="#">2 <span class="sr-only">(current)</span></a>
+            </li>
+            <li class="page-item"><a class="page-link" href="#">3</a></li>
+            <li class="page-item">
+                <a class="page-link" href="#">Next</a>
+            </li>
+        </ul>
+    </nav>
+</div>
 
-    <!-- Right Panel -->
+<script type="text/javascript">
 
-    <script>
-        ( function ( $ ) {
-            "use strict";
 
-            jQuery( '#vmap' ).vectorMap( {
-                map: 'world_en',
-                backgroundColor: null,
-                color: '#ffffff',
-                hoverOpacity: 0.7,
-                selectedColor: '#1de9b6',
-                enableZoom: true,
-                showTooltip: true,
-                values: sample_data,
-                scaleColors: [ '#1de9b6', '#03a9f5' ],
-                normalizeFunction: 'polynomial'
-            } );
-        } )( jQuery );
-    </script>
+    function pass(id) {
+
+        var data = {
+            "flag" : "1",
+            "id" : id,
+        }
+        jQuery(function ($){
+            $.ajax({
+                url: '/myadmin/checkInstitution/',
+                type: 'POST',
+                data: data,
+                dataType: 'json',
+                success: function (response) {
+                    if(response["info"] != null){
+                        alert(response["info"])
+                        location.reload(true)
+                    }
+                }
+
+
+            });
+        });
+    }
+
+     function reject(id) {
+
+        var data = {
+            "flag" : "0",
+            "id" : id,
+        }
+        jQuery(function ($){
+            $.ajax({
+                url: '/myadmin/checkInstitution/',
+                type: 'POST',
+                data: data,
+                dataType: 'json',
+                success: function (response) {
+                    if(response["info"] != null){
+                        alert(response["info"])
+                        location.reload(true)
+                    }
+                }
+            });
+        });
+    }
+
+
+
+    {#function reject() {#}
+    {#    var data = {#}
+    {#        "flag": "0",#}
+    {#        "id : {{ institution.id }}#}
+    {#    }#}
+    {#    jQuery(function ($) {#}
+    {#        $.ajax({#}
+    {#            url: '/myadmin/checkInstitution/',#}
+    {#            type: 'POST',#}
+    {#            data: data,#}
+    {#            dataType: 'json',#}
+    {#            success: function (response) {#}
+    {#                if (response['errorInfo'] != null) {#}
+    {##}
+    {#                } else {#}
+    {##}
+    {#                }#}
+    {#            }#}
+    {#        });#}
+    {#    });#}
+    {##}
+    {#}#}
+</script>
+<!-- /#right-panel -->
+
+<!-- Right Panel -->
+
+
+</body>
+
+</html>

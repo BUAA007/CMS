@@ -34,4 +34,5 @@ urlpatterns = [
     path('release/', views.release),
     url(r'.*/download/.*',views.download),
 
+
 ]
