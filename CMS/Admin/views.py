@@ -9,8 +9,12 @@ from Admin.models import *
 from Admin.serializers import *
 from Institution.models import Institution, Employee
 from Institution.serializers import InstitutionSerializer
+import sys
 
-PAGE_MAX = 9
+sys.path.append('../')
+from Admin import cmsem
+
+PAGE_MAX = 12
 # Create your views here.
 
 class AdminViewSet(viewsets.ModelViewSet):

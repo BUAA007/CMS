@@ -24,6 +24,7 @@
                                     <th>简介</th>
                                     <th>状态</th>
                                     <th>收藏数</th>
+                                    <th>与会人数</th>
                                 </tr>
                                 </thead>
                                 <tbody>
@@ -34,6 +35,7 @@
                                         <td>{{ each.manage.intro }}</td>
                                         <td>{{ each.manage.status }}</td>
                                         <td>{{ each.count }}</td>
+                                        <td>{{ each.count_join }}</td>
                                     </tr>
                                 {% endfor %}
                                 </tbody>
