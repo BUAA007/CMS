@@ -299,7 +299,7 @@ class UserViewSet(viewsets.ModelViewSet):
                 'conference': thismeeting,
                 'message': '已超过投稿时间，无法投稿'
             }
-            url="../../../meeting/"+str(thismeeting.meeting_id)
+            url="../../../meeting/?message=超过投稿时间"+str(thismeeting.meeting_id)
             return HttpResponseRedirect(url)
             #return HttpResponse(template.render(context, request))
     @action(methods=['POST'], detail=False)
@@ -568,7 +568,9 @@ class JoinViewSet(viewsets.ModelViewSet):
                     name = request.data.get(namename)
                 thispaper.owner.participate.add(thismeeting)
                 thispaper.owner.save()
-                return HttpResponseRedirect('../user/allpaper/?message=success')
+                return HttpResponseRedirect('../user/allpaper/?message=注册成功')
+
+
             userid = int(request.session['id'])
             thisuser = User.object.get(id = userid)
             meetingid = int(request.data.get("meeting"))
@@ -609,7 +611,7 @@ class JoinViewSet(viewsets.ModelViewSet):
                 name = request.data.get(namename)
             thisuser.participate.add(thismeeting)
             thisuser.save()
-            url = '../../meeting/'+meetingid+'/?message=success'
+            url = '../../meeting/'+meetingid+'/?message=聆听成功'
             return HttpResponseRedirect(url)
         except:
             url = '../../meeting/list2/?message='+message
