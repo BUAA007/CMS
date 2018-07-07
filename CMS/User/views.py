@@ -343,7 +343,7 @@ class UserViewSet(viewsets.ModelViewSet):
                         thispaper.abstract = request.data.get("abstract")
                         thispaper.keyword = request.data.get("keyword")
                         thispaper.status = "-1"
-                        thispaper.suggestion = "无"
+                        thispaper.suggestion = "None"
                         thispaper.explain = request.data.get("explain")
                         thispaper.save()
 

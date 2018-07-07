@@ -79,8 +79,6 @@
                             <li><i class="menu-icon fa fa-list-ul"></i><a href="/meeting/list2">会议列表</a></li>
                             <li><i class="menu-icon fa fa-bullhorn"></i><a href="/release">发布会议</a></li>
                             <li><i class="menu-icon fa fa-wrench"></i><a href="/meeting/manageList">管理会议</a></li>
-
-
                             <li><i class="menu-icon fa fa-user-plus"></i><a href="/institution/employee/allemployee">配置账号</a>
                             </li>
                         </ul>
@@ -93,17 +91,23 @@
                             <li><i class="fa fa-book"></i><a href="/meeting/allpaper/">审核论文</a></li>
                         </ul>
                     </li>
+                {% elif request.session.type == '0' %}
+                    <li class="menu-item-has-children dropdown">
+                        <a href="#" class="dropdown-toggle" data-toggle="dropdown" aria-haspopup="true"
+                           aria-expanded="false"> <i class="menu-icon fa fa-comments"></i>会议</a>
+                        <ul class="sub-menu children dropdown-menu">
+                            <li><i class="menu-icon fa fa-list-ul"></i><a href="/meeting/list2">会议列表</a></li>
+                            <li><i class="menu-icon fa fa-heart"></i><a href="/user/user/allfavorite">收藏列表</a></li>
+                            <li><i class="menu-icon fa fa-edit"></i><a href="/meeting/allregistermeeting">注册列表</a></li>
+                            <li><i class="menu-icon fa fa-phone"></i><a href="/meeting/alllistenmeeting">聆听列表</a></li>
+                        </ul>
+                    </li>
                 {% else %}
                     <li class="menu-item-has-children dropdown">
                         <a href="#" class="dropdown-toggle" data-toggle="dropdown" aria-haspopup="true"
                            aria-expanded="false"> <i class="menu-icon fa fa-comments"></i>会议</a>
                         <ul class="sub-menu children dropdown-menu">
                             <li><i class="menu-icon fa fa-list-ul"></i><a href="/meeting/list2">会议列表</a></li>
-                            {% if request.session.is_login == 'true' %}
-                            <li><i class="menu-icon fa fa-heart"></i><a href="/user/user/allfavorite">收藏列表</a></li>
-                            <li><i class="menu-icon fa fa-edit"></i><a href="/meeting/allregistermeeting">注册列表</a></li>
-                            <li><i class="menu-icon fa fa-phone"></i><a href="/meeting/alllistenmeeting">聆听列表</a></li>
-                            {% endif %}
                         </ul>
                     </li>
                     <!-- /.menu-title -->
@@ -243,12 +247,12 @@
                     <div class="form-group">
                         <label>从</label>
                         <input form="searchForm" type="text" class="layui-input form-control" id="time1" name="time1"
-                               placeholder="yyyy-MM-dd" lay-key="1">
+                               placeholder="年-月-日" lay-key="1">
                     </div>
                     <div class="form-group">
                         <label>至</label>
                         <input form="searchForm" type="text" class="layui-input form-control" id="time2" name="time2"
-                               placeholder="yyyy-MM-dd" lay-key="2">
+                               placeholder="年-月-日" lay-key="2">
                     </div>
                 </form>
             </div>
