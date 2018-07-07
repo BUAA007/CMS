@@ -105,6 +105,9 @@ class InstitutionViewSet(viewsets.ModelViewSet):
        try:
            if Institution.objects.get( name = name):
                return  Response({"errorInfo":"该机构已存在" , "kind":"1"}, content_type="application/json")
+       except:
+            pass
+       try:
            if Employee.objects.get( username = username):
                return  Response({"errorInfo":"用户名已存在" , "kind":"2"}, content_type="application/json")
        except:
