@@ -56,6 +56,7 @@ body {
 <script src="{% static 'bootstrap-datetimepicker/css/bootstrap-datetimepicker.min.css' %}"></script>
 <script src="{% static 'bootstrap-datetimepicker/js/bootstrap-datetimepicker.min.js' %}"></script>
 <script src="{% static 'bootstrap-datetimepicker/js/locales/bootstrap-datetimepicker.zh-CN.js' %}"></script>
+<script src="{% static 'laydate/laydate.js' %}"></script>
 
 
 </head>
@@ -113,7 +114,8 @@ body {
     <div class="row form-group">
         <div class="col col-md-3"><label class="form-control-label">成立时间</label></div>
         <div class="col-md-9">
-            <input type="datetime-local" class="form-control" id="establish_date" required>
+            <input type="text" class="layui-input form-control" id="establish_date"
+                               placeholder="年/月/日" lay-key="1">
         </div>
     </div>
 
@@ -183,7 +185,25 @@ body {
             success : function(response) {
                 if(response['errorInfo'] != null){
                     alert(response['errorInfo']);
-                    document.getElementById("establish_date").value = null;
+                    if(response['kind'] == '1'){
+                        document.getElementById("name").value=null
+                    }else if(response['kind'] == '2'){
+                        document.getElementById("username").value=null
+                    }else if(response['kind'] == '3'){
+                        document.getElementById("name").value=null
+                    }else if(response['kind'] == '4'){
+                        document.getElementById("username").value=null
+                    }else if(response['kind'] == '5'){
+                        document.getElementById("establish_date").value=null
+                    }else if(response['kind'] == '6'){
+                        document.getElementById("password").value=null
+                        document.getElementById("password2").value=null
+                    }else if(response['kind'] == '7'){
+                       document.getElementById("password").value=null
+                       document.getElementById("password2").value=null
+                    }else if(response['kind'] == '8'){
+                        document.getElementById("tel").value=null
+                    }
                 }else{
                     window.location.href='/login/';
                 }
@@ -191,6 +211,10 @@ body {
         });
 
     }
+
+    laydate.render({
+        elem: '#establish_date'
+    });
 </script>
 
 
