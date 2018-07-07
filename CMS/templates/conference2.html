@@ -324,7 +324,11 @@ let timer = setInterval(function() {
                             <hr class="my-4">
                             <h4 class="font-weight-normal"><i class="fa fa-calendar"></i>
                                 日程安排</h4>
-                            <p>{{ conference.schedule }}</p>
+
+                             <p>
+                                {{ conference.schedule |linebreaksbr }}
+                            </p>
+
                             <div>
                                 <ul class="timeline font-weight-normal" id="timeline">
                                     <li class="li {% if conference.status1 == True %}
