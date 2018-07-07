@@ -1,5 +1,6 @@
 from django.shortcuts import render
 import io
+import re
 from rest_framework import viewsets
 from rest_framework.decorators import action
 from rest_framework.response import Response
@@ -222,6 +223,8 @@ class MeetingViewSet(viewsets.ModelViewSet):
 				template = loader.get_template('conference.html')
 			if thisMeeting.style == "2":
 				template = loader.get_template('conference2.html')
+			lines=thisMeeting.schedule
+			thisMeeting.schedule = lines.split('\n')
 			context = {
 				'conference': thisMeeting,
 				'isfavorite': isfavorite,
