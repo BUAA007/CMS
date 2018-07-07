@@ -31,9 +31,26 @@
                                 {% for each in manage_list %}
                                     <tr>
                                         <td>{{ forloop.counter }}</td>
-                                        <td class="text-truncate"><a href="/meeting/manage/?pk={{ each.manage.meeting_id }}">{{ each.manage.title }}</a></td>
-                                        <td>{{ each.manage.intro }}</td>
-                                        <td>{{ each.manage.status }}</td>
+                                        <td><a href="/meeting/manage/?pk={{ each.manage.meeting_id }}">{{ each.manage.title }}</a></td>
+                                        <td class="text-truncate" style="max-width: 25rem;">{{ each.manage.intro }}</td>
+                                        {% if each.manage.status == '注册中' %}
+                                            <td class="text-primary">注册中</td>
+
+                                        {% elif each.manage.status == '截止注册' %}
+                                            <td class="text-secondary">截止注册</td>
+
+                                        {% elif each.manage.status == '会议中' %}
+                                            <td class="text-success">会议中</td>
+
+                                        {% elif each.manage.status == '已截稿' %}
+                                            <td class="text-warning">已截稿</td>
+
+                                        {% elif each.manage.status == '投稿中' %}
+                                            <td class="text-info">投稿中</td>
+
+                                        {% else %}
+                                            <td class="text-dark">会议完成</td>
+                                        {% endif %}
                                         <td>{{ each.count }}</td>
                                         <td>{{ each.count_join }}</td>
                                     </tr>

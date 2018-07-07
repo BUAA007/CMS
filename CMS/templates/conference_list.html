@@ -30,7 +30,7 @@
                                 {% for conference in conference_list %}
                                     <tr>
                                         <td>{{ forloop.counter }}</td>
-                                        <td class="text-truncate" style="max-width: 17rem;"><a
+                                        <td class="text-truncate"><a
                                                 href="/meeting/{{ conference.meeting_id }}">{{ conference.title }}</a>
                                         </td>
                                         <td class="text-truncate" style="max-width: 25rem;">{{ conference.intro }}</td>
