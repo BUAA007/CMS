@@ -270,30 +270,6 @@ class MeetingViewSet(viewsets.ModelViewSet):
 
 	@action(methods=['GET'], detail=False)
 	def search(self, request):  # 根据时间搜索未写
-		try:
-			page = int(request.GET['page'])
-		except (KeyError, ValueError):
-			page = 1
-		queryset = Meeting.objects.all()
-		word = request.GET['word']
-		time1 = request.GET['time1']
-		time2 = request.GET['time2']
-		if word is None:
-			word = ""
-		# word = request.data.get('word', None)
-		# time1 = request.data.get('time1',None)
-		# time2 = request.data.get('time2',None)
-		conditions = {}
-		if word != "":
-			conditions['title__contains'] = word
-		if time1 != "":
-			conditions['meeting_date__gte'] = time1
-		if time2 != "":
-			conditions['meeting_date__lte'] = time2
-		result = queryset.filter(**conditions)
-
-		template = loader.get_template('search_list.html')
-
 		def check_time(conference):
 			now = timezone.now()
 			if now <= conference.ddl_date:
@@ -308,6 +284,37 @@ class MeetingViewSet(viewsets.ModelViewSet):
 				conference.status = "会议中"
 			else:
 				conference.status = "会议完成"
+		try:
+			page = int(request.GET['page'])
+		except (KeyError, ValueError):
+			page = 1
+		queryset = Meeting.objects.all()
+		word = request.GET['word']
+		time1 = request.GET['time1']
+		time2 = request.GET['time2']
+		if word is None:
+			word = ""
+		# word = request.data.get('word', None)
+		# time1 = request.data.get('time1',None)
+		# time2 = request.data.get('time2',None)
+		elif word == "投稿中" or word=="已截稿" or word=="注册中" or word=="截止注册" or word=="会议中" or word=="会议结束":
+			list(map(check_time, queryset))
+			result=list()
+			for conference in queryset:
+				if conference.status==word:
+					result.append(conference)
+			template = loader.get_template('search_list.html')
+		else:
+			conditions = {}
+			if word != "":
+				conditions['title__contains'] = word
+			if time1 != "":
+				conditions['meeting_date__gte'] = time1
+			if time2 != "":
+				conditions['meeting_date__lte'] = time2
+			result = queryset.filter(**conditions)
+
+			template = loader.get_template('search_list.html')
 
 		if not len(result):
 			total_page = 1
