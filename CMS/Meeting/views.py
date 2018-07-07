@@ -13,7 +13,7 @@ from django.shortcuts import get_object_or_404
 from django.http import HttpResponse,HttpResponseRedirect, StreamingHttpResponse
 from django.template import loader
 from User.models import *
-from Institution.models import Employee
+from Institution.models import *
 from django.utils import timezone
 from datetime import datetime, date
 from xlwt import *
@@ -43,12 +43,11 @@ class MeetingViewSet(viewsets.ModelViewSet):
 		context = {}
 		if request.session['type'] == '0' or request.session['is_login'] != 'true':
 			return render(request, "base.html")
-
 		thisEmployee = Employee.objects.get(username=request.session['username'])
 		thisInstitution = thisEmployee.institution
-		# if thisinstitution.status!="1":
-		#    return Response({"errorInfo":"have not been received"}, status=status.HTTP_200_OK)
 		title = request.data.get("title")
+		if thisInstitution.status !="1":
+			return HttpResponse(template.render(errorInfo("机构未通过审核"), request))
 		if not title:
 			return HttpResponse(template.render(errorInfo("会议标题不能为空"), request))
 		about_us = request.data.get("about_us")
@@ -87,9 +86,13 @@ class MeetingViewSet(viewsets.ModelViewSet):
 		support = request.data.get("support")
 		if not support:
 			return HttpResponse(template.render(errorInfo("请填写住宿交通信息"), request))
-		file = request.FILES['file']
-		if not file:
+		try:
+			file = request.FILES['file']
+		except:
 			return HttpResponse(template.render(errorInfo("请填写论文模板文件"), request))
+		style = request.data.get("style")
+		if not style:
+			return HttpResponse(template.render(errorInfo("请选择展示模板网页风格"), request))
 		# meeting_serializer = MeetingSerializer(data = request.data)
 		# return HttpResponse(request.session['username']+" "+str(ddl_date))
 		# if meeting_serializer.is_valid():
@@ -112,6 +115,7 @@ class MeetingViewSet(viewsets.ModelViewSet):
 				institution=thisInstitution,
 				support=support,
 				template=file,
+				style=style,
 			)
 			thisMeeting.save()
 			return HttpResponse(template.render({'info': '登记成功'}, request))
@@ -185,7 +189,7 @@ class MeetingViewSet(viewsets.ModelViewSet):
 			if now >= thisMeeting.meeting_end_date:
 				thisMeeting.status5 = True
 			thisuser = User.objects.get(id=user_id)
-
+			'''
 			queryset = thisuser.participate.all()
 			allpaper = thisuser.paper_set.all()
 			allmeeting = list()
@@ -200,6 +204,8 @@ class MeetingViewSet(viewsets.ModelViewSet):
 			print(allmeeting)
 			listenmeeting = set(queryset) - set(allmeeting)
 			print(listenmeeting)
+			'''
+			listenmeeting = thisuser.participate.all()
 			if thisMeeting in listenmeeting:
 				islisten = True
 			else:
@@ -212,13 +218,18 @@ class MeetingViewSet(viewsets.ModelViewSet):
 				isfavorite = False
 			else:
 				isfavorite = True
-			template = loader.get_template('conference.html')
+			if thisMeeting.style == "1":
+				template = loader.get_template('conference.html')
+			if thisMeeting.style == "2":
+				template = loader.get_template('conference2.html')
 			context = {
 				'conference': thisMeeting,
 				'isfavorite': isfavorite,
 				'islisten': islisten,
-				'map': "http://maps.gaode.com/search?query=" + thisMeeting.organization
+				'map': "http://maps.gaode.com/search?query=" + thisMeeting.organization,
+				'ddl_date': str(thisMeeting.meeting_date.strftime("%Y-%m-%d %H:%M:%S")),
 			}
+			print(str(thisMeeting.meeting_date.strftime("%Y-%m-%d %H:%M:%S")))
 
 			return HttpResponse(template.render(context, request))
 		except:
@@ -240,9 +251,12 @@ class MeetingViewSet(viewsets.ModelViewSet):
 			if now >= thisMeeting.meeting_end_date:
 				thisMeeting.status5 = True
 			print(thisMeeting.status1, thisMeeting.status2, thisMeeting.status3, thisMeeting.status4,
-			      thisMeeting.status5)
+				  thisMeeting.status5)
 			# print(thisMeeting.status1)
-			template = loader.get_template('conference.html')
+			if thisMeeting.style == "1":
+				template = loader.get_template('conference.html')
+			if thisMeeting.style == "2":
+				template = loader.get_template('conference2.html')
 			context = {
 				'conference': thisMeeting,
 				'isfavorite': False,
@@ -462,7 +476,7 @@ class MeetingViewSet(viewsets.ModelViewSet):
 				if now >= thisMeeting.meeting_end_date:
 					thisMeeting.status5 = '1'
 				print(thisMeeting.status1, thisMeeting.status2, thisMeeting.status3, thisMeeting.status4,
-				      thisMeeting.status5)
+					  thisMeeting.status5)
 
 				# return Response("info: contribute succsss", status=status.HTTP_200_OK)
 				template = loader.get_template('manage.html')
@@ -510,8 +524,7 @@ class MeetingViewSet(viewsets.ModelViewSet):
 		)
 		a.save()
 		emailTitle = "CMS系统提示，会议信息发生修改"
-		emailContent = "会议id为" + str(thisMeeting.meeting_id) + "的会议信息发生修改，请查看" + "http://127.0.0.1:8000/meeting/" + str(
-			thisMeeting.meeting_id) + "/"
+		emailContent = "会议id为" + str(thisMeeting.meeting_id) + "的会议信息发生修改，请查看" + "http://123.206.65.175/meeting/" + str(thisMeeting.meeting_id) + "/"
 		userSet = thisMeeting.User_set.all()
 		AttendeeSet = thisMeeting.Attendee_set.all()
 		emailList = []
@@ -617,7 +630,7 @@ class MeetingViewSet(viewsets.ModelViewSet):
 			# thisMeeting.save()
 			emailTitle = "CMS系统提示，会议信息发生修改"
 			emailContent = "会议id为" + str(
-				thisMeeting.meeting_id) + "的会议信息发生修改，请查看" + "http://127.0.0.1:8000/meeting/" + str(
+				thisMeeting.meeting_id) + "的会议信息发生修改，请查看" + "http://123.206.65.175/meeting/" + str(
 				thisMeeting.meeting_id) + "/"
 			userSet = thisMeeting.User_set.all()
 			AttendeeSet = thisMeeting.Attendee_set.all()
@@ -738,6 +751,7 @@ class MeetingViewSet(viewsets.ModelViewSet):
 			page = int(request.GET['page'])
 		except (KeyError, ValueError):
 			page = 1
+		'''
 		queryset = thisuser.participate.all().order_by('-meeting_id')
 		allpaper = thisuser.paper_set.all()
 		allmeeting = list()
@@ -749,6 +763,8 @@ class MeetingViewSet(viewsets.ModelViewSet):
 						if join.meeting not in allmeeting:
 							allmeeting.append(join.meeting)
 		listenmeeting = set(queryset) - set(allmeeting)
+		'''
+		listenmeeting = thisuser.participate.all().order_by('-meeting_id')
 		queryset = sorted(listenmeeting, key=lambda x: x.ddl_date)
 		template = loader.get_template('conference_list.html')
 
@@ -820,20 +836,19 @@ class MeetingViewSet(viewsets.ModelViewSet):
 			###########################
 			exist_file = os.path.exists(url)
 			if exist_file:
-			    os.remove(url)
+				os.remove(url)
 			ws.save(url)
 			############################
 		else:
-			a = collections.OrderedDict({"errorInfo":"没有相关记录"})
-			return Response(a, status = status.HTTP_400_BAD_REQUEST)
+			return HttpResponseRedirect("/meeting/manageList/?message=无投稿信息")
 		def file_iterator(file_name, chunk_size=512):
-		with open(file_name, "rb") as f:
-			while True:
-				c = f.read(chunk_size)
-				if c:
-					yield c
-				else:
-					break
+			with open(file_name, "rb") as f:
+				while True:
+					c = f.read(chunk_size)
+					if c:
+						yield c
+					else:
+						break
 
 		response = StreamingHttpResponse(file_iterator(url))
 		response['Content-Type'] = 'application/vnd.ms-excel'

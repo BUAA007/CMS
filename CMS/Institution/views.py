@@ -197,35 +197,33 @@ class EmployeeViewSet(viewsets.ModelViewSet):
        username = request.data.get("username")
        password = request.data.get("password")
        password2 = request.data.get("password2")
-       try:
-          if not Employee.objects.get(username = username):
-              return  HttpResponse(errorInfo("用户名已存在"), content_type="application/json")
-       except:
-           pass
-       if not checkUsername(username):    #必须以字母开头，长度在10位以内
-          return  HttpResponse(errorInfo("用户名不合法"), content_type="application/json")
-       if not checkPassword(password):    #包含大写、小写、符号；长度大于等于8
-          return  HttpResponse(errorInfo("密码不合法"), content_type="application/json")
-       if not password == password2:
-          return  HttpResponse(errorInfo("确认密码不一致"), content_type="application/json")
-
-       password = md5(password)
-       try:
-           thisEmployee = Employee.objects.get(id=request.session['id'])
-           thisInstitution = thisEmployee.institution
-           thisEmployee = Employee.objects.get(username=request.session['username'])
-           thisInstitution=thisEmployee.institution
-           otherEmployee = Employee(
-               username = username,
-               password = password,
-               institution = thisInstitution,
-               )
-           otherEmployee.save()
-           return HttpResponse(info("success"), content_type="application/json")
-       except:
-           pass
-           #return render(request,'login.html',status = status.HTTP_201_CREATED)
-       return  HttpResponse(errorInfo("未知原因失败，请稍后再试"), content_type="application/json")
+       if Employee.objects.filter(username=username):
+           print(Employee)
+           return  HttpResponse(errorInfo("用户名已存在"), content_type="application/json")
+       elif password!=password2:
+           return HttpResponse(errorInfo("密码不一致"), content_type="application/json")
+       elif not checkPassword(password):
+           return HttpResponse(errorInfo("密码不合格"), content_type="application/json")
+       elif not checkUsername(username):
+           return HttpResponse(errorInfo("用户名不合法"), content_type="application/json")
+       else:
+           password = md5(password)
+           try:
+               thisEmployee = Employee.objects.get(id=request.session['id'])
+               thisInstitution = thisEmployee.institution
+               thisEmployee = Employee.objects.get(username=request.session['username'])
+               thisInstitution=thisEmployee.institution
+               otherEmployee = Employee(
+                   username = username,
+                   password = password,
+                   institution = thisInstitution,
+                   )
+               otherEmployee.save()
+               return HttpResponse(info("success"), content_type="application/json")
+           except:
+               pass
+               #return render(request,'login.html',status = status.HTTP_201_CREATED)
+           return  HttpResponse(errorInfo("未知原因失败，请稍后再试"), content_type="application/json")
 
    @action(methods=['POST'], detail=False)
    def checkpaper(self, request):

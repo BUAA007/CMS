@@ -343,7 +343,7 @@ class UserViewSet(viewsets.ModelViewSet):
                         thispaper.abstract = request.data.get("abstract")
                         thispaper.keyword = request.data.get("keyword")
                         thispaper.status = "-1"
-                        thispaper.suggestion = "无"
+                        thispaper.suggestion = "None"
                         thispaper.explain = request.data.get("explain")
                         thispaper.save()
 
@@ -356,7 +356,7 @@ class UserViewSet(viewsets.ModelViewSet):
                             'papers': papers,
                             'message': '修改成功，请等待审核'
                         }
-                        url = "../allpaper/？message=成功，请等待审核"
+                        url = "../allpaper/?message=成功，请等待审核"
                         return HttpResponseRedirect(url)
 
                     else:
@@ -527,6 +527,7 @@ class JoinViewSet(viewsets.ModelViewSet):
                 paperid = int(request.data.get("paper"))
                 try:
                     thispaper = Paper.objects.get(id=paperid)
+
                 except:
                     message = "论文错误"
                     raise RuntimeError()
@@ -537,6 +538,9 @@ class JoinViewSet(viewsets.ModelViewSet):
                     raise RuntimeError()
                 if timezone.now()>thismeeting.regist_attend_date:
                     message = "注册时间已过"
+                    raise RuntimeError()
+                if thispaper.status != 1:
+                    message = "提交的论文未通过"
                     raise RuntimeError()
                 count = 1
                 namename = "name" + str(count)
@@ -566,8 +570,8 @@ class JoinViewSet(viewsets.ModelViewSet):
                     gendername = "gender" + str(count)
                     resername = "reservation" + str(count)
                     name = request.data.get(namename)
-                thispaper.owner.participate.add(thismeeting)
-                thispaper.owner.save()
+                #thispaper.owner.participate.add(thismeeting)
+                #thispaper.owner.save()
                 return HttpResponseRedirect('../user/allpaper/?message=注册成功')
 
             try:

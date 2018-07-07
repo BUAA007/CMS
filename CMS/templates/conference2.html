@@ -1,0 +1,571 @@
+{% extends 'base.html' %}
+{% load staticfiles %}
+
+{% block title %}
+    test
+{% endblock %}
+
+{% block content %}
+<style>
+@import url("https://fonts.googleapis.com/css?family=Lato:400,700|Montserrat:900");
+
+
+.container {
+  position: relative;
+  margin: auto;
+  overflow: hidden;
+  background-color: #333333;
+}
+
+h1 {
+  font-family: "Lato", sans-serif;
+  text-align: center;
+  margin-top: 2em;
+  font-size: 1em;
+  text-transform: uppercase;
+  letter-spacing: 5px;
+  color: #F6F4F3;
+}
+
+#timer {
+  color: #F6F4F3;
+  text-align: center;
+  text-transform: uppercase;
+  font-family: "Lato", sans-serif;
+  font-size: .7em;
+  letter-spacing: 5px;
+}
+
+.days, .hours, .minutes, .seconds {
+  display: inline-block;
+  padding: 20px;
+  width: 100px;
+  border-radius: 5px;
+}
+
+.days {
+  background: #333333;
+  width: auto;
+}
+
+.hours {
+  background: #333333;
+  width: 120px;
+}
+
+.minutes {
+  background: #333333;
+  width: 120px;
+}
+
+.seconds {
+  background: #333333;
+  width: 120px;
+}
+
+.numbers {
+  font-family: "Montserrat", sans-serif;
+  color: #ffffff;
+  font-size: 5em;
+}
+
+footer {
+  position: absolute;
+  bottom: 0;
+  right: 0;
+  text-transform: uppercase;
+  padding: 10px;
+  font-family: "Lato", sans-serif;
+  font-size: 0.7em;
+}
+footer p {
+  letter-spacing: 3px;
+  color: #EF2F3C;
+}
+footer a {
+  color: #F6F4F3;
+  text-decoration: none;
+}
+footer a:hover {
+  color: #276FBF;
+}
+</style>
+</head>
+<body>
+
+<div class="container">
+    <div style="color: white;float: left">
+        距离
+        {% if conference.status1 != True %}
+            <h3>投稿截止日期</h3>
+        {% elif conference.status2 != True %}
+            <h3 >投稿结果通知日期</h3>
+        {% elif conference.status3 != True %}
+            <h3>用户注册会议日期</h3>
+        {% elif conference.status4 != True %}
+            <h3>会议开始日期</h3>
+        {% elif conference.status5 != True %}
+            <h3>会议结束日期</h3>
+        {% else %}
+        会议结束
+        {% endif %}
+
+    </div>
+  <div id="timer" style="float: inside"></div>
+</div>
+
+
+<script>
+
+{% if conference.status1 != True %}
+const fourthOfJuly = new Date("{{ conference.ddl_date|date:'Y/m/d H:i:s' }}").getTime();
+{% elif conference.status2 != True %}
+const fourthOfJuly = new Date("{{ conference.result_notice_date|date:'Y/m/d H:i:s' }}").getTime();
+{% elif conference.status3 != True %}
+const fourthOfJuly = new Date("{{ conference.regist_attend_date|date:'Y/m/d H:i:s' }}").getTime();
+{% elif conference.status4 != True %}
+const fourthOfJuly = new Date("{{ conference.meeting_date|date:'Y/m/d H:i:s' }}").getTime();
+{% elif conference.status5 != True %}
+const fourthOfJuly = new Date("{{ conference.meeting_end_date|date:'Y/m/d H:i:s' }}").getTime();
+{% else %}
+const fourthOfJuly = new Date().getTime();
+{% endif %}
+
+// countdown
+let timer = setInterval(function() {
+
+  // get today's date
+  const today = new Date().getTime();
+
+  // get the difference
+  const diff = fourthOfJuly - today;
+
+  // math
+  let days = Math.floor(diff / (1000 * 60 * 60 * 24));
+  let hours = Math.floor((diff % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+  let minutes = Math.floor((diff % (1000 * 60 * 60)) / (1000 * 60));
+  let seconds = Math.floor((diff % (1000 * 60)) / 1000);
+
+  // display
+  document.getElementById("timer").innerHTML =
+    "<div class=\"days\"> \
+  <div class=\"numbers\">" + days + "</div>days</div> \
+<div class=\"hours\"> \
+  <div class=\"numbers\">" + hours + "</div>hours</div> \
+<div class=\"minutes\"> \
+  <div class=\"numbers\">" + minutes + "</div>minutes</div> \
+<div class=\"seconds\"> \
+  <div class=\"numbers\">" + seconds + "</div>seconds</div> \
+</div>";
+
+}, 1000);
+</script>
+    <div class="modal fade" id="postPaper" tabindex="-1" role="dialog"
+         aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="exampleModalCenterTitle">投稿</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <form enctype="multipart/form-data" class="form-horizontal" action="/user/user/contribute/"
+                          method="post"
+                          id="postPaperForm">
+                        <div class="form-group">
+                            <div class="col-4">
+                                <label for="author_1" class="col-form-label">第一作者:</label>
+                                <input type="text" required class="form-control" id="author_1" name="author_1">
+                            </div>
+                            <div class="col-4">
+                                <label for="author_2" class="col-form-label">第二作者:</label>
+                                <input type="text" class="form-control" id="author_2" name="author_2">
+                            </div>
+                            <div class="col-4">
+                                <label for="author_3" class="col-form-label">第三作者:</label>
+                                <input type="text" class="form-control" id="author_3" name="author_3">
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label for="title" class="col-form-label">标题:</label>
+                            <input class="form-control" required id="title" name="title">
+                        </div>
+                        <div class="form-group">
+                            <label for="keyword" class="keyword">关键字:</label>
+                            <input class="form-control" required id="keyword" name="keyword">
+                        </div>
+                        <div class="form-group">
+                            <label for="abstract" class="keyword">摘要:</label>
+                            <textarea class="form-control" required id="abstract" name="abstract" rows="5"
+                                      maxlength="150"></textarea>
+                        </div>
+                        <div class="form-group">
+                            <div>
+                                <input required type="file" name="content">
+                            </div>
+                        </div>
+                        <div style="display: none">
+                            <input type="hidden" name="meeting_id" id="meeting_id" value="{{ conference.meeting_id }}">
+                        </div>
+                    </form>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">关闭</button>
+                    <button form="postPaperForm" type="submit" class="btn btn-primary">提交</button>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="modal fade" id="registerConference" tabindex="-1" role="dialog"
+         aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="exampleModalCenterTitle">聆听会议</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <form enctype="multipart/form-data" class="form-horizontal" action="/user/join/" method="post"
+                          id="registerConferenceForm">
+                        <div class="form-group">
+                            <div class="custom-file">
+                                <input type="file" name="file" required>
+                            </div>
+                        </div>
+                        <input type="hidden" value="{{ conference.meeting_id }}" name="meeting">
+                        <input type="hidden" name="type" value="2">
+                        <div class="form-group">
+                            <div class="col-6">
+                                <h6>参会人员</h6>
+                            </div>
+                            <div class="col-1 float-right ">
+                                <a href="#" class="fa fa-plus-square" onclick="addPerson()"></a>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <div class="input-group mb-3">
+                                <div class="input-group-prepend">
+                                    <span class="input-group-text" id="inputGroup-sizing-default">姓名</span>
+                                </div>
+                                <input placeholder="请输入姓名" required type="text" class="form-control"
+                                       aria-label="Default"
+                                       aria-describedby="inputGroup-sizing-default" name="name1">
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <div class="col-6">
+                                <input type="radio" required name="gender1" value="male">
+                                <label>男</label>
+                                <input type="radio" name="gender1" value="female">
+                                <label>女</label>
+                            </div>
+                            <div class="col-6">
+                                <input type="radio" required name="reservation1" value="yes">
+                                <label>预定住宿</label>
+                                <input type="radio" name="reservation1" value="no">
+                                <label>不预定住宿</label>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">关闭</button>
+                    <button form="registerConferenceForm" type="submit" class="btn btn-primary">提交</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="animated fadeIn">
+        <div class="row">
+
+            <div class="col-md-12">
+                <div class="card">
+                    <div class="card-body">
+                        <div class="col-lg-9">
+                            <div class="display-3">{{ conference.title }}</div>
+                            <hr class="my-4">
+                            <h4 class="font-weight-normal"><i class="fa fa-info-circle"></i>
+                                会议简介</h4>
+                            <p>{{ conference.intro }}</p>
+                            <hr class="my-4">
+                            <h4 class="font-weight-normal"><i class="fa fa-question-circle"></i>
+                                征文信息</h4>
+                            <p>{{ conference.essay_request }}</p>
+                            <hr class="my-4">
+                            <h4 class="font-weight-normal"><i class="fa fa-calendar"></i>
+                                日程安排</h4>
+                            <p>{{ conference.schedule }}</p>
+                            <div>
+                                <ul class="timeline font-weight-normal" id="timeline">
+                                    <li class="li {% if conference.status1 == True %}
+                                    complete
+                                    {% endif %}">
+                                        <div class="timestamp">
+                                            <span class="date">{{ conference.ddl_date|date:'Y/m/d' }}</span>
+                                            <span class="date">{{ conference.ddl_date|date:'H:i' }}</span>
+                                            <span class="date">截至投稿</span>
+                                        </div>
+                                        <div class="status"></div>
+                                    </li>
+                                    <li class="li {% if conference.status2 == True %}
+                                    complete
+                                    {% endif %}">
+                                        <div class="timestamp">
+                                            <span class="date">{{ conference.result_notice_date|date:'Y/m/d' }}</span>
+                                            <span class="date">{{ conference.result_notice_date|date:'H:i' }}</span>
+                                            <span class="date">录用通知</span>
+                                        </div>
+                                        <div class="status">
+                                        </div>
+                                    </li>
+                                    <li class="li {% if conference.status3 == True %}
+                                    complete
+                                    {% endif %}">
+                                        <div class="timestamp">
+                                            <span class="date">{{ conference.regist_attend_date |date:'Y/m/d'}}</span>
+                                            <span class="date">{{ conference.regist_attend_date |date:'H:i'}}</span>
+                                            <span class="date">会议注册</span>
+                                        </div>
+                                        <div class="status">
+                                        </div>
+                                    </li>
+                                    <li class="li {% if conference.status4 == True %}
+                                    complete
+                                    {% endif %}">
+                                        <div class="timestamp">
+                                            <span class="date">{{ conference.meeting_date|date:'Y/m/d'}}</span>
+                                            <span class="date">{{ conference.meeting_date|date:'H:i'}}</span>
+                                            <span class="date">会议开始</span>
+                                        </div>
+                                        <div class="status">
+                                        </div>
+                                    </li>
+                                    <li class="li {% if conference.status5 == True %}
+                                    complete
+                                    {% endif %}">
+                                        <div class="timestamp">
+                                            <span class="date">{{ conference.meeting_end_date | date:'Y/m/d' }}</span>
+                                            <span class="date">{{ conference.meeting_end_date | date:'H:i' }}</span>
+                                            <span class="date">会议结束</span>
+                                        </div>
+                                        <div class="status">
+                                        </div>
+                                    </li>
+                                </ul>
+                            </div>
+
+                            <div class="embed-responsive embed-responsive-16by9">
+                                <iframe class="embed-responsive-item"
+                                        src="{{ map }}"
+                                        allowfullscreen></iframe>
+                            </div>
+
+                            {% if request.session.type == '0' %}
+                                <hr class="my-4">
+                                <div>
+                                    <div class="col-3" data-toggle="modal" data-target="#postPaper">
+                                        <a href="#">
+                                            <i class="fa fa-map"></i>
+                                            投稿
+                                        </a>
+                                    </div>
+                                    <div class="col-3" id="favoriteDiv">
+                                        {% if isfavorite %}
+                                            <a onclick="favorite()" class="text-danger">
+                                                <i class="fa fa-heart"></i>
+                                                已收藏
+                                            </a>
+                                        {% else %}
+                                            <a onclick="favorite()">
+                                                <i class="fa fa-heart"></i>
+                                                收藏
+                                            </a>
+                                        {% endif %}
+                                    </div>
+                                    <div class="col-3" data-toggle="modal" data-target="#registerConference">
+                                        {% if islisten %}
+                                            <a href="#" class="text-info">
+                                            <i class="fa fa-phone"></i>
+                                            已申请聆听
+                                        {% else %}
+                                            <a href="#">
+                                            <i class="fa fa-phone"></i>
+                                            聆听
+                                        </a>
+
+                                        </a>
+                                        {% endif %}
+                                    </div>
+                                    <div class="col-3">
+                                        <a href="{{ conference.template }}">
+                                            <i class="fa fa-download"></i>
+                                            下载模板
+                                        </a>
+                                    </div>
+                                </div>
+                            {% endif %}
+                        </div>
+                        <div class="col-lg-3">
+                            <h4 class="d-flex justify-content-between align-items-center mb-3">
+                                <span class="text-muted">会议主办方</span>
+                            </h4>
+                            <ul class="list-group mb-3">
+                                <li class="list-group-item d-flex justify-content-between lh-condensed">
+                                    <div>
+                                        <h6 class="my-0">组织机构</h6>
+                                        <small class="text-muted">{{ conference.institution.name }}</small>
+                                    </div>
+                                </li>
+                                <li class="list-group-item d-flex justify-content-between lh-condensed">
+                                    <div>
+                                        <h6 class="my-0">住宿交通</h6>
+                                        <small class="text-muted">{{ conference.support }}</small>
+                                    </div>
+                                </li>
+                                <li class="list-group-item d-flex justify-content-between lh-condensed">
+                                    <div>
+                                        <h6 class="my-0">联系我们</h6>
+                                        <small class="text-muted">{{ conference.about_us }}</small>
+                                    </div>
+                                </li>
+                                <li class="list-group-item d-flex justify-content-between lh-condensed">
+                                    <span>注册费用</span>
+                                    <strong>￥{{ conference.receipt }}</strong>
+                                </li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div><!-- .animated -->
+    <style>
+        .timeline {
+            list-style-type: none;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .li {
+            transition: all 200ms ease-in;
+        }
+
+        .timestamp {
+            margin-bottom: 20px;
+            padding: 0px 40px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        .status {
+            padding: 0px 40px;
+            display: flex;
+            justify-content: center;
+            border-top: 2px solid #D6DCE0;
+            position: relative;
+            transition: all 200ms ease-in;
+        }
+
+        .status:before {
+            content: "";
+            width: 25px;
+            height: 25px;
+            background-color: white;
+            border-radius: 25px;
+            border: 1px solid #ddd;
+            position: absolute;
+            top: -15px;
+            left: 42%;
+            transition: all 200ms ease-in;
+        }
+
+        .li.complete .status {
+            border-top: 2px solid #66DC71;
+        }
+
+        .li.complete .status:before {
+            background-color: #66DC71;
+            border: none;
+            transition: all 200ms ease-in;
+        }
+
+        .li.complete .status h4 {
+            color: #66DC71;
+        }
+
+        @media (min-device-width: 320px) and (max-device-width: 700px) {
+            .timeline {
+                list-style-type: none;
+                display: block;
+            }
+
+            .li {
+                transition: all 200ms ease-in;
+                display: flex;
+                width: inherit;
+            }
+
+            .timestamp {
+                width: 100px;
+            }
+
+            .status:before {
+                left: -8%;
+                top: 30%;
+                transition: all 200ms ease-in;
+            }
+        }
+    </style>
+    <script>
+        var isFavorite = true;
+        {% if isfavorite %}
+            isFavorite = true;
+        {% else %}
+            isFavorite = false;
+        {% endif %}
+        function favorite() {
+            let meeting_id = {{ conference.meeting_id }};
+            jQuery(function ($) {
+                $.ajax({
+                    url: '/user/user/favorite/',
+                    type: 'POST',
+                    data: {'meeting_id': meeting_id}, // Request body
+                    dataType: 'json',
+                    success: function (response) {
+                        if (response['errorInfo']) {
+                            document.getElementById('info').innerHTML = response;
+                            jQuery(function ($) {
+                                $('#id_errors').modal('show')
+                            });
+                        } else {
+                            isFavorite = !isFavorite;
+                            var div = document.getElementById('favoriteDiv');
+                            if (isFavorite) {
+                                div.innerHTML = '<a onclick="favorite()" class="text-danger">\n' +
+                                    '                                            <i class="fa fa-heart"></i>\n' +
+                                    '                                            已收藏\n' +
+                                    '                                        </a>'
+                            } else {
+                                div.innerHTML = '<a onclick="favorite()">\n' +
+                                    '                                            <i class="fa fa-heart"></i>\n' +
+                                    '                                            收藏\n' +
+                                    '                                        </a>'
+
+                            }
+                        }
+                    },
+                    error: function (msg) {
+
+                    }
+                });
+            });
+        }
+    </script>
+{% endblock %}
