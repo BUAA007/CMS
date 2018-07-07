@@ -237,19 +237,20 @@ class EmployeeViewSet(viewsets.ModelViewSet):
             thispaper.save()
             sys.path.append('../')
             email=[thispaper.owner.email]
-            cmsem.send_mail(email, "论文审核结果", "您的论文已经被审核完成,您的论文需要修改后重新投稿。请及时登录评审结果界面查看并修改")
+            cmsem.send_mail(email, "论文审核结果",
+                            "您的论文已经被审核完成,您的论文需要修改后重新投稿。请登录http://www.cmsys.tk/user/user/allpaper/查看并修改")
         elif thisstatus == "1":
             thispaper.status = thisstatus
             thispaper.save()
             sys.path.append('../')
             email = [thispaper.owner.email]
-            cmsem.send_mail(email, "论文审核结果", "您的论文已经被审核完成.您的论文已经通过。请及时登录评审结果界面查看，并在会议注册结束时间之前注册会议")
+            cmsem.send_mail(email, "论文审核结果", "您的论文已经被审核完成.您的论文已经通过。请登录http://www.cmsys.tk/user/user/allpaper/查看并注册")
         elif thisstatus == "-2":
             thispaper.status = thisstatus
             thispaper.save()
             sys.path.append('../')
             email = [thispaper.owner.email]
-            cmsem.send_mail(email, "论文审核结果", "您的论文已经被审核完成.不好意思，您的论文被拒绝。请及时登录评审结果界面查看")
+            cmsem.send_mail(email, "论文审核结果", "您的论文已经被审核完成.不好意思，您的论文被拒绝。请登录http://www.cmsys.tk/user/user/allpaper/查看")
         return Response("成功 ", status=status.HTTP_200_OK)
 
    @action(methods=['GET'], detail=False)
