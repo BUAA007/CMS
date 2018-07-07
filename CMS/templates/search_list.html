@@ -2,7 +2,7 @@
 {% load staticfiles %}
 
 {% block title %}
-    test
+    会议列表
 {% endblock %}
 
 {% block content %}
@@ -30,10 +30,29 @@
                                 {% for conference in conference_list %}
                                     <tr>
                                         <td>{{ forloop.counter }}</td>
-                                        <td class="text-truncate"><a href="/meeting/{{ conference.meeting_id }}">{{ conference.title }}</a></td>
-                                        <td>{{ conference.intro }}</td>
+                                        <td class="text-truncate"><a
+                                                href="/meeting/{{ conference.meeting_id }}">{{ conference.title }}</a>
+                                        </td>
+                                        <td class="text-truncate" style="max-width: 25rem;">{{ conference.intro }}</td>
                                         <td>{{ conference.institution.name }}</td>
-                                        <td>{{ conference.status }}</td>
+                                        {% if conference.status == '注册中' %}
+                                            <td class="text-primary">注册中</td>
+
+                                        {% elif conference.status == '截止注册' %}
+                                            <td class="text-secondary">截止注册</td>
+
+                                        {% elif conference.status == '会议中' %}
+                                            <td class="text-success">会议中</td>
+
+                                        {% elif conference.status == '已截稿' %}
+                                            <td class="text-warning">已截稿</td>
+
+                                        {% elif conference.status == '投稿中' %}
+                                            <td class="text-info">投稿中</td>
+
+                                        {% else %}
+                                            <td class="text-dark">会议完成</td>
+                                        {% endif %}
                                     </tr>
                                 {% endfor %}
                                 </tbody>

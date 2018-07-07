@@ -104,25 +104,25 @@ class InstitutionViewSet(viewsets.ModelViewSet):
        #return HttpResponse(errorInfo(str(establish_date)), content_type="application/json")
        try:
            if Institution.objects.get( name = name):
-               return  HttpResponse(errorInfo("该机构已存在"), content_type="application/json")
+               return  Response({"errorInfo":"该机构已存在" , "kind":"1"}, content_type="application/json")
            if Employee.objects.get( username = username):
-               return  HttpResponse(errorInfo("用户名已存在"), content_type="application/json")
+               return  Response({"errorInfo":"用户名已存在" , "kind":"2"}, content_type="application/json")
        except:
           pass
        if not checkUsername(name):    #必须不为空
-           return  HttpResponse(errorInfo("机构名不能为空"), content_type="application/json")
+           return  Response({"errorInfo":"机构名不能为空" , "kind":"3"}, content_type="application/json")
        if not checkUsername(username):    #必须不为空
-           return  HttpResponse(errorInfo("用户名不能为空"), content_type="application/json")
+           return  Response({"errorInfo":"用户名不能为空" , "kind":"4"}, content_type="application/json")
        if not establish_date:
-          return HttpResponse(errorInfo("请填写完整的机构成立时间"), content_type="application/json")
+          return Response({"errorInfo":"请填写完整的机构成立时间" , "kind":"5"}, content_type="application/json")
        # if not checkUsername(username):    #必须以字母开头，长度在10位以内
        #     return  HttpResponse(errorInfo("用户名不合法"), content_type="application/json")
        if not checkPassword(password):    #包含大写、小写、符号；长度大于等于8
-           return  HttpResponse(errorInfo("密码必须包含大写、小写、符号且长度大于等于8"), content_type="application/json")
+           return  Response({"errorInfo":"密码必须包含大写、小写、符号且长度大于等于8" , "kind":"6"}, content_type="application/json")
        if not password == password2:
-           return  HttpResponse(errorInfo("两次密码不一致"), content_type="application/json")
+           return  Response({"errorInfo":"两次密码不一致" , "kind":"7"}, content_type="application/json")
        if  not checkPhonenumber(tel):      #手机号位数为11位；开头为1，第二位为3或4或5或8;
-           return  HttpResponse(errorInfo("电话号码不合法"), content_type="application/json")
+           return  Response({"errorInfo":"电话号码不合法" , "kind":"8"}, content_type="application/json")
        #return HttpResponse(errorInfo(str(datetime.strptime(establish_date[0], "%Y-%m-%dT%H:%M"))), content_type="application/json")
        institution_serializer = InstitutionSerializer(data = request.data)
        employee_serializer = EmployeeSerializer(data = request.data)
@@ -133,7 +133,7 @@ class InstitutionViewSet(viewsets.ModelViewSet):
                corporate_id = corporate_id,
                place = place,
                legal_person = legal_person,
-               establish_date = datetime.date(datetime.strptime(establish_date, "%Y-%m-%dT%H:%M")),
+               establish_date = datetime.date(datetime.strptime(establish_date, "%Y-%m-%d")),
                status="0",
                type = type,
                )
@@ -237,19 +237,20 @@ class EmployeeViewSet(viewsets.ModelViewSet):
             thispaper.save()
             sys.path.append('../')
             email=[thispaper.owner.email]
-            cmsem.send_mail(email, "论文审核结果", "您的论文已经被审核完成,您的论文需要修改后重新投稿。请及时登录评审结果界面查看并修改")
+            cmsem.send_mail(email, "论文审核结果",
+                            "您的论文已经被审核完成,您的论文需要修改后重新投稿。请登录http://www.cmsys.tk/")
         elif thisstatus == "1":
             thispaper.status = thisstatus
             thispaper.save()
             sys.path.append('../')
             email = [thispaper.owner.email]
-            cmsem.send_mail(email, "论文审核结果", "您的论文已经被审核完成.您的论文已经通过。请及时登录评审结果界面查看，并在会议注册结束时间之前注册会议")
+            cmsem.send_mail(email, "论文审核结果", "您的论文已经被审核完成.您的论文已经通过。请登录http://www.cmsys.tk/")
         elif thisstatus == "-2":
             thispaper.status = thisstatus
             thispaper.save()
             sys.path.append('../')
             email = [thispaper.owner.email]
-            cmsem.send_mail(email, "论文审核结果", "您的论文已经被审核完成.不好意思，您的论文被拒绝。请及时登录评审结果界面查看")
+            cmsem.send_mail(email, "论文审核结果", "您的论文已经被审核完成.不好意思，您的论文被拒绝。请登录http://www.cmsys.tk/")
         return Response("成功 ", status=status.HTTP_200_OK)
 
    @action(methods=['GET'], detail=False)

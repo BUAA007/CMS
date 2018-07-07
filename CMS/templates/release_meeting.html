@@ -2,7 +2,7 @@
 {% load staticfiles %}
 
 {% block title %}
-    test
+    发布会议
 {% endblock %}
 
 {% block content %}
@@ -33,87 +33,95 @@
                     <div class="card-body card-block">
                     <div class="row form-group">
                         <div class="col col-md-3"><label for="text-input" class=" form-control-label">会议标题</label></div>
-                        <div class="col-12 col-md-9"><input type="text" name="title"
-                                                            placeholder="填写会议标题" class="form-control"></div>
+                        <div class="col-12 col-md-9"><input type="text" name="title" maxlength="15"
+                                                            placeholder="填写会议标题(15个字数以内)" class="form-control" required></div>
                     </div>
                     <div class="row form-group">
                         <div class="col col-md-3"><label for="text-input" class=" form-control-label">联系我们</label></div>
-                        <div class="col-12 col-md-9"><input name="about_us"
-                                                            placeholder="填写联系方式" class="form-control"></div>
+                        <div class="col-12 col-md-9"><input name="about_us" maxlength="30"
+                                                            placeholder="填写联系方式(邮箱或电话)" class="form-control" required></div>
                     </div>
                     <div class="row form-group">
                         <div class="col col-md-3"><label for="text-input" class=" form-control-label">截稿日期</label></div>
                         <div class="col-md-9">
-                            <input type="datetime-local" class="form-control" id="date1" name="ddl_date">
+                            <input type="datetime-local" class="form-control" id="date1" name="ddl_date" required>
                         </div>
                     </div>
                     <div class="row form-group">
                         <div class="col col-md-3"><label for="text-input" class=" form-control-label">录用通知日期</label>
                         </div>
                         <div class="col-md-9">
-                            <input type="datetime-local" class="form-control" id="date2" name="result_notice_date">
+                            <input type="datetime-local" class="form-control" id="date2" name="result_notice_date" required>
                         </div>
                     </div>
                     <div class="row form-group">
-                        <div class="col col-md-3"><label for="text-input" class=" form-control-label">注册日期</label></div>
+                        <div class="col col-md-3"><label for="text-input" class=" form-control-label">会议注册日期</label></div>
                         <div class="col-md-9">
-                            <input type="datetime-local" class="form-control" id="date3" name="regist_attend_date">
+                            <input type="datetime-local" class="form-control" id="date3" name="regist_attend_date" required>
                         </div>
                     </div>
                     <div class="row form-group">
-                        <div class="col col-md-3"><label for="text-input" class=" form-control-label">会议日期</label></div>
+                        <div class="col col-md-3"><label for="text-input" class=" form-control-label">会议开始日期</label></div>
                         <div class="col-md-9">
-                            <input type="datetime-local" class="form-control" id="date4" name="meeting_date">
+                            <input type="datetime-local" class="form-control" id="date4" name="meeting_date" required>
                         </div>
                     </div>
                     <div class="row form-group">
                         <div class="col col-md-3"><label for="text-input" class=" form-control-label">会议结束日期</label></div>
                         <div class="input-group date form_datetime col-md-9">
-                            <input type="datetime-local" class="form-control" id="date5" name="meeting_end_date">
+                            <input type="datetime-local" class="form-control" id="date5" name="meeting_end_date" required>
                         </div>
                     </div>
                     <div class="row form-group">
                         <div class="col col-md-3"><label for="text-input" class=" form-control-label">注册费用</label></div>
-                        <div class="col-12 col-md-9"><input type="text" name="receipt"
-                                                            placeholder="填写注册费用，单位（元）" class="form-control"></div>
+                        <div class="col-12 col-md-9"><input type="number" name="receipt"
+                                                            placeholder="填写注册费用，单位（元）" class="form-control" required></div>
                     </div>
                     <div class="row form-group">
                         <div class="col col-md-3"><label for="textarea-input" class=" form-control-label">会议简介</label>
                         </div>
-                        <div class="col-12 col-md-9"><textarea name="intro" rows="9"
-                                                               placeholder="填写会议简介" class="form-control"></textarea>
+                        <div class="col-12 col-md-9"><textarea name="intro" rows="9" maxlength="512"
+                                                               placeholder="填写会议简介" class="form-control" required></textarea>
                         </div>
                     </div>
                     <div class="row form-group">
                         <div class="col col-md-3"><label for="textarea-input" class=" form-control-label">征文信息</label>
                         </div>
-                        <div class="col-12 col-md-9"><textarea name="essay_request" rows="9"
-                                                               placeholder="填写征文信息" class="form-control"></textarea>
+                        <div class="col-12 col-md-9"><textarea name="essay_request" rows="9" maxlength="512"
+                                                               placeholder="填写征文信息" class="form-control" required></textarea>
                         </div>
                     </div>
                     <div class="row form-group">
                         <div class="col col-md-3"><label for="textarea-input"
                                                          class=" form-control-label">住宿交通信息</label></div>
-                        <div class="col-12 col-md-9"><textarea name="support" rows="9"
+                        <div class="col-12 col-md-9"><textarea name="support" rows="9" maxlength="512"
                                                                placeholder="填写住宿交通信息"
-                                                               class="form-control"></textarea></div>
+                                                               class="form-control" required></textarea></div>
                     </div>
                     <div class="row form-group">
                         <div class="col col-md-3"><label for="textarea-input"
                                                          class=" form-control-label">地点</label></div>
                         <div class="col-12 col-md-9"><textarea name="organization" rows="2"
                                                                placeholder="填写会议地点(例如北京市海淀区北京航空航天大学南门)"
-                                                               class="form-control"></textarea></div>
+                                                               class="form-control" required></textarea></div>
                     </div>
                     <div class="row form-group">
                         <div class="col col-md-3"><label for="textarea-input" class=" form-control-label">日程安排</label>
                         </div>
-                        <div class="col-12 col-md-9"><textarea name="schedule" rows="9"
-                                                               placeholder="填写日程安排" class="form-control"></textarea>
+                        <div class="col-12 col-md-9"><textarea name="schedule"
+                                                               placeholder="填写日程安排
+例：
+9:00 - 9:10	致辞
+9:10 - 9:40	下一代软件研发
+9:40 - 10:30	Software Systems Quality: Looking Back and Forward
+" class="form-control" required></textarea>
+
+
+
                         </div>
                     </div>
                         <div class="row form-group">
-                            <div class="col-12 col-md-3"><label for="textarea-input" class=" form-control-label">选择展示风格 &nbsp&nbsp&nbsp&nbsp&nbsp <a id="a" href="http://123.206.65.175/meeting/1">链接</a></label>
+                            <div class="col-12 col-md-3"><label for="textarea-input" class=" form-control-label">选择展示风格 &nbsp&nbsp&nbsp&nbsp&nbsp <a id="a" href="http://123.206.65.175/meeting/1">样例</a></label>
                         </div>
                         <div class="col-10 col-md-10">
                             <select name="style" id="select" class="form-control" onchange="changeStyle()">
@@ -123,12 +131,17 @@
                         </div>
 
                     </div>
-                     <label for="file" class="btn btn-warning btn-sm">更改论文模板</label>
-                    <input id="file" type="file" style="display:none" name="file">
+                     <div class="form-group">
+                            <div class="custom-file">
+                                <label>上传论文模板</label>
+                                <p></p>
+                                <input type="file" name="file" required>
+                            </div>
+                        </div>
                 </div>
                 <div class="card-footer">
 
-                    <button type="submit" class="btn btn-primary btn-sm">
+                    <button type="submit" class="btn btn-primary btn-sm" onclick="beforeUp()">
                         <i class="fa fa-dot-circle-o"></i> 提交
                     </button>
                 </div>
@@ -146,6 +159,26 @@
     function changeStyle() {
         var a = document.getElementById("select").value
         document.getElementById("a").setAttribute("href", "http://123.206.65.175/meeting/"+a)
+    }
+
+    function beforeUp(){
+        var date1 = document.getElementById("date1").value
+        var date2 = document.getElementById("date2").value
+        var date3 = document.getElementById("date3").value
+        var date4 = document.getElementById("date4").value
+        var date5 = document.getElementById("date5").value
+        if(date5 >= date4 && date4>= date3 && date3>=date2 && date2>=date1){
+            return true
+        }else{
+            alert("需要按照顺序填写时间")
+            document.getElementById("date1").value = null
+            document.getElementById("date2").value = null
+            document.getElementById("date3").value = null
+            document.getElementById("date4").value = null
+            document.getElementById("date5").value = null
+            return false
+        }
+
     }
 
 </script>

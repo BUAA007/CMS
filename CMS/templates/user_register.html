@@ -63,19 +63,19 @@
     <div class="gslogen mb-4"><em>CMS</em></div>
     <h1 class="h3 mb-3 font-weight-normal">用户注册</h1>
     <label class="sr-only" for="username" >用户名</label>
-    <input class="form-control"  id="username" autofocus="autofocus" required="required" type="text" placeholder="用户名"  name="username" onfocus="this.value = '';" />
+    <input class="form-control"  id="username" autofocus="autofocus" type="text" placeholder="用户名"  name="username" onfocus="this.value = '';" />
     <p></p>
     <label class="sr-only" for="password">密码</label>
-    <input class="form-control" name="password" id="password" required="required" type="password" placeholder="密码" onfocus="this.value = '';" />
+    <input class="form-control" name="password" id="password" required type="password" placeholder="密码" onfocus="this.value = '';" />
     <p></p>
-    <input class="form-control" name="password2" id="password2" required="required" type="password" placeholder="重复密码" onfocus="this.value = '';" onkeyup="confirmpw()" />
+    <input class="form-control" name="password2" id="password2" required type="password" placeholder="重复密码" onfocus="this.value = '';" onkeyup="confirmpw()" />
     <p></p>
     <label class="sr-only" for="email">电子邮箱</label>
-    <input class="form-control" name="email" id="email" required="required" type="email" placeholder="电子邮箱" onfocus="this.value='';" />
+    <input class="form-control" name="email" id="email" required type="email" placeholder="电子邮箱" onfocus="this.value='';"/>
     <p></p>
     <label class="sr-only" for="tel">手机号</label>
-    <input class="form-control" name="tel" id="tel" required="required" type="text" placeholder="手机号" onfocus="this.value='';"/>
-    <button class="btn btn-lg btn-primary btn-block mt-4 mb-2" type="button" onclick="up()" >注册</button>
+    <input class="form-control" name="tel" id="tel" required type="text" placeholder="手机号" onfocus="this.value='';"/>
+    <button class="btn btn-lg btn-primary btn-block mt-4 mb-2" type="button" onclick="up()">注册</button>
 </form>
 
 <script type="text/javascript">
