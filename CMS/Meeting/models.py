@@ -35,7 +35,7 @@ class Meeting(models.Model):
 		null=True,
 		)
 	schedule = models.CharField(
-		max_length = 128,
+		max_length = 1024,
 		null=True,
 		)
 	organization = models.CharField( #组织机构
