@@ -523,6 +523,12 @@ class JoinViewSet(viewsets.ModelViewSet):
         try:
             receipt = request.FILES['file']
             type = int(request.data.get("type"))
+            try:
+                userid = request.session['id']
+                thisuser = User.objects.get(id = userid)
+            except:
+                message = "账户错误"
+                raise RuntimeError()
             if type == 1:
                 paperid = int(request.data.get("paper"))
                 try:
@@ -541,6 +547,10 @@ class JoinViewSet(viewsets.ModelViewSet):
                     raise RuntimeError()
                 if thispaper.status != 1:
                     message = "提交的论文未通过"
+                    raise RuntimeError()
+                allparticate = thisuser.participate.all()
+                if thismeeting in allparticate:
+                    message = "已聆听，无法注册会议"
                     raise RuntimeError()
                 count = 1
                 namename = "name" + str(count)
@@ -573,13 +583,6 @@ class JoinViewSet(viewsets.ModelViewSet):
                 #thispaper.owner.participate.add(thismeeting)
                 #thispaper.owner.save()
                 return HttpResponseRedirect('../user/allpaper/?message=注册成功')
-
-            try:
-                userid = request.session['id']
-                thisuser = User.objects.get(id = userid)
-            except:
-                message = "账户错误"
-                raise RuntimeError()
             meetingid = int(request.data.get("meeting"))
             try:
                 thismeeting = Meeting.objects.get(meeting_id=meetingid)
@@ -588,6 +591,20 @@ class JoinViewSet(viewsets.ModelViewSet):
                 raise RuntimeError()
             if timezone.now()>thismeeting.regist_attend_date:
                 message = "注册时间已过"
+                raise RuntimeError()
+
+            allpaper = thisuser.paper_set.all()
+            allmeeting = list()
+            for paper in allpaper:
+                if paper.status == 1:
+                    alljoin = paper.join_set.all()
+                    if alljoin != []:
+                        for join in alljoin:
+                            if join.meeting not in allmeeting:
+                                allmeeting.append(join.meeting)
+
+            if thismeeting in allmeeting:
+                message = "已注册，无法聆听"
                 raise RuntimeError()
             count = 1
             namename = "name" + str(count)
