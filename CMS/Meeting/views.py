@@ -297,7 +297,7 @@ class MeetingViewSet(viewsets.ModelViewSet):
 		# word = request.data.get('word', None)
 		# time1 = request.data.get('time1',None)
 		# time2 = request.data.get('time2',None)
-		elif word == "投稿中" or word=="已截稿" or word=="注册中" or word=="截止注册" or word=="会议中" or word=="会议结束":
+		elif word == "投稿中" or word=="已截稿" or word=="注册中" or word=="截止注册" or word=="会议中" or word=="会议完成":
 			list(map(check_time, queryset))
 			result=list()
 			for conference in queryset:
