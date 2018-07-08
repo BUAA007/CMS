@@ -238,8 +238,13 @@
                                                     已通过</a>
                                             </td>
                                         {% endif %}
+                                    {% if paper.status == 0 or paper.status == -1 %}
                                     <td data-toggle="modal"
                                             data-target="#postPaper{{ forloop.counter }}">修改</td>
+
+                                        {% else %}
+                                        <td>无</td>
+                                    {% endif %}
                                     </tr>
                                 {% endfor %}
                                 </tbody>
