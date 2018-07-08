@@ -159,6 +159,8 @@
     function changeStyle() {
         var a = document.getElementById("select").value
         document.getElementById("a").setAttribute("href", "http://123.206.65.175/meeting/"+a)
+
+
     }
 
     function beforeUp(){
@@ -167,10 +169,16 @@
         var date3 = document.getElementById("date3").value
         var date4 = document.getElementById("date4").value
         var date5 = document.getElementById("date5").value
-        if(date5 >= date4 && date4>= date3 && date3>=date2 && date2>=date1){
+
+        var today = new Date()
+
+        var result = today.getFullYear()+'-'+(today.getMonth()+1 < 10 ? '0'+(today.getMonth()+1) : today.getMonth()+1)+'-'+(today.getDate() < 10 ? '0'+today.getDate():today.getDate())+'T'
+            +(today.getHours() < 10 ? '0'+today.getHours():today.getHours())+':'+(today.getMinutes() < 10 ? '0'+today.getMinutes():today.getMinutes())
+
+        if(date5 > date4 && date4> date3 && date3>date2 && date2>date1 && result< date1){
             return true
         }else{
-            alert("需要按照顺序填写时间")
+            alert("需要按照顺序填写时间并且填写时间不小于当前时间")
             document.getElementById("date1").value = null
             document.getElementById("date2").value = null
             document.getElementById("date3").value = null
@@ -183,4 +191,4 @@
 
 </script>
 
-{% endblock %}
+{% endblock %}*
