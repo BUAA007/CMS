@@ -864,7 +864,7 @@ class MeetingViewSet(viewsets.ModelViewSet):
 		response = StreamingHttpResponse(file_iterator(url))
 		response['Content-Type'] = 'application/vnd.ms-excel'
 		from urllib import parse
-		excel_name = str(thismeeting.meeting_id) + "paperinfo"
+		excel_name = str(thismeeting.title) + "投稿信息"
 		response['Content-Disposition'] = 'attachment;filename=' + parse.quote(excel_name) + '.xls'
 		return response
 		'''
@@ -899,7 +899,7 @@ class MeetingViewSet(viewsets.ModelViewSet):
 		if list_obj:
 			# 创建工作薄 投稿编号、作者、题目、单位、摘要等内容
 			ws = Workbook(encoding='utf-8')
-			w = ws.add_sheet(u"投稿信息")
+			w = ws.add_sheet(u"参与信息")
 			w.write(0, 0, u"姓名")
 			w.write(0, 1, u"性别")
 			w.write(0, 2, u"是否住宿")
@@ -945,7 +945,7 @@ class MeetingViewSet(viewsets.ModelViewSet):
 		response = StreamingHttpResponse(file_iterator(url))
 		response['Content-Type'] = 'application/vnd.ms-excel'
 		from urllib import parse
-		excel_name = str(thismeeting.meeting_id) + "joininfo"
+		excel_name = str(thismeeting.title) + "joininfo"
 		response['Content-Disposition'] = 'attachment;filename=' + parse.quote(excel_name) + '.xls'
 		return response
 
