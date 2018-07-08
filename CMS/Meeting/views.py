@@ -866,7 +866,7 @@ class MeetingViewSet(viewsets.ModelViewSet):
 		response = StreamingHttpResponse(file_iterator(url))
 		response['Content-Type'] = 'application/vnd.ms-excel'
 		from urllib import parse
-		excel_name = str(thismeeting.meeting_id) + "paperinfo"
+		excel_name = str(thismeeting.title) + "投稿信息"
 		response['Content-Disposition'] = 'attachment;filename=' + parse.quote(excel_name) + '.xls'
 		return response
 		'''
@@ -889,6 +889,67 @@ class MeetingViewSet(viewsets.ModelViewSet):
 		response.write(res)
 		return response
 		'''
+	@action(methods=['GET'], detail=False)
+	def excel_export2(self, request):
+		"""
+		导出excel表格
+		"""
+		meeting = int(request.GET["meeting"])
+		thismeeting = Meeting.objects.get(meeting_id = meeting)
+		url = "/home/ubuntu/CMS/CMS/media/excel/"+str(thismeeting.meeting_id)+"join.xls"
+		list_obj = thismeeting.join_set.all()
+		if list_obj:
+			# 创建工作薄 投稿编号、作者、题目、单位、摘要等内容
+			ws = Workbook(encoding='utf-8')
+			w = ws.add_sheet(u"参与信息")
+			w.write(0, 0, u"姓名")
+			w.write(0, 1, u"性别")
+			w.write(0, 2, u"是否住宿")
+			w.write(0, 3, u"联系方式")
+			w.write(0, 4, u"类型")
+			# 写入数据
+			excel_row = 1
+			for obj in list_obj:
+				data_id = obj.name
+				data_author = obj.gender
+				data_title = obj.reservation
+				data_abstract = obj.email
+				data_keyword = obj.types
+				if int(obj.types) == 1:
+					data_keyword = "注册"
+				else:
+					data_keyword = "聆听"
+				w.write(excel_row, 0, data_id)
+				w.write(excel_row, 1, data_author)
+				w.write(excel_row, 2, data_title)
+				w.write(excel_row, 3, data_abstract)
+				w.write(excel_row, 4, data_keyword)
+				excel_row += 1
+			# 检测文件是够存在
+			# 方框中代码是保存本地文件使用，如不需要请删除该代码
+			###########################
+			exist_file = os.path.exists(url)
+			if exist_file:
+				os.remove(url)
+			ws.save(url)
+			############################
+		else:
+			return HttpResponseRedirect("/meeting/manageList/?message=无参加信息")
+		def file_iterator(file_name, chunk_size=512):
+			with open(file_name, "rb") as f:
+				while True:
+					c = f.read(chunk_size)
+					if c:
+						yield c
+					else:
+						break
+
+		response = StreamingHttpResponse(file_iterator(url))
+		response['Content-Type'] = 'application/vnd.ms-excel'
+		from urllib import parse
+		excel_name = str(thismeeting.title) + "参与信息"
+		response['Content-Disposition'] = 'attachment;filename=' + parse.quote(excel_name) + '.xls'
+		return response
 
 
 def get_pages(total_page, cur_page):

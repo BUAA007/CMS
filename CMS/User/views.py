@@ -559,16 +559,19 @@ class JoinViewSet(viewsets.ModelViewSet):
                 namename = "name" + str(count)
                 gendername = "gender" + str(count)
                 resername = "reservation" + str(count)
+                emailname = "email"+str(count)
                 name = request.data.get(namename)
                 while name is not None:
                     gender = request.data.get(gendername)
                     reservation = request.data.get(resername)
+                    email = request.data.get(emailname)
                     people = Join(
                         name=name,
                         gender=gender,
                         receipt=receipt,
                         # content=request.data.get("content"),
                         reservation=reservation,
+                        email = email,
                         types=1,
                         paper=thispaper,
                         meeting=thismeeting,
@@ -582,6 +585,7 @@ class JoinViewSet(viewsets.ModelViewSet):
                     namename = "name" + str(count)
                     gendername = "gender" + str(count)
                     resername = "reservation" + str(count)
+                    emailname = "email" + str(count)
                     name = request.data.get(namename)
                 #thispaper.owner.participate.add(thismeeting)
                 #thispaper.owner.save()
@@ -613,16 +617,19 @@ class JoinViewSet(viewsets.ModelViewSet):
             namename = "name" + str(count)
             gendername = "gender" + str(count)
             resername = "reservation" + str(count)
+            emailname = "email" + str(count)
             name = request.data.get(namename)
             while name is not None:
                 gender = request.data.get(gendername)
                 reservation = request.data.get(resername)
+                email = request.data.get(emailname)
                 people = Join(
                     name=name,
                     gender=gender,
                     receipt=receipt,
                     # content=request.data.get("content"),
                     reservation=reservation,
+                    email = email,
                     types=2,
                     meeting=thismeeting,
                 )
@@ -635,6 +642,7 @@ class JoinViewSet(viewsets.ModelViewSet):
                 namename = "name" + str(count)
                 gendername = "gender" + str(count)
                 resername = "reservation" + str(count)
+                emailname = "email" + str(count)
                 name = request.data.get(namename)
             thisuser.participate.add(thismeeting)
             thisuser.save()
