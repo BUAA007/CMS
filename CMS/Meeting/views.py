@@ -532,6 +532,7 @@ class MeetingViewSet(viewsets.ModelViewSet):
 			schedule=thisMeeting.schedule,
 			institution=thisMeeting.institution,
 			support=thisMeeting.support,
+			style=thisMeeting.style
 		)
 		a.save()
 		emailTitle = "CMS系统提示，会议信息发生修改"
@@ -633,6 +634,7 @@ class MeetingViewSet(viewsets.ModelViewSet):
 				schedule=schedule,
 				institution=thisInstitution,
 				support=support,
+				style=thisMeeting.style,
 
 			)
 			thisMeeting.save()

@@ -174,7 +174,6 @@
 
         var result = today.getFullYear()+'-'+(today.getMonth()+1 < 10 ? '0'+(today.getMonth()+1) : today.getMonth()+1)+'-'+(today.getDate() < 10 ? '0'+today.getDate():today.getDate())+'T'
             +(today.getHours() < 10 ? '0'+today.getHours():today.getHours())+':'+(today.getMinutes() < 10 ? '0'+today.getMinutes():today.getMinutes())
-
         if(date5 > date4 && date4> date3 && date3>date2 && date2>date1 && result< date1){
             return true
         }else{
