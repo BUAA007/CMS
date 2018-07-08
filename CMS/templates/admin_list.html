@@ -45,23 +45,23 @@
 <!-- Left Panel -->
 
 <!-- Right Panel -->
-<header id="header" class="header">
+<header id="header" class="header" style="margin:20px">
 
     <div class="header-menu">
 
-        <div class="col-sm-7">
-            <a id="menuToggle" class="menutoggle pull-left"><i class="fa fa fa-tasks"></i></a>
+        <div class="col-sm-5">
+
             <div class="header-left">
                 <div class="col-6">
                     <div class="row">
                         <form method="get" action="/myadmin/search/" id="search_form">
-                            <div style="float: left" >
+                            <div style="float: left">
                                 <input class="col-7 mr-sm-2 form-control rounded" type="text" placeholder="Search ..."
                                        aria-label="Search" name="word" id="word">
                             </div>
 
-                                <a class="col-2" href="#" onclick="javascript:document:search_form.submit();"><i
-                                        class="fa fa-search"></i></a>
+                            <a class="col-2" href="#" onclick="javascript:document:search_form.submit();"><i
+                                    class="fa fa-search"></i></a>
 
                         </form>
                     </div>
@@ -69,6 +69,12 @@
                 </div>
             </div>
         </div>
+        <div class="col-sm-7">
+            <div class="user-area dropdown float-right">
+                <a href="/logout/"><em>登出</em></a>
+            </div>
+        </div>
+    </div>
 
 
     </div>
