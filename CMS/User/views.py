@@ -371,7 +371,7 @@ class UserViewSet(viewsets.ModelViewSet):
                             'papers': papers,
                             'message': '失败,该论文不可修改'
                         }
-                        url = "../allpaper/?message?=论文不可修改"
+                        url = "../allpaper/?message=论文不可修改"
                         return HttpResponseRedirect(url)
 
                 else:
