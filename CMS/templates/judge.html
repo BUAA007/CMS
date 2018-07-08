@@ -17,20 +17,6 @@
                     </button>
                 </div>
                 <div class="modal-body" id="info">
-                    <div class="form-group">
-                        <div>
-                            <label for="text1">
-                                <a href="#" onclick="update()">
-                                    <i class="fa fa-edit"></i>
-                                    待修改
-                                </a>
-                            </label>
-                            <textarea rows="3" class="form-control" id="id_suggestion"
-                                      placeholder="请输入修改意见..."></textarea>
-                        </div>
-                    </div>
-                    <p></p>
-                    <hr class="my-2">
                     <div class="row">
                         <div class="col-3">
                             <a href="#" onclick="pass()">
@@ -45,6 +31,21 @@
                             </a>
                         </div>
                     </div>
+                    <p></p>
+                    <hr class="my-2">
+                    <div class="form-group">
+                        <div>
+                            <label for="text1">
+                                <a href="#" onclick="update()">
+                                    <i class="fa fa-edit"></i>
+                                    待修改
+                                </a>
+                            </label>
+                            <textarea rows="3" class="form-control" id="id_suggestion"
+                                      placeholder="请输入修改意见..."></textarea>
+                        </div>
+                    </div>
+
                 </div>
                 <div class="modal-footer">
                     <button type="button" class="btn btn-secondary" data-dismiss="modal">关闭</button>
@@ -130,7 +131,8 @@
                                     </a>
                                 </li>
                                 {% for page in pages %}
-                                    <li class="page-item"><a class="page-link" href="?page={{ page }}">{{ page }}</a></li>
+                                    <li class="page-item"><a class="page-link" href="?page={{ page }}">{{ page }}</a>
+                                    </li>
                                 {% endfor %}
                                 <li class="page-item">
                                     <a class="page-link" href="?page={{ next_page }}" aria-label="Next">

@@ -39,10 +39,15 @@ class Join(models.Model):
 		null=True,
 		default = 1,
 		)
+	email = models.CharField(
+		max_length = 30,
+		null = True,
+		)
 	paper = models.ForeignKey(
 		"Paper.Paper",
 		on_delete=models.CASCADE,
 		default = "",
+		null = True,
 		)
 	meeting = models.ForeignKey(
 		"Meeting.Meeting",
