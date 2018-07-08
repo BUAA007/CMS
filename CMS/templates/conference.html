@@ -155,7 +155,9 @@
                     <!-- <li><a href="#services">会议安排</a></li> -->
                     <li><a href="#schedule">会议信息</a></li>
                     &nbsp&nbsp
+                    {% if request.session.type == '0' %}
                     <li><a href="#action">参加与收藏</a></li>
+                    {% endif %}
                     &nbsp&nbsp
                     <li><a href="#about">关于我们</a></li>
                 </ul>
@@ -233,7 +235,25 @@
         <div class="container" style="padding-top: 0;">
             <div class="row head">
                 <div class="span12 dotted-white-up">
+                    <h3 style="color:white">日程安排</h3>
+                </div>
+            </div>
+            <br/>
+            <div class="row">
+
+                <div class="span10">
                     <p><strong class="white">
+                        {{ conference.schedule |linebreaksbr }}
+                    </strong></p>
+
+
+                </div>
+            </div>
+        </div>
+        <div class="container" style="padding-top: 0;">
+            <div class="row head">
+                <div class="span12 dotted-white-up">
+                    <p><strong class="white"/>
                         关键日期
                     </p>
                     <div>
@@ -310,7 +330,7 @@
             <div class="row" align="center">
                 <div style="margin-right:10px;margin-left:auto">
                     <div class="circle-white">
-                        </br>
+                        <br/>
 
                             {% if isfavorite %}
                             <div id="favoriteDiv">
@@ -328,7 +348,7 @@
                             </div>
                             {% endif %}
                        <!--  <h3 class="dotted-black">收藏</h3> -->
-                   </br></br>
+                   </br>
                         <p>收藏该会议，</br>将便于您</br>实时查看该会议的相关信息和动态</p>
                     </div>
                 </div>

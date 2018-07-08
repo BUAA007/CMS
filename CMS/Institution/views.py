@@ -105,10 +105,13 @@ class InstitutionViewSet(viewsets.ModelViewSet):
        try:
            if Institution.objects.get( name = name):
                return  Response({"errorInfo":"该机构已存在" , "kind":"1"}, content_type="application/json")
-           if Employee.objects.get( username = username):
-               return  Response({"errorInfo":"用户名已存在" , "kind":"2"}, content_type="application/json")
        except:
-          pass
+            pass
+       try:
+            if Employee.objects.get( username = username):
+                return  Response({"errorInfo":"用户名已存在" , "kind":"2"}, content_type="application/json")
+       except:
+            pass
        if not checkUsername(name):    #必须不为空
            return  Response({"errorInfo":"机构名不能为空" , "kind":"3"}, content_type="application/json")
        if not checkUsername(username):    #必须不为空
